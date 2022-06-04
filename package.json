@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "format": "prettier --write \"**/*.{js,jsx,css,ts,tsx,json}\""
+    "format": "prettier --write \"**/*.{js,jsx,css,ts,tsx,json}\"",
+    "migration:generate": "sequelize-cli migration:generate --name",
+    "migration:run": "sequelize-cli db:migrate",
+    "migration:revert": "sequelize-cli db:migrate:undo",
+    "migration:delete": "sequelize-cli db:migrate:undo:all"
   },
   "keywords": [],
   "author": "",

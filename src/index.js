@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { port } = require('./config/environment');
+const { config } = require('./config/environment');
 const routerApi = require('./routes');
 const {
   logErrors,
@@ -9,6 +9,7 @@ const {
   ormErrorHandler,
 } = require('./middlewares/error.handler');
 
+const { port } = config;
 const app = express();
 
 // Middlewares

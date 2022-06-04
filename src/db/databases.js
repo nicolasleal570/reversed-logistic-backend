@@ -1,26 +1,14 @@
+const { DB_URI } = require('../config/environment');
+
 module.exports = {
   development: {
-    username: 'nico',
-    password: 'nico',
-    database: 'regression_logistic_app',
-    host: '127.0.0.1',
-    port: 5432,
+    url: DB_URI,
     dialect: 'postgres',
-  },
-  test: {
-    username: process.env.CI_DB_USERNAME,
-    password: process.env.CI_DB_PASSWORD,
-    database: process.env.CI_DB_NAME,
-    host: '127.0.0.1',
-    port: 3306,
-    dialect: 'postgres',
+    logging: true,
   },
   production: {
-    username: process.env.PROD_DB_USERNAME,
-    password: process.env.PROD_DB_PASSWORD,
-    database: process.env.PROD_DB_NAME,
-    host: process.env.PROD_DB_HOSTNAME,
-    port: process.env.PROD_DB_PORT,
+    url: DB_URI,
     dialect: 'postgres',
+    logging: false,
   },
 };
