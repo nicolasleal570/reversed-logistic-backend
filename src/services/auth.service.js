@@ -1,4 +1,4 @@
-export class AuthService {
+class AuthService {
   constructor() {}
 
   signUp() {}
@@ -9,3 +9,5 @@ export class AuthService {
 
   resetPassword() {}
 }
+
+module.exports = AuthService;
