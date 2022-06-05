@@ -21,16 +21,6 @@ async function getUserByIdController(req, res, next) {
   }
 }
 
-async function createUserController(req, res, next) {
-  try {
-    const { body } = req;
-    const newUser = await service.create(body);
-    res.status(201).json(newUser);
-  } catch (error) {
-    next(error);
-  }
-}
-
 async function updateUserController(req, res, next) {
   try {
     const { id } = req.params;
@@ -55,7 +45,6 @@ async function destroyUserController(req, res, next) {
 module.exports = {
   getUsersController,
   getUserByIdController,
-  createUserController,
   updateUserController,
   destroyUserController,
 };

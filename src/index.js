@@ -27,9 +27,7 @@ const options = {
 };
 app.use(cors(options));
 
-app.get('/', (_req, res) => {
-  res.send('Hola, soy una nueva ruta');
-});
+require('./libs/auth');
 
 routerApi(app);
 
