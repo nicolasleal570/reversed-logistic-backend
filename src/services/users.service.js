@@ -20,12 +20,16 @@ class UserService {
   }
 
   async findAll() {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: ['fullName', 'email', 'phone'],
+    });
     return users;
   }
 
   async findOne(id) {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(id, {
+      attributes: ['fullName', 'email', 'phone'],
+    });
 
     if (!user) {
       throw boom.notFound('User not found');
@@ -59,6 +63,8 @@ class UserService {
 
     return user;
   }
+
+  async getUserRoles(userId) {}
 }
 
 module.exports = UserService;

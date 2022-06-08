@@ -4,6 +4,7 @@ const {
   getRoleSchema,
   updateRoleSchema,
   createRoleSchema,
+  appendPermissionToRoleSchema,
 } = require('../schemas/roles.schema');
 const {
   getRolesController,
@@ -11,6 +12,7 @@ const {
   updateRoleController,
   destroyRoleController,
   createRoleController,
+  addPermissionRoleController,
 } = require('../controllers/roles.controller');
 
 const router = express.Router();
@@ -44,6 +46,12 @@ router.delete(
   '/:id',
   validatorHandler(getRoleSchema, 'params'),
   destroyRoleController
+);
+
+router.post(
+  '/add-permission',
+  validatorHandler(appendPermissionToRoleSchema, 'body'),
+  addPermissionRoleController
 );
 
 module.exports = router;

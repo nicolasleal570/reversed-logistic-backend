@@ -51,10 +51,21 @@ async function destroyRoleController(req, res, next) {
   }
 }
 
+async function addPermissionRoleController(req, res, next) {
+  try {
+    const { roleId, permissionId } = req.body;
+    const response = await service.appendPermission(roleId, permissionId);
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getRolesController,
   getRoleByIdController,
   createRoleController,
   updateRoleController,
   destroyRoleController,
+  addPermissionRoleController,
 };

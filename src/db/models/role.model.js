@@ -44,6 +44,12 @@ const RoleSchema = {
 class Role extends Model {
   static associate(models) {
     this.belongsTo(models.User, { as: 'createdBy' });
+    this.belongsToMany(models.Permission, {
+      as: 'permissions',
+      through: models.RolePermission,
+      foreignKey: 'roleId',
+      otherKey: 'permissionId',
+    });
   }
 
   static config(sequelize) {

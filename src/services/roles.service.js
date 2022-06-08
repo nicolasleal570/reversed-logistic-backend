@@ -1,7 +1,7 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 
-const { Role } = sequelize.models;
+const { Role, RolePermission } = sequelize.models;
 
 class RolesService {
   constructor() {}
@@ -12,7 +12,7 @@ class RolesService {
   }
 
   async findAll() {
-    const roles = await Role.findAll({ include: ['createdBy'] });
+    const roles = await Role.findAll({ include: ['createdBy', 'permissions'] });
     return roles;
   }
 
@@ -38,6 +38,17 @@ class RolesService {
     await role.destroy();
 
     return role;
+  }
+
+  async appendPermission(roleId, permissionId) {
+    await this.findOne(roleId);
+
+    const newRolePermission = await RolePermission.create({
+      roleId,
+      permissionId,
+    });
+
+    return newRolePermission.toJSON();
   }
 }
 

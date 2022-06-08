@@ -7,11 +7,18 @@ const {
   updateUserController,
   destroyUserController,
 } = require('../controllers/user.controller');
+const { checkRoles } = require('../middlewares/auth.handler');
+const passport = require('passport');
 
 const router = express.Router();
 
 // Get All Users
-router.get('/', getUsersController);
+router.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles,
+  getUsersController
+);
 
 // Get One User
 router.get(
