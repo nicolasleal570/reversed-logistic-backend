@@ -21,14 +21,16 @@ class UserService {
 
   async findAll() {
     const users = await User.findAll({
-      attributes: ['fullName', 'email', 'phone'],
+      attributes: ['id', 'fullName', 'email', 'phone'],
+      include: ['roles'],
     });
     return users;
   }
 
   async findOne(id) {
     const user = await User.findByPk(id, {
-      attributes: ['fullName', 'email', 'phone'],
+      attributes: ['id', 'fullName', 'email', 'phone'],
+      include: ['roles'],
     });
 
     if (!user) {
@@ -41,6 +43,7 @@ class UserService {
   async findByEmail(email) {
     const user = await User.findOne({
       where: { email },
+      include: ['roles'],
     });
 
     if (!user) {

@@ -7,6 +7,7 @@ const value = Joi.string();
 const createdById = Joi.number().integer();
 const roleId = Joi.number().integer();
 const permissionId = Joi.number().integer();
+const userId = Joi.number().integer();
 
 const getRoleSchema = Joi.object({
   id: id.required(),
@@ -29,11 +30,17 @@ const appendPermissionToRoleSchema = Joi.object({
   permissionId: permissionId.required(),
 });
 
+const appendRoleToUserSchema = Joi.object({
+  roleId: roleId.required(),
+  userId: userId.required(),
+});
+
 module.exports = {
   getRoleSchema,
   createRoleSchema,
   updateRoleSchema,
   appendPermissionToRoleSchema,
+  appendRoleToUserSchema,
   id,
   name,
   description,

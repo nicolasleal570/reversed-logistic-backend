@@ -5,6 +5,7 @@ const {
   RolePermission,
   RolePermissionSchema,
 } = require('./role-permission.model');
+const { UserRoles, UserRolesSchema } = require('./user-roles.model');
 
 function setupModels(sequelize) {
   // Handle models init
@@ -12,12 +13,14 @@ function setupModels(sequelize) {
   Role.init(RoleSchema, Role.config(sequelize));
   Permission.init(PermissionSchema, Permission.config(sequelize));
   RolePermission.init(RolePermissionSchema, RolePermission.config(sequelize));
+  UserRoles.init(UserRolesSchema, UserRoles.config(sequelize));
 
   // Handle models asocciations
   User.associate(sequelize.models);
   Role.associate(sequelize.models);
   Permission.associate(sequelize.models);
   RolePermission.associate(sequelize.models);
+  UserRoles.associate(sequelize.models);
 }
 
 module.exports = {

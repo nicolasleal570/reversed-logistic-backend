@@ -61,6 +61,16 @@ async function addPermissionRoleController(req, res, next) {
   }
 }
 
+async function addRoleUserController(req, res, next) {
+  try {
+    const { roleId, userId } = req.body;
+    const response = await service.appendRoleToUser(userId, roleId);
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getRolesController,
   getRoleByIdController,
@@ -68,4 +78,5 @@ module.exports = {
   updateRoleController,
   destroyRoleController,
   addPermissionRoleController,
+  addRoleUserController,
 };

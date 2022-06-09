@@ -5,6 +5,7 @@ const {
   updateRoleSchema,
   createRoleSchema,
   appendPermissionToRoleSchema,
+  appendRoleToUserSchema,
 } = require('../schemas/roles.schema');
 const {
   getRolesController,
@@ -13,6 +14,7 @@ const {
   destroyRoleController,
   createRoleController,
   addPermissionRoleController,
+  addRoleUserController,
 } = require('../controllers/roles.controller');
 
 const router = express.Router();
@@ -52,6 +54,12 @@ router.post(
   '/add-permission',
   validatorHandler(appendPermissionToRoleSchema, 'body'),
   addPermissionRoleController
+);
+
+router.post(
+  '/append-role',
+  validatorHandler(appendRoleToUserSchema, 'body'),
+  addRoleUserController
 );
 
 module.exports = router;
