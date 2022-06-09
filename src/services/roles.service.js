@@ -20,7 +20,9 @@ class RolesService {
   }
 
   async findOne(id) {
-    const role = await Role.findByPk(id, { include: ['createdBy'] });
+    const role = await Role.findByPk(id, {
+      include: ['createdBy', 'permissions'],
+    });
 
     if (!role) {
       throw boom.notFound('Role not found');

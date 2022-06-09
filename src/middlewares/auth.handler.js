@@ -1,8 +1,12 @@
 const boom = require('@hapi/boom');
 const { config } = require('../config/environment');
+/*
 const { sequelize } = require('../db/sequelize');
+const UserService = require('../services/users.service');
 
-const { Role, RolePermission } = sequelize.models;
+const { Role, RolePermission, UserRole } = sequelize.models;
+const userService = new UserService();
+*/
 
 function checkApiKey(req, _, next) {
   const apiKey = req.headers['api'];
@@ -18,8 +22,15 @@ function checkApiKey(req, _, next) {
 }
 
 // TODO: Handle Roles and permissions logic
-async function checkRoles(req, _res, next) {
-  const { user, method } = req;
+async function checkRoles(_req, _res, next) {
+  /*
+  const { user: token, method } = req;
+
+  if (!token?.sub) {
+    return next(boom.internal('Something went wrong checking role'));
+  }
+
+  const user = await userService.findOne(token.sub);
 
   const methods = {
     GET: 'READ',
@@ -28,7 +39,8 @@ async function checkRoles(req, _res, next) {
     PATH: 'EDIT',
   };
 
-  console.log({ method: methods[method], userId: user.sub });
+  const action = methods[method];
+*/
 
   next();
 }
