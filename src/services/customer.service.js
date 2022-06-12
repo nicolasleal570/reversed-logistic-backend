@@ -1,13 +1,10 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
-const UserService = require('./users.service');
 
 const { Customer } = sequelize.models;
 
 class CustomersService {
-  constructor() {
-    this.userService = new UserService();
-  }
+  constructor() {}
 
   async create(data) {
     const newCustomer = await Customer.create(data);
