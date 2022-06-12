@@ -9,6 +9,7 @@ const { UserRoles, UserRolesSchema } = require('./user-roles.model');
 const { Customer, CustomerSchema } = require('./customer.model');
 const { CustomerLocation, CustomerLocationSchema } = require('./customer-location.model');
 const { Case, CaseSchema } = require('./case.model');
+const { CaseContent, CaseContentSchema } = require('./case-content.model');
 
 function setupModels(sequelize) {
   // Handle models init
@@ -20,6 +21,7 @@ function setupModels(sequelize) {
   Customer.init(CustomerSchema, Customer.config(sequelize));
   CustomerLocation.init(CustomerLocationSchema, CustomerLocation.config(sequelize));
   Case.init(CaseSchema, Case.config(sequelize));
+  CaseContent.init(CaseContentSchema, CaseContent.config(sequelize));
 
   // Handle models asocciations
   User.associate(sequelize.models);
@@ -30,6 +32,7 @@ function setupModels(sequelize) {
   Customer.associate(sequelize.models);
   CustomerLocation.associate(sequelize.models);
   Case.associate(sequelize.models);
+  CaseContent.associate(sequelize.models);
 }
 
 module.exports = {
