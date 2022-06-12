@@ -6,6 +6,8 @@ const {
   RolePermissionSchema,
 } = require('./role-permission.model');
 const { UserRoles, UserRolesSchema } = require('./user-roles.model');
+const { Customer, CustomerSchema } = require('./customer.model');
+const { CustomerLocation, CustomerLocationSchema } = require('./customer-location.model');
 const { Case, CaseSchema } = require('./case.model');
 
 function setupModels(sequelize) {
@@ -15,6 +17,8 @@ function setupModels(sequelize) {
   Permission.init(PermissionSchema, Permission.config(sequelize));
   RolePermission.init(RolePermissionSchema, RolePermission.config(sequelize));
   UserRoles.init(UserRolesSchema, UserRoles.config(sequelize));
+  Customer.init(CustomerSchema, Customer.config(sequelize));
+  CustomerLocation.init(CustomerLocationSchema, CustomerLocation.config(sequelize));
   Case.init(CaseSchema, Case.config(sequelize));
 
   // Handle models asocciations
@@ -23,6 +27,8 @@ function setupModels(sequelize) {
   Permission.associate(sequelize.models);
   RolePermission.associate(sequelize.models);
   UserRoles.associate(sequelize.models);
+  Customer.associate(sequelize.models);
+  CustomerLocation.associate(sequelize.models);
   Case.associate(sequelize.models);
 }
 
