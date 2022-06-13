@@ -1,47 +1,47 @@
-const CaseProcessStepService = require('../services/case-process-step.service');
+const ProcessStepService = require('../services/case-process-step.service');
 
-const service = new CaseProcessStepService();
+const service = new ProcessStepService();
 
-async function getCaseProcessStepsController(_req, res, next) {
+async function getProcessStepsController(_req, res, next) {
   try {
-    const caseProcessSteps = await service.findAll();
-    res.json(caseProcessSteps);
+    const ProcessSteps = await service.findAll();
+    res.json(ProcessSteps);
   } catch (error) {
     next(error);
   }
 }
 
-async function getCaseProcessStepByIdController(req, res, next) {
+async function getProcessStepByIdController(req, res, next) {
   try {
     const { id } = req.params;
-    const caseProcessStep = await service.findOne(id);
-    res.json(caseProcessStep);
+    const ProcessStep = await service.findOne(id);
+    res.json(ProcessStep);
   } catch (error) {
     next(error);
   }
 }
 
-async function createCaseProcessStepController(req, res, next) {
+async function createProcessStepController(req, res, next) {
   try {
-    const caseProcessStep = await service.create(req.body);
-    res.json(caseProcessStep);
+    const ProcessStep = await service.create(req.body);
+    res.json(ProcessStep);
   } catch (error) {
     next(error);
   }
 }
 
-async function updateCaseProcessStepController(req, res, next) {
+async function updateProcessStepController(req, res, next) {
   try {
     const { id } = req.params;
     const { body } = req;
-    const caseProcessStep = await service.update(id, body);
-    res.json(caseProcessStep);
+    const ProcessStep = await service.update(id, body);
+    res.json(ProcessStep);
   } catch (error) {
     next(error);
   }
 }
 
-async function destroyCaseProcessStepController(req, res, next) {
+async function destroyProcessStepController(req, res, next) {
   try {
     const { id } = req.params;
     await service.delete(id);
@@ -52,9 +52,9 @@ async function destroyCaseProcessStepController(req, res, next) {
 }
 
 module.exports = {
-  getCaseProcessStepsController,
-  getCaseProcessStepByIdController,
-  createCaseProcessStepController,
-  updateCaseProcessStepController,
-  destroyCaseProcessStepController,
+  getProcessStepsController,
+  getProcessStepByIdController,
+  createProcessStepController,
+  updateProcessStepController,
+  destroyProcessStepController,
 };

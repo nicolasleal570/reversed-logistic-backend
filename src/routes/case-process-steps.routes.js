@@ -1,49 +1,49 @@
 const express = require('express');
 const validatorHandler = require('../middlewares/validator.handler');
 const {
-  getCaseProcessStepSchema,
-  updateCaseProcessStepSchema,
-  createCaseProcessStepSchema,
+  getProcessStepSchema,
+  updateProcessStepSchema,
+  createProcessStepSchema,
 } = require('../schemas/case-process-step.schema');
 const {
-  getCaseProcessStepsController,
-  getCaseProcessStepByIdController,
-  updateCaseProcessStepController,
-  destroyCaseProcessStepController,
-  createCaseProcessStepController,
+  getProcessStepsController,
+  getProcessStepByIdController,
+  updateProcessStepController,
+  destroyProcessStepController,
+  createProcessStepController,
 } = require('../controllers/case-process-step.controller');
 
 const router = express.Router();
 
 // Get All Case Process Steps
-router.get('/', getCaseProcessStepsController);
+router.get('/', getProcessStepsController);
 
 // Get One Case Process Step
 router.get(
   '/:id',
-  validatorHandler(getCaseProcessStepSchema, 'params'),
-  getCaseProcessStepByIdController
+  validatorHandler(getProcessStepSchema, 'params'),
+  getProcessStepByIdController
 );
 
 router.post(
   '/',
-  validatorHandler(createCaseProcessStepSchema, 'body'),
-  createCaseProcessStepController
+  validatorHandler(createProcessStepSchema, 'body'),
+  createProcessStepController
 );
 
 // Update Case Process Step
 router.patch(
   '/:id',
-  validatorHandler(getCaseProcessStepSchema, 'params'),
-  validatorHandler(updateCaseProcessStepSchema, 'body'),
-  updateCaseProcessStepController
+  validatorHandler(getProcessStepSchema, 'params'),
+  validatorHandler(updateProcessStepSchema, 'body'),
+  updateProcessStepController
 );
 
 // Delete Case Process Step
 router.delete(
   '/:id',
-  validatorHandler(getCaseProcessStepSchema, 'params'),
-  destroyCaseProcessStepController
+  validatorHandler(getProcessStepSchema, 'params'),
+  destroyProcessStepController
 );
 
 module.exports = router;

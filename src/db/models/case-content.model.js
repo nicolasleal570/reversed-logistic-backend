@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 const { USER_TABLE } = require('./user.model');
 
-const CASE_CONTENT_TABLE = 'cases-content';
+const CASE_CONTENT_TABLE = 'cases_content';
 
 const CaseContentSchema = {
   id: {

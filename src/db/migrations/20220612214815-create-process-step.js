@@ -1,11 +1,11 @@
 'use strict';
-const { CaseProcessStepSchema, CASE_PROCESS_STEP_TABLE } = require('../models/case-process-step.model');
+const { ProcessStepSchema, PROCESS_STEP_TABLE } = require('../models/process-step.model');
 
 module.exports = {
   async up(queryInterface) {
-    await queryInterface.createTable(CASE_PROCESS_STEP_TABLE, CaseProcessStepSchema);
+    await queryInterface.createTable(PROCESS_STEP_TABLE, ProcessStepSchema);
   },
   async down(queryInterface) {
-    await queryInterface.dropTable(CASE_PROCESS_STEP_TABLE);
+    await queryInterface.dropTable(PROCESS_STEP_TABLE);
   },
 };

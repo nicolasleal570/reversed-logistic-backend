@@ -1,48 +1,48 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 
-const { CaseProcessStep } = sequelize.models;
+const { ProcessStep } = sequelize.models;
 
-class CaseProcessStepsService {
+class ProcessStepsService {
   constructor() {}
 
   async create(data) {
-    const newCaseProcessStep = await CaseProcessStep.create(data);
-    return newCaseProcessStep.toJSON();
+    const newProcessStep = await ProcessStep.create(data);
+    return newProcessStep.toJSON();
   }
 
   async findAll() {
-    const caseProcessSteps = await CaseProcessStep.findAll({
+    const ProcessSteps = await ProcessStep.findAll({
       include: ['nextProcessStep'],
     });
-    return caseProcessSteps;
+    return ProcessSteps;
   }
 
   async findOne(id) {
-    const caseProcessStep = await CaseProcessStep.findByPk(id, {
+    const processStep = await ProcessStep.findByPk(id, {
       include: ['nextProcessStep'],
     });
 
-    if (!caseProcessStep) {
-      throw boom.notFound('CaseProcessStep not found');
+    if (!processStep) {
+      throw boom.notFound('Process step not found');
     }
 
-    return caseProcessStep;
+    return processStep;
   }
 
   async update(id, changes) {
-    const caseProcessStep = await this.findOne(id);
-    const res = await caseProcessStep.update(changes);
+    const processStep = await this.findOne(id);
+    const res = await processStep.update(changes);
 
     return res;
   }
 
   async delete(id) {
-    const caseProcessStep = await this.findOne(id);
-    await caseProcessStep.destroy();
+    const processStep = await this.findOne(id);
+    await processStep.destroy();
 
-    return caseProcessStep;
+    return processStep;
   }
 }
 
-module.exports = CaseProcessStepsService;
+module.exports = ProcessStepsService;

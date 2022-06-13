@@ -7,11 +7,11 @@ const value = Joi.string();
 const createdById = Joi.number().integer();
 const nextProcessStepId = Joi.number().integer();
 
-const getCaseProcessStepSchema = Joi.object({
+const getProcessStepSchema = Joi.object({
   id: id.required(),
 });
 
-const createCaseProcessStepSchema = Joi.object({
+const createProcessStepSchema = Joi.object({
   name: name.required(),
   description: description.required(),
   value: value.required(),
@@ -19,16 +19,16 @@ const createCaseProcessStepSchema = Joi.object({
   nextProcessStepId,
 });
 
-const updateCaseProcessStepSchema = Joi.object({
+const updateProcessStepSchema = Joi.object({
   name,
   description,
   nextProcessStepId
 });
 
 module.exports = {
-  getCaseProcessStepSchema,
-  createCaseProcessStepSchema,
-  updateCaseProcessStepSchema,
+  getProcessStepSchema,
+  createProcessStepSchema,
+  updateProcessStepSchema,
   id,
   name,
   description,
