@@ -11,6 +11,7 @@ const { CustomerLocation, CustomerLocationSchema } = require('./customer-locatio
 const { Case, CaseSchema } = require('./case.model');
 const { CaseContent, CaseContentSchema } = require('./case-content.model');
 const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
+const { CaseProcess, CaseProcessSchema } = require('./case-process.model');
 
 function setupModels(sequelize) {
   // Handle models init
@@ -24,6 +25,7 @@ function setupModels(sequelize) {
   Case.init(CaseSchema, Case.config(sequelize));
   CaseContent.init(CaseContentSchema, CaseContent.config(sequelize));
   ProcessStep.init(ProcessStepSchema, ProcessStep.config(sequelize));
+  CaseProcess.init(CaseProcessSchema, CaseProcess.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -36,6 +38,7 @@ function setupModels(sequelize) {
   Case.associate(sequelize.models);
   CaseContent.associate(sequelize.models);
   ProcessStep.associate(sequelize.models);
+  CaseProcess.associate(sequelize.models);
 }
 
 module.exports = {
