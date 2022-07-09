@@ -2,25 +2,24 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const CaseService = require('./cases.service');
 const CaseContentService = require('./case-content.service');
-const OrderService = require('./orders.service');
 
 const { OrderItem } = sequelize.models;
 
 class OrderItemsService {
   constructor() {
-    this.caseService = new CaseService()
-    this.caseContentService = new CaseContentService()
-    this.orderService = new OrderService()
+    this.caseService = new CaseService();
+    this.caseContentService = new CaseContentService();
   }
 
   async create(data) {
-    await this.caseService.findOne(data.caseId)
-    const caseContent = await this.caseContentService.findOne(data.caseContentId)
-    await this.orderService.findOne(data.orderId)
+    await this.caseService.findOne(data.caseId);
+    const caseContent = await this.caseContentService.findOne(
+      data.caseContentId
+    );
 
     const newOrderItem = await OrderItem.create({
-      ...data, 
-      price: caseContent.price + caseContent.tax
+      ...data,
+      price: caseContent.price + caseContent.tax,
     });
     return newOrderItem.toJSON();
   }
@@ -46,9 +45,14 @@ class OrderItemsService {
     const orderItem = await this.findOne(id);
 
     let res;
-    if('caseContentId' in changes) {
-      const caseContent = await this.caseContentService.findOne(changes.caseContentId)
-      res = await orderItem.update({...changes, price: caseContent.price + caseContent.tax});
+    if ('caseContentId' in changes) {
+      const caseContent = await this.caseContentService.findOne(
+        changes.caseContentId
+      );
+      res = await orderItem.update({
+        ...changes,
+        price: caseContent.price + caseContent.tax,
+      });
     } else {
       res = await orderItem.update(changes);
     }

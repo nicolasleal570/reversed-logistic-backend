@@ -1,17 +1,28 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
+const OrderItemService = require('./order-items.service');
 
 const { Order, OrderItem } = sequelize.models;
 
 class OrdersService {
   constructor() {
     this.userService = new UserService();
+    this.orderItemsService = new OrderItemService();
   }
 
   async create(data) {
-    const newOrder = await Order.create(data);
-    return newOrder.toJSON();
+    const { items, ...orderInfo } = data;
+    let newOrder = await Order.create(orderInfo);
+    newOrder = newOrder.toJSON();
+
+    await Promise.all(
+      items.map((item) =>
+        this.orderItemsService.create({ ...item, orderId: newOrder.id })
+      )
+    );
+
+    return this.findOne(newOrder.id);
   }
 
   async findAll() {

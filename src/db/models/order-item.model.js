@@ -49,10 +49,6 @@ const OrderItemSchema = {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
-  quantity: {
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
   price: {
     allowNull: false,
     type: DataTypes.FLOAT,
