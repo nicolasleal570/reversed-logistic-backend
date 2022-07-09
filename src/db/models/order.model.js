@@ -2,6 +2,7 @@ const { Model, DataTypes } = require('sequelize');
 const { USER_TABLE } = require('./user.model');
 const { CUSTOMER_LOCATION_TABLE } = require('./customer-location.model');
 const { ORDER_STATUS_TABLE } = require('./order-status.model');
+const { SHIPMENT_TABLE } = require('./shipment.model');
 
 const ORDER_TABLE = 'orders';
 
@@ -63,6 +64,17 @@ const OrderSchema = {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   },
+  shipmentId: {
+    field: 'shipment_id',
+    allowNull: true,
+    type: DataTypes.INTEGER,
+    References: {
+      model: SHIPMENT_TABLE,
+      key: 'id',
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL',
+  },
 };
 
 class Order extends Model {
@@ -70,6 +82,7 @@ class Order extends Model {
     this.belongsTo(models.User, { as: 'createdBy' });
     this.belongsTo(models.CustomerLocation, { as: 'customerLocation' });
     this.belongsTo(models.OrderStatus, { as: 'orderStatus' });
+    this.belongsTo(models.Shipment, { as: 'shipment' });
     this.hasMany(models.OrderItem, { as: 'items', foreignKey: 'orderId' });
   }
 
