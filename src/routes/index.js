@@ -9,6 +9,7 @@ const casesRoutes = require('./cases.routes');
 const casesContentRoutes = require('./cases-content.routes');
 const caseProcessStepsRoutes = require('./case-process-steps.routes');
 const caseProcessRoutes = require('./case-processes.routes');
+const orderStatusRoutes = require('./order-status.routes');
 const { checkApiKey } = require('../middlewares/auth.handler');
 
 function routerApi(app) {
@@ -25,6 +26,7 @@ function routerApi(app) {
   router.use('/cases-content', casesContentRoutes);
   router.use('/case-process-steps', caseProcessStepsRoutes);
   router.use('/case-process', caseProcessRoutes);
+  router.use('/order-status', orderStatusRoutes);
 }
 
 module.exports = routerApi;
