@@ -7,7 +7,10 @@ const {
 } = require('./role-permission.model');
 const { UserRoles, UserRolesSchema } = require('./user-roles.model');
 const { Customer, CustomerSchema } = require('./customer.model');
-const { CustomerLocation, CustomerLocationSchema } = require('./customer-location.model');
+const {
+  CustomerLocation,
+  CustomerLocationSchema,
+} = require('./customer-location.model');
 const { Case, CaseSchema } = require('./case.model');
 const { CaseContent, CaseContentSchema } = require('./case-content.model');
 const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
@@ -15,6 +18,7 @@ const { CaseProcess, CaseProcessSchema } = require('./case-process.model');
 const { OrderStatus, OrderStatusSchema } = require('./order-status.model');
 const { OrderItem, OrderItemSchema } = require('./order-item.model');
 const { Order, OrderSchema } = require('./order.model');
+const { Truck, TruckSchema } = require('./truck.model');
 
 function setupModels(sequelize) {
   // Handle models init
@@ -24,7 +28,10 @@ function setupModels(sequelize) {
   RolePermission.init(RolePermissionSchema, RolePermission.config(sequelize));
   UserRoles.init(UserRolesSchema, UserRoles.config(sequelize));
   Customer.init(CustomerSchema, Customer.config(sequelize));
-  CustomerLocation.init(CustomerLocationSchema, CustomerLocation.config(sequelize));
+  CustomerLocation.init(
+    CustomerLocationSchema,
+    CustomerLocation.config(sequelize)
+  );
   Case.init(CaseSchema, Case.config(sequelize));
   CaseContent.init(CaseContentSchema, CaseContent.config(sequelize));
   ProcessStep.init(ProcessStepSchema, ProcessStep.config(sequelize));
@@ -32,6 +39,7 @@ function setupModels(sequelize) {
   OrderStatus.init(OrderStatusSchema, OrderStatus.config(sequelize));
   Order.init(OrderSchema, Order.config(sequelize));
   OrderItem.init(OrderItemSchema, OrderItem.config(sequelize));
+  Truck.init(TruckSchema, Truck.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -48,6 +56,7 @@ function setupModels(sequelize) {
   OrderStatus.associate(sequelize.models);
   Order.associate(sequelize.models);
   OrderItem.associate(sequelize.models);
+  Truck.associate(sequelize.models);
 }
 
 module.exports = {
