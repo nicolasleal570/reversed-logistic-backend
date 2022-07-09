@@ -70,6 +70,7 @@ class Order extends Model {
     this.belongsTo(models.User, { as: 'createdBy' });
     this.belongsTo(models.CustomerLocation, { as: 'customerLocation' });
     this.belongsTo(models.OrderStatus, { as: 'orderStatus' });
+    this.hasMany(models.OrderItem, { as: 'items', foreignKey: 'orderId' });
   }
 
   static config(sequelize) {

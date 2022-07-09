@@ -13,6 +13,7 @@ const { CaseContent, CaseContentSchema } = require('./case-content.model');
 const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
 const { CaseProcess, CaseProcessSchema } = require('./case-process.model');
 const { OrderStatus, OrderStatusSchema } = require('./order-status.model');
+const { OrderItem, OrderItemSchema } = require('./order-item.model');
 const { Order, OrderSchema } = require('./order.model');
 
 function setupModels(sequelize) {
@@ -30,6 +31,7 @@ function setupModels(sequelize) {
   CaseProcess.init(CaseProcessSchema, CaseProcess.config(sequelize));
   OrderStatus.init(OrderStatusSchema, OrderStatus.config(sequelize));
   Order.init(OrderSchema, Order.config(sequelize));
+  OrderItem.init(OrderItemSchema, OrderItem.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -45,6 +47,7 @@ function setupModels(sequelize) {
   CaseProcess.associate(sequelize.models);
   OrderStatus.associate(sequelize.models);
   Order.associate(sequelize.models);
+  OrderItem.associate(sequelize.models);
 }
 
 module.exports = {
