@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const { config } = require('./config/environment');
 const routerApi = require('./routes');
 const {
@@ -14,8 +15,9 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
+app.use(morgan('dev'));
 
-const whitelist = ['http://localhost:3005', 'https://myapp.co'];
+const whitelist = [process.env.CLIENT_URL];
 const options = {
   origin: (origin, callback) => {
     if (whitelist.includes(origin) || !origin) {

@@ -4,6 +4,16 @@ const AuthService = require('../services/auth.service');
 const usersService = new UserService();
 const authService = new AuthService();
 
+async function currentUserAuthController(req, res, next) {
+  try {
+    const { sub: userId } = req.user;
+    const user = await authService.getCurrentUser(userId);
+    res.status(201).json({ user });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function registerAuthController(req, res, next) {
   try {
     const { body } = req;
@@ -52,4 +62,5 @@ module.exports = {
   loginAuthController,
   recoveryAuthController,
   changePasswordAuthController,
+  currentUserAuthController,
 };

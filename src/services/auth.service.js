@@ -18,7 +18,6 @@ class AuthService {
     const token = jwt.sign(payload, config.tokenSecret);
 
     return {
-      user,
       token,
     };
   }
@@ -34,6 +33,13 @@ class AuthService {
     }
 
     return rest;
+  }
+
+  async getCurrentUser(id) {
+    const user = await usersService.findOne(id);
+    const { password: _, ...userInfo } = user.toJSON();
+
+    return userInfo;
   }
 
   async register(data) {

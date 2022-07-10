@@ -12,9 +12,16 @@ const {
   loginAuthController,
   recoveryAuthController,
   changePasswordAuthController,
+  currentUserAuthController,
 } = require('../controllers/auth.controller');
 
 const router = express.Router();
+
+router.get(
+  '/me',
+  passport.authenticate('jwt', { session: false }),
+  currentUserAuthController
+);
 
 // Register new user
 router.post(

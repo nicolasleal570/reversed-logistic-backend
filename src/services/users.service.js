@@ -2,7 +2,7 @@ const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
 const { sequelize } = require('../db/sequelize');
 
-const { User } = sequelize.models;
+const { User, Role } = sequelize.models;
 
 class UserService {
   constructor() {}
@@ -30,7 +30,7 @@ class UserService {
   async findOne(id) {
     const user = await User.findByPk(id, {
       attributes: ['id', 'fullName', 'email', 'phone'],
-      include: ['roles'],
+      include: [{ model: Role, as: 'roles', include: ['permissions'] }],
     });
 
     if (!user) {
