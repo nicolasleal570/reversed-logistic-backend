@@ -14,16 +14,6 @@ async function currentUserAuthController(req, res, next) {
   }
 }
 
-async function registerAuthController(req, res, next) {
-  try {
-    const { body } = req;
-    await usersService.create(body);
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    next(error);
-  }
-}
-
 async function loginAuthController(req, res, next) {
   try {
     const { user: authUser } = req;
@@ -58,7 +48,6 @@ async function changePasswordAuthController(req, res, next) {
 }
 
 module.exports = {
-  registerAuthController,
   loginAuthController,
   recoveryAuthController,
   changePasswordAuthController,

@@ -1,14 +1,12 @@
 const express = require('express');
 const passport = require('passport');
 const validatorHandler = require('../middlewares/validator.handler');
-const { createUserSchema } = require('../schemas/user.schema');
 const {
   loginUserSchema,
   recoveryUserSchema,
   changePasswordUserSchema,
 } = require('../schemas/auth.schema');
 const {
-  registerAuthController,
   loginAuthController,
   recoveryAuthController,
   changePasswordAuthController,
@@ -21,13 +19,6 @@ router.get(
   '/me',
   passport.authenticate('jwt', { session: false }),
   currentUserAuthController
-);
-
-// Register new user
-router.post(
-  '/register',
-  validatorHandler(createUserSchema, 'body'),
-  registerAuthController
 );
 
 router.post(

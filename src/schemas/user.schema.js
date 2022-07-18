@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { id: roleId } = require('./roles.schema');
 
 const id = Joi.number().integer();
 const fullName = Joi.string();
@@ -14,7 +15,8 @@ const createUserSchema = Joi.object({
   fullName: fullName.required(),
   email: email.required(),
   password: password.required(),
-  phone,
+  phone: phone.required(),
+  roleId: roleId.required(),
 });
 
 const updateUserSchema = Joi.object({

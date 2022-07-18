@@ -1,11 +1,12 @@
 const express = require('express');
 const validatorHandler = require('../middlewares/validator.handler');
-const { getUserSchema, updateUserSchema } = require('../schemas/user.schema');
+const { getUserSchema, createUserSchema, updateUserSchema } = require('../schemas/user.schema');
 const {
   getUsersController,
   getUserByIdController,
   updateUserController,
   destroyUserController,
+  createUserController,
 } = require('../controllers/user.controller');
 
 const router = express.Router();
@@ -18,6 +19,12 @@ router.get(
   '/:id',
   validatorHandler(getUserSchema, 'params'),
   getUserByIdController
+);
+
+router.post(
+  '/',
+  validatorHandler(createUserSchema, 'body'),
+  createUserController
 );
 
 // Update User
