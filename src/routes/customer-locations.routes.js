@@ -4,8 +4,7 @@ const {
   getCustomerSchema,
   updateCustomerSchema,
   createCustomerSchema,
-  appendPermissionToCustomerSchema,
-  appendCustomerToCustomerSchema,
+  getCustomerLocationByCustomerIdSchema,
 } = require('../schemas/customer-location.schema');
 const {
   getCustomersController,
@@ -13,6 +12,7 @@ const {
   updateCustomerController,
   destroyCustomerController,
   createCustomerController,
+  getCustomerByCustomerIdController,
 } = require('../controllers/customer-location.controller');
 
 const router = express.Router();
@@ -25,6 +25,12 @@ router.get(
   '/:id',
   validatorHandler(getCustomerSchema, 'params'),
   getCustomerByIdController
+);
+
+router.get(
+  '/customer/:customerId',
+  validatorHandler(getCustomerLocationByCustomerIdSchema, 'params'),
+  getCustomerByCustomerIdController
 );
 
 router.post(

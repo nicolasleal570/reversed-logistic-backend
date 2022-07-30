@@ -28,6 +28,20 @@ class CustomerLocationsService {
     return customerLocation;
   }
 
+  async findByCustomerLocation(customerId) {
+    const customerLocation = await CustomerLocation.findAll({
+      where: {
+        customerId,
+      },
+    });
+
+    if (!customerLocation) {
+      throw boom.notFound('Customer Location not found');
+    }
+
+    return customerLocation;
+  }
+
   async update(id, changes) {
     const customerLocation = await this.findOne(id);
     const res = await customerLocation.update(changes);

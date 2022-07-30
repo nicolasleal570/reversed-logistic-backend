@@ -14,6 +14,10 @@ const getCustomerSchema = Joi.object({
   id: id.required(),
 });
 
+const getCustomerLocationByCustomerIdSchema = Joi.object({
+  customerId: id.required(),
+});
+
 const createCustomerSchema = Joi.object({
   line1: line1.required(),
   line2,
@@ -40,6 +44,7 @@ module.exports = {
   getCustomerSchema,
   createCustomerSchema,
   updateCustomerSchema,
+  getCustomerLocationByCustomerIdSchema,
   id,
   line1,
   line2,

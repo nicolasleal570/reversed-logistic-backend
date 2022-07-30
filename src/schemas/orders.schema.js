@@ -15,30 +15,37 @@ const orderItem = Joi.object().keys({
   quantity: quantity.required(),
 });
 
+const updateOrderItem = Joi.object().keys({
+  caseId: caseId.required(),
+  caseContentId: caseContentId.required(),
+  quantity: quantity.required(),
+  id: id.required(),
+});
+
 const items = Joi.array().items(orderItem);
+const updateItems = Joi.array().items(updateOrderItem);
 
 const getOrderSchema = Joi.object({
   id: id.required(),
 });
 
 const createOrderSchema = Joi.object({
-  id,
   subTotal,
   tax,
   total,
-  customerLocationId,
+  customerLocationId: customerLocationId.required(),
   orderStatusId,
   createdById,
   items: items.required(),
 });
 
 const updateOrderSchema = Joi.object({
-  id,
   subTotal,
   tax,
   total,
   customerLocationId,
   orderStatusId,
+  items: updateItems,
 });
 
 module.exports = {
