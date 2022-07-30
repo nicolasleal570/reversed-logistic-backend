@@ -19,11 +19,11 @@ const CaseSchema = {
   },
   volume: {
     allowNull: false,
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
   },
   weight: {
     allowNull: false,
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
   },
   createdAt: {
     field: 'created_at',

@@ -3,8 +3,8 @@ const Joi = require('joi');
 const id = Joi.number().integer();
 const name = Joi.string();
 const description = Joi.string();
-const volume = Joi.string();
-const weight = Joi.string();
+const volume = Joi.number().integer();
+const weight = Joi.number().integer();
 
 const getCaseSchema = Joi.object({
   id: id.required(),
@@ -12,7 +12,7 @@ const getCaseSchema = Joi.object({
 
 const createCaseSchema = Joi.object({
   name: name.required(),
-  description: description,
+  description: description.default(''),
   volume: volume.required(),
   weight: weight.required(),
 });
