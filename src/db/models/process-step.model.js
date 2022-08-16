@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 const { USER_TABLE } = require('./user.model');
 
-const PROCESS_STEP_TABLE = 'case_process_steps';
+const PROCESS_STEP_TABLE = 'process_steps';
 
 const ProcessStepSchema = {
   id: {
@@ -21,17 +21,6 @@ const ProcessStepSchema = {
   value: {
     allowNull: false,
     type: DataTypes.STRING,
-  },
-  nextProcessStepId: {
-    field: 'next_process_step_id',
-    allowNull: true,
-    type: DataTypes.INTEGER,
-    References: {
-      model: PROCESS_STEP_TABLE,
-      key: 'id',
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL',
   },
   createdById: {
     field: 'created_by_id',
@@ -53,9 +42,7 @@ const ProcessStepSchema = {
 };
 
 class ProcessStep extends Model {
-  static associate(models) {
-    this.belongsTo(models.ProcessStep, { as: 'nextProcessStep' });
-  }
+  static associate(models) {}
 
   static config(sequelize) {
     return {

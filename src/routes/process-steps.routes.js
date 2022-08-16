@@ -4,14 +4,14 @@ const {
   getProcessStepSchema,
   updateProcessStepSchema,
   createProcessStepSchema,
-} = require('../schemas/case-process-step.schema');
+} = require('../schemas/process-step.schema');
 const {
   getProcessStepsController,
   getProcessStepByIdController,
   updateProcessStepController,
   destroyProcessStepController,
   createProcessStepController,
-} = require('../controllers/case-process-step.controller');
+} = require('../controllers/process-step.controller');
 
 const router = express.Router();
 

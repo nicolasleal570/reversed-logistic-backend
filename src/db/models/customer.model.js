@@ -35,7 +35,12 @@ const CustomerSchema = {
 };
 
 class Customer extends Model {
-  static associate(_models) {}
+  static associate(models) {
+    this.hasMany(models.CustomerLocation, {
+      as: 'locations',
+      foreignKey: 'customerId',
+    });
+  }
 
   static config(sequelize) {
     return {

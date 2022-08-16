@@ -12,16 +12,12 @@ class ProcessStepsService {
   }
 
   async findAll() {
-    const ProcessSteps = await ProcessStep.findAll({
-      include: ['nextProcessStep'],
-    });
+    const ProcessSteps = await ProcessStep.findAll();
     return ProcessSteps;
   }
 
   async findOne(id) {
-    const processStep = await ProcessStep.findByPk(id, {
-      include: ['nextProcessStep'],
-    });
+    const processStep = await ProcessStep.findByPk(id);
 
     if (!processStep) {
       throw boom.notFound('Process step not found');

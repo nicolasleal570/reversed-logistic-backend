@@ -4,6 +4,8 @@ const {
   getCustomerSchema,
   updateCustomerSchema,
   createCustomerSchema,
+  createCustomerWithLocationsSchema,
+  updateCustomerWithLocationsSchema,
 } = require('../schemas/customer.schema');
 const {
   getCustomersController,
@@ -11,6 +13,8 @@ const {
   updateCustomerController,
   destroyCustomerController,
   createCustomerController,
+  createCustomerWithLocationsController,
+  updateCustomerWithLocationsController,
 } = require('../controllers/customer.controller');
 
 const router = express.Router();
@@ -31,6 +35,12 @@ router.post(
   createCustomerController
 );
 
+router.post(
+  '/locations',
+  validatorHandler(createCustomerWithLocationsSchema, 'body'),
+  createCustomerWithLocationsController
+);
+
 // Update Customer
 router.patch(
   '/:id',
@@ -39,12 +49,17 @@ router.patch(
   updateCustomerController
 );
 
+router.patch(
+  '/locations/:customerId',
+  validatorHandler(updateCustomerWithLocationsSchema, 'body'),
+  updateCustomerWithLocationsController
+);
+
 // Delete Customer
 router.delete(
   '/:id',
   validatorHandler(getCustomerSchema, 'params'),
   destroyCustomerController
 );
-
 
 module.exports = router;

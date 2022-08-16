@@ -2,7 +2,6 @@ const { Model, DataTypes } = require('sequelize');
 const { USER_TABLE } = require('./user.model');
 const { CASE_TABLE } = require('./case.model');
 const { CASE_CONTENT_TABLE } = require('./case-content.model');
-const { PROCESS_STEP_TABLE } = require('./process-step.model');
 
 const CASE_PROCESS_TABLE = 'case_processes';
 
@@ -30,17 +29,6 @@ const CaseProcessSchema = {
     type: DataTypes.INTEGER,
     References: {
       model: CASE_CONTENT_TABLE,
-      key: 'id',
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL',
-  },
-  starterProcessStepId: {
-    field: 'starter_process_step_id',
-    allowNull: false,
-    type: DataTypes.INTEGER,
-    References: {
-      model: PROCESS_STEP_TABLE,
       key: 'id',
     },
     onUpdate: 'CASCADE',

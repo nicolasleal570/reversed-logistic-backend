@@ -1,4 +1,4 @@
-const ProcessStepService = require('../services/case-process-step.service');
+const ProcessStepService = require('../services/process-step.service');
 
 const service = new ProcessStepService();
 

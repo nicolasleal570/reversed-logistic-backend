@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 
 const CASE_TABLE = 'cases';
+const availablesStates = ['AVAILABLE', 'IN_USE', 'IN_PROCESS'];
 
 const CaseSchema = {
   id: {
@@ -24,6 +25,10 @@ const CaseSchema = {
   weight: {
     allowNull: false,
     type: DataTypes.INTEGER,
+  },
+  state: {
+    allowNull: false,
+    type: DataTypes.ENUM({ values: availablesStates }),
   },
   createdAt: {
     field: 'created_at',
@@ -50,4 +55,5 @@ module.exports = {
   CASE_TABLE,
   CaseSchema,
   Case,
+  availablesStates,
 };

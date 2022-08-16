@@ -10,6 +10,19 @@ const TruckSchema = {
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
+  brand: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
+  model: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
+  type: {
+    allowNull: true,
+    type: DataTypes.STRING,
+    defaultValue: 'Camión',
+  },
   userId: {
     field: 'user_id',
     allowNull: false,

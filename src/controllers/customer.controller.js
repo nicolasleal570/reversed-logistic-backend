@@ -4,8 +4,8 @@ const service = new CustomerService();
 
 async function getCustomersController(_req, res, next) {
   try {
-    const roles = await service.findAll();
-    res.json(roles);
+    const customers = await service.findAll();
+    res.json(customers);
   } catch (error) {
     next(error);
   }
@@ -14,8 +14,8 @@ async function getCustomersController(_req, res, next) {
 async function getCustomerByIdController(req, res, next) {
   try {
     const { id } = req.params;
-    const role = await service.findOne(id);
-    res.json(role);
+    const customer = await service.findOne(id);
+    res.json(customer);
   } catch (error) {
     next(error);
   }
@@ -23,8 +23,17 @@ async function getCustomerByIdController(req, res, next) {
 
 async function createCustomerController(req, res, next) {
   try {
-    const role = await service.create(req.body);
-    res.json(role);
+    const customer = await service.create(req.body);
+    res.json(customer);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function createCustomerWithLocationsController(req, res, next) {
+  try {
+    const customer = await service.createWithLocations(req.body);
+    res.json(customer);
   } catch (error) {
     next(error);
   }
@@ -34,8 +43,18 @@ async function updateCustomerController(req, res, next) {
   try {
     const { id } = req.params;
     const { body } = req;
-    const role = await service.update(id, body);
-    res.json(role);
+    const customer = await service.update(id, body);
+    res.json(customer);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateCustomerWithLocationsController(req, res, next) {
+  try {
+    const { customerId } = req.params;
+    const customer = await service.updateWithLocations(customerId, req.body);
+    res.json(customer);
   } catch (error) {
     next(error);
   }
@@ -55,6 +74,8 @@ module.exports = {
   getCustomersController,
   getCustomerByIdController,
   createCustomerController,
+  createCustomerWithLocationsController,
   updateCustomerController,
+  updateCustomerWithLocationsController,
   destroyCustomerController,
 };
