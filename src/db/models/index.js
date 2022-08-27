@@ -13,8 +13,6 @@ const {
 } = require('./customer-location.model');
 const { Case, CaseSchema } = require('./case.model');
 const { CaseContent, CaseContentSchema } = require('./case-content.model');
-const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
-const { CaseProcess, CaseProcessSchema } = require('./case-process.model');
 const { OrderStatus, OrderStatusSchema } = require('./order-status.model');
 const { OrderItem, OrderItemSchema } = require('./order-item.model');
 const { Order, OrderSchema } = require('./order.model');
@@ -35,8 +33,6 @@ function setupModels(sequelize) {
   );
   Case.init(CaseSchema, Case.config(sequelize));
   CaseContent.init(CaseContentSchema, CaseContent.config(sequelize));
-  ProcessStep.init(ProcessStepSchema, ProcessStep.config(sequelize));
-  CaseProcess.init(CaseProcessSchema, CaseProcess.config(sequelize));
   OrderStatus.init(OrderStatusSchema, OrderStatus.config(sequelize));
   Order.init(OrderSchema, Order.config(sequelize));
   OrderItem.init(OrderItemSchema, OrderItem.config(sequelize));
@@ -53,8 +49,6 @@ function setupModels(sequelize) {
   CustomerLocation.associate(sequelize.models);
   Case.associate(sequelize.models);
   CaseContent.associate(sequelize.models);
-  ProcessStep.associate(sequelize.models);
-  CaseProcess.associate(sequelize.models);
   OrderStatus.associate(sequelize.models);
   Order.associate(sequelize.models);
   OrderItem.associate(sequelize.models);
