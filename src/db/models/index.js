@@ -18,6 +18,7 @@ const { OrderItem, OrderItemSchema } = require('./order-item.model');
 const { Order, OrderSchema } = require('./order.model');
 const { Truck, TruckSchema } = require('./truck.model');
 const { Shipment, ShipmentSchema } = require('./shipment.model');
+const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
 
 function setupModels(sequelize) {
   // Handle models init
@@ -38,6 +39,7 @@ function setupModels(sequelize) {
   OrderItem.init(OrderItemSchema, OrderItem.config(sequelize));
   Truck.init(TruckSchema, Truck.config(sequelize));
   Shipment.init(ShipmentSchema, Shipment.config(sequelize));
+  ProcessStep.init(ProcessStepSchema, ProcessStep.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -54,6 +56,7 @@ function setupModels(sequelize) {
   OrderItem.associate(sequelize.models);
   Truck.associate(sequelize.models);
   Shipment.associate(sequelize.models);
+  ProcessStep.associate(sequelize.models);
 }
 
 module.exports = {
