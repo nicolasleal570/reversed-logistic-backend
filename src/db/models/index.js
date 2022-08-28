@@ -20,6 +20,7 @@ const { Truck, TruckSchema } = require('./truck.model');
 const { Shipment, ShipmentSchema } = require('./shipment.model');
 const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
 const { CleanProcessOrder, CleanProcessOrderSchema } = require('./clean-process-order.model');
+const { CaseCleanProcessStep, CaseCleanProcessStepSchema } = require('./case-clean-process-step');
 
 function setupModels(sequelize) {
   // Handle models init
@@ -42,6 +43,7 @@ function setupModels(sequelize) {
   Shipment.init(ShipmentSchema, Shipment.config(sequelize));
   ProcessStep.init(ProcessStepSchema, ProcessStep.config(sequelize));
   CleanProcessOrder.init(CleanProcessOrderSchema, CleanProcessOrder.config(sequelize));
+  CaseCleanProcessStep.init(CaseCleanProcessStepSchema, CaseCleanProcessStep.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -60,6 +62,7 @@ function setupModels(sequelize) {
   Shipment.associate(sequelize.models);
   ProcessStep.associate(sequelize.models);
   CleanProcessOrder.associate(sequelize.models);
+  CaseCleanProcessStep.associate(sequelize.models);
 }
 
 module.exports = {
