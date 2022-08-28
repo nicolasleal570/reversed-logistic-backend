@@ -13,6 +13,8 @@ const orderItemsRoutes = require('./order-items.routes');
 const trucksRoutes = require('./trucks.routes');
 const shipmentsRoutes = require('./shipments.routes');
 const processStepsRoutes = require('./process-steps.routes');
+const cleanProcessOrderRoutes = require('./clean-process-orders.routes');
+
 const { checkApiKey } = require('../middlewares/auth.handler');
 
 function routerApi(app) {
@@ -33,6 +35,7 @@ function routerApi(app) {
   router.use('/trucks', trucksRoutes);
   router.use('/shipments', shipmentsRoutes);
   router.use('/process-steps', processStepsRoutes);
+  router.use('/clean-process-orders', cleanProcessOrderRoutes);
 }
 
 module.exports = routerApi;
