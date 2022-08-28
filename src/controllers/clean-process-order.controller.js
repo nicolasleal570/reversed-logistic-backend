@@ -1,6 +1,8 @@
 const CleanProcessOrderService = require('../services/clean-process-orders.service');
+const CaseCleanProcessStepsService = require('../services/case-clean-process-steps.service');
 
 const service = new CleanProcessOrderService();
+const caseCleanProcessStepsService = new CaseCleanProcessStepsService();
 
 async function getCleanProcessOrdersController(_req, res, next) {
   try {
@@ -34,6 +36,35 @@ async function createCleanProcessOrderController(req, res, next) {
   }
 }
 
+async function createFullCleanProcessOrderController(req, res, next) {
+  try {
+    const { sub: userId } = req.user;
+    const { steps, ...restData } = req.body;
+
+    // Create clean process order
+    let cleanProcessOrder = await service.create({
+      ...restData,
+      createdById: userId,
+    });
+
+    // create case clean process steps
+    const stepsCreated = await Promise.all(
+      steps.map((step, idx) =>
+        caseCleanProcessStepsService.create({
+          order: idx + 1,
+          cleanProcessOrderId: cleanProcessOrder.id,
+          processStepId: step.processStepId,
+          createdById: userId,
+        })
+      )
+    );
+
+    res.json({ cleanProcessOrder, steps: stepsCreated });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function updateCleanProcessOrderController(req, res, next) {
   try {
     const { id } = req.params;
@@ -59,6 +90,7 @@ module.exports = {
   getCleanProcessOrdersController,
   getCleanProcessOrderByIdController,
   createCleanProcessOrderController,
+  createFullCleanProcessOrderController,
   updateCleanProcessOrderController,
   destroyCleanProcessOrderController,
 };

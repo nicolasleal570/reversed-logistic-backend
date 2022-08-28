@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { id: cleanOrderProcessId } = require('./clean-order-process.schema');
+const { id: cleanProcessOrderId } = require('./clean-process-order.schema');
 const { id: processStepId } = require('./process-steps.schema');
 
 const id = Joi.number().integer();
@@ -11,13 +11,13 @@ const getCaseCleanProcessStepSchema = Joi.object({
 
 const createCaseCleanProcessStepSchema = Joi.object({
   order: order.required(),
-  cleanOrderProcessId: cleanOrderProcessId.required(),
-  processStepId: processStepId.required(),
+  cleanProcessOrderId: cleanProcessOrderId.required(),
+  processStepId: processStepId.map((rule) => rule.required()),
 });
 
 const updateCaseCleanProcessStepSchema = Joi.object({
   order,
-  cleanOrderProcessId,
+  cleanProcessOrderId,
   processStepId,
 });
 

@@ -5,13 +5,15 @@ const {
   getCleanProcessOrderSchema,
   updateCleanProcessOrderSchema,
   createCleanProcessOrderSchema,
-} = require('../schemas/clean-order-process.schema');
+  createFullCleanProcessOrderSchema,
+} = require('../schemas/clean-process-order.schema');
 const {
   getCleanProcessOrdersController,
   getCleanProcessOrderByIdController,
   updateCleanProcessOrderController,
   destroyCleanProcessOrderController,
   createCleanProcessOrderController,
+  createFullCleanProcessOrderController,
 } = require('../controllers/clean-process-order.controller');
 
 const router = express.Router();
@@ -29,6 +31,13 @@ router.post(
   passport.authenticate('jwt', { session: false }),
   validatorHandler(createCleanProcessOrderSchema, 'body'),
   createCleanProcessOrderController
+);
+
+router.post(
+  '/full',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(createFullCleanProcessOrderSchema, 'body'),
+  createFullCleanProcessOrderController
 );
 
 router.patch(

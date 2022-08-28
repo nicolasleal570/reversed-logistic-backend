@@ -4,7 +4,7 @@ const id = Joi.number().integer();
 const name = Joi.string();
 const description = Joi.string();
 const value = Joi.string();
-const createdById = Joi.number().integer();
+const createdById = [Joi.number().integer(), Joi.string()];
 const roleId = Joi.number().integer();
 const permissionId = Joi.number().integer();
 const userId = Joi.number().integer();
@@ -17,7 +17,7 @@ const createRoleSchema = Joi.object({
   name: name.required(),
   description: description,
   value: value.required(),
-  createdById: createdById.required(),
+  createdById: createdById.map((object) => object.required()),
 });
 
 const updateRoleSchema = Joi.object({

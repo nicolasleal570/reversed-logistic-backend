@@ -2,7 +2,7 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 
-const { CleanProcessOrder } = sequelize.models;
+const { CleanProcessOrder, CustomerLocation } = sequelize.models;
 
 class CleanProcessOrdersService {
   constructor() {
@@ -15,13 +15,25 @@ class CleanProcessOrdersService {
   }
 
   async findAll() {
-    const cleanProcessOrders = await CleanProcessOrder.findAll({ include: ['createdBy'] });
+    const cleanProcessOrders = await CleanProcessOrder.findAll({
+      include: [
+        'createdBy',
+        'steps',
+        'case',
+        'caseContent',
+        {
+          model: CustomerLocation,
+          as: 'customerLocation',
+          include: ['customer'],
+        },
+      ],
+    });
     return cleanProcessOrders;
   }
 
   async findOne(id) {
     const cleanProcessOrder = await CleanProcessOrder.findByPk(id, {
-      include: ['createdBy'],
+      include: ['createdBy', 'steps'],
     });
 
     if (!cleanProcessOrder) {

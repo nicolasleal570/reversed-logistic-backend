@@ -1,13 +1,10 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
-const UserService = require('./users.service');
 
 const { CaseCleanProcessStep } = sequelize.models;
 
 class CaseCleanProcessStepsService {
-  constructor() {
-    this.userService = new UserService();
-  }
+  constructor() {}
 
   async create(data) {
     const newCaseCleanProcessStep = await CaseCleanProcessStep.create(data);

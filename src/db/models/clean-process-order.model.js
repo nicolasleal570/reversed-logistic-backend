@@ -80,6 +80,10 @@ class CleanProcessOrder extends Model {
     this.belongsTo(models.Case, { as: 'case' });
     this.belongsTo(models.CaseContent, { as: 'caseContent' });
     this.belongsTo(models.CustomerLocation, { as: 'customerLocation' });
+    this.hasMany(models.CaseCleanProcessStep, {
+      as: 'steps',
+      foreignKey: 'cleanProcessOrderId',
+    });
   }
 
   static config(sequelize) {

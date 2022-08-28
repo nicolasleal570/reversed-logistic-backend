@@ -16,8 +16,8 @@ const CaseCleanProcessStepSchema = {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
-  caseProcessId: {
-    field: 'case_process_id',
+  cleanProcessOrderId: {
+    field: 'clean_process_order_id',
     allowNull: false,
     type: DataTypes.INTEGER,
     References: {
@@ -38,6 +38,18 @@ const CaseCleanProcessStepSchema = {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   },
+  isCurrent: {
+    field: 'is_current',
+    allowNull: false,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  isDone: {
+    field: 'is_done',
+    allowNull: false,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   createdById: {
     field: 'created_by_id',
     allowNull: false,
@@ -54,7 +66,7 @@ const CaseCleanProcessStepSchema = {
 class CaseCleanProcessStep extends Model {
   static associate(models) {
     this.belongsTo(models.User, { as: 'createdBy' });
-    this.belongsTo(models.CaseContent, { as: 'caseContent' });
+    this.belongsTo(models.CleanProcessOrder, { as: 'cleanProcessOrder' });
     this.belongsTo(models.ProcessStep, { as: 'processStep' });
   }
 

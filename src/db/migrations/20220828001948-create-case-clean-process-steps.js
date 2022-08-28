@@ -1,14 +1,14 @@
 'use strict';
 const {
-  CaseCleanProcessStep,
+  CaseCleanProcessStepSchema,
   CASE_CLEAN_PROCESS_STEP_TABLE,
-} = require('../models/case-clean-process-step');
+} = require('../models/case-clean-process-step.model');
 
 module.exports = {
   async up(queryInterface) {
     await queryInterface.createTable(
       CASE_CLEAN_PROCESS_STEP_TABLE,
-      CaseCleanProcessStep
+      CaseCleanProcessStepSchema
     );
   },
   async down(queryInterface) {

@@ -20,7 +20,7 @@ const { Truck, TruckSchema } = require('./truck.model');
 const { Shipment, ShipmentSchema } = require('./shipment.model');
 const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
 const { CleanProcessOrder, CleanProcessOrderSchema } = require('./clean-process-order.model');
-const { CaseCleanProcessStep, CaseCleanProcessStepSchema } = require('./case-clean-process-step');
+const { CaseCleanProcessStep, CaseCleanProcessStepSchema } = require('./case-clean-process-step.model');
 
 function setupModels(sequelize) {
   // Handle models init
