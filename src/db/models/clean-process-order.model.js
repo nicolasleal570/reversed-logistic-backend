@@ -77,6 +77,9 @@ const CleanProcessOrderSchema = {
 class CleanProcessOrder extends Model {
   static associate(models) {
     this.belongsTo(models.User, { as: 'createdBy' });
+    this.belongsTo(models.Case, { as: 'case' });
+    this.belongsTo(models.CaseContent, { as: 'caseContent' });
+    this.belongsTo(models.CustomerLocation, { as: 'customerLocation' });
   }
 
   static config(sequelize) {
