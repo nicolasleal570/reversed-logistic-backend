@@ -20,6 +20,8 @@ const createProcessStepSchema = Joi.object({
 const updateProcessStepSchema = Joi.object({
   name,
   description,
+  instructions,
+  guidelines,
 });
 
 module.exports = {
