@@ -10,5 +10,8 @@ module.exports = {
     url: DB_URI,
     dialect: 'postgres',
     logging: false,
+    dialectOptions: {
+      ssl: true,
+    },
   },
 };

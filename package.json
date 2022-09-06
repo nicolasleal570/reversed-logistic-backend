@@ -16,7 +16,7 @@
     "seed:generate": "sequelize-cli seed:generate --name",
     "seed:run": "sequelize-cli db:seed:all",
     "seed:revert": "sequelize-cli db:seed:undo:all",
-    "setup": "npm run db:create && npm run migration:run && npm run db:create-admin"
+    "setup": "npm run migration:run && npm run db:create-admin"
   },
   "keywords": [],
   "author": "",
