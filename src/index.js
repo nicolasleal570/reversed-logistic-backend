@@ -17,13 +17,14 @@ const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 
-const whitelist = [process.env.CLIENT_URL];
+const whitelist = ['http://localhost:3001', process.env.CLIENT_URL];
 const options = {
-  origin: (origin, callback) => {
-    if (whitelist.includes(origin) || !origin) {
+  origin: function (origin, callback) {
+    console.log({ origin, whitelist });
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
-      callback(new Error('Fetch no permitido.'));
+      callback(new Error('Fetch no permitido por CORS'));
     }
   },
 };
