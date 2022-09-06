@@ -11,6 +11,7 @@ const config = {
   isProd: process.env.NODE_ENV === 'production',
   port: process.env.PORT,
   apiKey: process.env.API_KEY || '123456',
+  dbUri: process.env.DB_URI,
   dbUser: process.env.DB_USER || 'nico',
   dbPassword: process.env.DB_PASSWORD || 'nico',
   dbHost: process.env.DB_HOST || '127.0.0.1',
@@ -25,7 +26,9 @@ const config = {
 
 const DB_USER = encodeURIComponent(config.dbUser);
 const DB_PASSWORD = encodeURIComponent(config.dbPassword);
-const DB_URI = `postgres://${DB_USER}:${DB_PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
+const DB_URI =
+  config.dbUri ||
+  `postgres://${DB_USER}:${DB_PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
 
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 console.log(`ENV_FILE: ${envFileName}`);
