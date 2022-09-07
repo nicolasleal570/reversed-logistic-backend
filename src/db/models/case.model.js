@@ -27,8 +27,9 @@ const CaseSchema = {
     type: DataTypes.INTEGER,
   },
   state: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.ENUM({ values: availablesStates }),
+    defaultValue: availablesStates[0],
   },
   createdAt: {
     field: 'created_at',

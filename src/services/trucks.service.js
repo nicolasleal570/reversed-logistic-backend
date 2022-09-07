@@ -2,7 +2,7 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 
-const { Truck, TruckPermission, UserTrucks } = sequelize.models;
+const { Truck } = sequelize.models;
 
 class TrucksService {
   constructor() {
@@ -16,7 +16,9 @@ class TrucksService {
   }
 
   async findAll() {
-    const trucks = await Truck.findAll();
+    const trucks = await Truck.findAll({
+      include: ['driver'],
+    });
     return trucks;
   }
 
@@ -34,7 +36,7 @@ class TrucksService {
 
   async update(id, changes) {
     const truck = await this.findOne(id);
-    
+
     let res;
     if ('userId' in changes) {
       await this.userService.findOne(changes.userId);

@@ -20,7 +20,6 @@ app.use(morgan('dev'));
 const whitelist = ['http://localhost:3001', process.env.CLIENT_URL];
 const options = {
   origin: function (origin, callback) {
-    console.log({ origin, whitelist });
     if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
