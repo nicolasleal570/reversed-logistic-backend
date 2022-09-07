@@ -11,8 +11,8 @@ module.exports = {
         return {
           name: `Case #${faker.datatype.number({ min: 100, max: 500 })}`,
           description: '',
-          volume: 0,
-          weight: 0,
+          volume: faker.datatype.number({ min: 5, max: 50 }),
+          weight: faker.datatype.number({ min: 5, max: 50 }),
           state: availablesStates[0],
           created_at: new Date(),
         };

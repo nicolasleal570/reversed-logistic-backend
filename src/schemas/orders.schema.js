@@ -19,7 +19,7 @@ const updateOrderItem = Joi.object().keys({
   caseId: caseId.required(),
   caseContentId: caseContentId.required(),
   quantity: quantity.required(),
-  id: id.required(),
+  id: id.allow(''),
 });
 
 const items = Joi.array().items(orderItem);
