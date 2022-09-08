@@ -11,6 +11,7 @@ const {
   recoveryAuthController,
   changePasswordAuthController,
   currentUserAuthController,
+  logoutAuthController,
 } = require('../controllers/auth.controller');
 
 const router = express.Router();
@@ -38,6 +39,12 @@ router.post(
   '/change-password',
   validatorHandler(changePasswordUserSchema, 'body'),
   changePasswordAuthController
+);
+
+router.post(
+  '/logout',
+  passport.authenticate('jwt', { session: false }),
+  logoutAuthController
 );
 
 module.exports = router;

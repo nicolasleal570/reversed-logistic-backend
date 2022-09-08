@@ -47,9 +47,22 @@ async function changePasswordAuthController(req, res, next) {
   }
 }
 
+async function logoutAuthController(_req, res, next) {
+  try {
+    res.clearCookie('authorization');
+
+    res.json({
+      message: 'Sesión finalizada',
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   loginAuthController,
   recoveryAuthController,
   changePasswordAuthController,
   currentUserAuthController,
+  logoutAuthController,
 };
