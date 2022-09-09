@@ -28,6 +28,18 @@ class PermissionsService {
     return permission;
   }
 
+  async findOneByWhere(where) {
+    const permission = await Permission.findOne({
+      where,
+    });
+
+    if (!permission) {
+      throw boom.notFound('Permission not found');
+    }
+
+    return permission.toJSON();
+  }
+
   async update(id, changes) {
     const permission = await this.findOne(id);
     const res = await permission.update(changes);

@@ -1,8 +1,10 @@
 const UserService = require('../services/users.service');
 const RoleService = require('../services/roles.service');
+const PermissionsService = require('../services/permissions.service');
 
 const service = new UserService();
 const roleService = new RoleService();
+const permissionsService = new PermissionsService();
 
 async function getUsersController(_req, res, next) {
   try {
@@ -26,7 +28,20 @@ async function getUserByIdController(req, res, next) {
 async function createUserController(req, res, next) {
   try {
     const { body } = req;
-    const { roleId, ...data } = body;
+    const { roleId, permissions: permissionsData, ...data } = body;
+
+    const permissions = await Promise.all(
+      permissionsData.map((item) =>
+        permissionsService.findOneByWhere({ value: item[0].toUpperCase() })
+      )
+    );
+
+    await Promise.all(
+      permissions.map((permission) =>
+        roleService.appendPermission(roleId, permission.id)
+      )
+    );
+
     const user = await service.create(data);
     await roleService.appendRoleToUser(user.id, roleId);
     res.status(201).json({ message: 'User created successfully' });
