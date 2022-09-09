@@ -13,7 +13,7 @@ module.exports = {
           description: '',
           volume: faker.datatype.number({ min: 5, max: 50 }),
           weight: faker.datatype.number({ min: 5, max: 50 }),
-          state: availablesStates[0],
+          state: availablesStates.AVAILABLE,
           created_at: new Date(),
         };
       }),

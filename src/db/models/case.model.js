@@ -1,7 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
 
 const CASE_TABLE = 'cases';
-const availablesStates = ['AVAILABLE', 'IN_USE', 'IN_PROCESS'];
+const availablesStates = {
+  AVAILABLE: 'AVAILABLE',
+  IN_ORDER_PROCESS: 'IN_ORDER_PROCESS',
+  IN_CUSTOMER_SERVICE: 'IN_CUSTOMER_SERVICE',
+  IN_CLEAN_PROCESS: 'IN_CLEAN_PROCESS',
+};
 
 const CaseSchema = {
   id: {
@@ -28,8 +33,8 @@ const CaseSchema = {
   },
   state: {
     allowNull: true,
-    type: DataTypes.ENUM({ values: availablesStates }),
-    defaultValue: availablesStates[0],
+    type: DataTypes.ENUM({ values: Object.values(availablesStates) }),
+    defaultValue: availablesStates.AVAILABLE,
   },
   createdAt: {
     field: 'created_at',

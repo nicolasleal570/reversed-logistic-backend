@@ -1,6 +1,10 @@
 const boom = require('@hapi/boom');
+const { availablesStates } = require('../db/models/case.model');
 const { sequelize } = require('../db/sequelize');
+const CasesService = require('./cases.service');
 const UserService = require('./users.service');
+
+const caseService = new CasesService();
 
 const { CleanProcessOrder, CustomerLocation } = sequelize.models;
 
@@ -11,6 +15,11 @@ class CleanProcessOrdersService {
 
   async create(data) {
     const newCleanProcessOrder = await CleanProcessOrder.create(data);
+
+    await caseService.update(data.caseId, {
+      state: availablesStates.IN_CLEAN_PROCESS,
+    });
+
     return newCleanProcessOrder.toJSON();
   }
 

@@ -19,10 +19,16 @@ const { Order, OrderSchema } = require('./order.model');
 const { Truck, TruckSchema } = require('./truck.model');
 const { Shipment, ShipmentSchema } = require('./shipment.model');
 const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
-const { CleanProcessOrder, CleanProcessOrderSchema } = require('./clean-process-order.model');
-const { CaseCleanProcessStep, CaseCleanProcessStepSchema } = require('./case-clean-process-step.model');
+const {
+  CleanProcessOrder,
+  CleanProcessOrderSchema,
+} = require('./clean-process-order.model');
+const {
+  CaseCleanProcessStep,
+  CaseCleanProcessStepSchema,
+} = require('./case-clean-process-step.model');
 
-function setupModels(sequelize) {
+async function setupModels(sequelize) {
   // Handle models init
   User.init(UserSchema, User.config(sequelize));
   Role.init(RoleSchema, Role.config(sequelize));
@@ -42,8 +48,14 @@ function setupModels(sequelize) {
   Truck.init(TruckSchema, Truck.config(sequelize));
   Shipment.init(ShipmentSchema, Shipment.config(sequelize));
   ProcessStep.init(ProcessStepSchema, ProcessStep.config(sequelize));
-  CleanProcessOrder.init(CleanProcessOrderSchema, CleanProcessOrder.config(sequelize));
-  CaseCleanProcessStep.init(CaseCleanProcessStepSchema, CaseCleanProcessStep.config(sequelize));
+  CleanProcessOrder.init(
+    CleanProcessOrderSchema,
+    CleanProcessOrder.config(sequelize)
+  );
+  CaseCleanProcessStep.init(
+    CaseCleanProcessStepSchema,
+    CaseCleanProcessStep.config(sequelize)
+  );
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -63,6 +75,13 @@ function setupModels(sequelize) {
   ProcessStep.associate(sequelize.models);
   CleanProcessOrder.associate(sequelize.models);
   CaseCleanProcessStep.associate(sequelize.models);
+
+  try {
+    await sequelize.authenticate();
+    console.log('DB connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the DB:', error);
+  }
 }
 
 module.exports = {

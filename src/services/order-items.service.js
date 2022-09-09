@@ -2,6 +2,7 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const CaseService = require('./cases.service');
 const CaseContentService = require('./case-content.service');
+const { availablesStates } = require('../db/models/case.model');
 
 const { OrderItem } = sequelize.models;
 
@@ -16,6 +17,10 @@ class OrderItemsService {
     const caseContent = await this.caseContentService.findOne(
       data.caseContentId
     );
+
+    await this.caseService.update(data.caseId, {
+      state: availablesStates.IN_ORDER_PROCESS,
+    });
 
     const newOrderItem = await OrderItem.create({
       ...data,
