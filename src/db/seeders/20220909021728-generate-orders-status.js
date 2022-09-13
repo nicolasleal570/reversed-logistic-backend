@@ -7,7 +7,7 @@ module.exports = {
       ORDER_STATUS_TABLE,
       [
         {
-          name: 'En cola',
+          name: 'En cola de preparación',
           description:
             'Este estado representa las órdenes que aún están en cola esperando ser atendidas.',
           value: 'QUEUED',
@@ -15,7 +15,7 @@ module.exports = {
           created_at: new Date(),
         },
         {
-          name: 'En transito',
+          name: 'En preparación',
           description:
             'Este estado representa las órdenes que están siendo atendidas y preparadas.',
           value: 'IN_TRANSIT',
@@ -23,7 +23,7 @@ module.exports = {
           created_at: new Date(),
         },
         {
-          name: 'Finalizado',
+          name: 'Preparación finalizada',
           description:
             'Este estado representa las órdenes que ya fueron preradas para ser enviadas.',
           value: 'FINISHED',
@@ -39,7 +39,7 @@ module.exports = {
           created_at: new Date(),
         },
         {
-          name: 'Entregado',
+          name: 'Entregado en destino',
           description:
             'Este estado representa las órdenes que ya fueron entregadas al cliente.',
           value: 'SHIPMENT_DONE',
@@ -47,7 +47,7 @@ module.exports = {
           created_at: new Date(),
         },
         {
-          name: 'Cancelled',
+          name: 'Cancelada',
           description:
             'Este estado representa las órdenes que fueron canceladas.',
           value: 'CANCELLED',

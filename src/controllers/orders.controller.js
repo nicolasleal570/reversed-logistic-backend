@@ -51,10 +51,34 @@ async function destroyOrderController(req, res, next) {
   }
 }
 
+async function takeOrderController(req, res, next) {
+  try {
+    const { sub: userId } = req.user;
+    const { orderId } = req.body;
+    //TODO: Check user role and permissions
+    const order = await service.takeOrder(orderId, userId);
+    res.json(order);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function markOrderAsReadyController(req, res, next) {
+  try {
+    const { orderId } = req.body;
+    const order = await service.markAsReady(orderId);
+    res.json(order);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getOrdersController,
   getOrderByIdController,
   createOrderController,
   updateOrderController,
   destroyOrderController,
+  takeOrderController,
+  markOrderAsReadyController,
 };

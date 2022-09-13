@@ -1,11 +1,12 @@
 const express = require('express');
+const passport = require('passport');
 const validatorHandler = require('../middlewares/validator.handler');
 const {
   getOrderSchema,
   updateOrderSchema,
   createOrderSchema,
-  appendPermissionToOrderSchema,
-  appendOrderToUserSchema,
+  takeOrderSchema,
+  markOrderAsReadySchema,
 } = require('../schemas/orders.schema');
 const {
   getOrdersController,
@@ -13,16 +14,14 @@ const {
   updateOrderController,
   destroyOrderController,
   createOrderController,
-  addPermissionOrderController,
-  addOrderUserController,
+  takeOrderController,
+  markOrderAsReadyController,
 } = require('../controllers/orders.controller');
 
 const router = express.Router();
 
-// Get All Users
 router.get('/', getOrdersController);
 
-// Get One User
 router.get(
   '/:id',
   validatorHandler(getOrderSchema, 'params'),
@@ -35,7 +34,6 @@ router.post(
   createOrderController
 );
 
-// Update User
 router.patch(
   '/:id',
   validatorHandler(getOrderSchema, 'params'),
@@ -43,11 +41,24 @@ router.patch(
   updateOrderController
 );
 
-// Delete User
 router.delete(
   '/:id',
   validatorHandler(getOrderSchema, 'params'),
   destroyOrderController
+);
+
+router.post(
+  '/take',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(takeOrderSchema, 'params'),
+  takeOrderController
+);
+
+router.post(
+  '/done',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(markOrderAsReadySchema, 'params'),
+  markOrderAsReadyController
 );
 
 module.exports = router;

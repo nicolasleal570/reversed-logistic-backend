@@ -50,7 +50,11 @@ class OrdersService {
 
   async findAll() {
     const orders = await Order.findAll({
-      include: ['createdBy', 'orderStatus'],
+      include: ['createdBy', 'assignedTo', 'orderStatus'],
+      order: [
+        ['orderStatusId', 'ASC'],
+        ['purchaseDate', 'ASC'],
+      ],
     });
     return orders;
   }
@@ -59,6 +63,7 @@ class OrdersService {
     let order = await Order.findByPk(id, {
       include: [
         'createdBy',
+        'assignedTo',
         'orderStatus',
         {
           model: CustomerLocation,
@@ -125,6 +130,56 @@ class OrdersService {
   async delete(id) {
     const order = await this.findOne(id);
     await order.destroy();
+
+    return order;
+  }
+
+  async takeOrder(orderId, userId) {
+    let order = await this.findOne(orderId);
+
+    console.log(order.orderStatusId);
+
+    if (order.orderStatusId !== 1) {
+      throw boom.notFound(
+        'No puedes tomar una orden que ya fue finalizada, enviada o entregada'
+      );
+    }
+
+    order = await this.update(orderId, {
+      assignedToId: userId,
+      orderStatusId: 2, // In transit
+    });
+
+    return order;
+  }
+
+  async markAsReady(orderId) {
+    let order = await this.findOne(orderId);
+
+    if (order.orderStatusId > 2) {
+      throw boom.notFound(
+        'No puedes volver a finalizar una orden que ya fue finalizada, enviada o entregada'
+      );
+    }
+
+    order = await this.update(orderId, {
+      orderStatusId: 3, // Finished
+    });
+
+    return order;
+  }
+
+  async assignShipment(orderId, shipmentId) {
+    let order = await this.findOne(orderId);
+
+    if (order.orderStatusId > 3) {
+      throw boom.notFound('Esta orden ya fue enviada, no puedes editarla');
+    }
+
+    order = await this.update(orderId, {
+      orderStatusId: 4, // Shipping in transit
+      shipmentId,
+    });
 
     return order;
   }

@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const { availablesStates } = require('../db/models/case.model');
 const { sequelize } = require('../db/sequelize');
 
 const { Case } = sequelize.models;
@@ -11,8 +12,19 @@ class CasesService {
     return newCase.toJSON();
   }
 
-  async findAll() {
-    const cases = await Case.findAll();
+  async findAll(filterParams = {}) {
+    let where = {};
+
+    if (availablesStates[filterParams?.state ?? '']) {
+      where = { ...where, state: availablesStates[filterParams?.state ?? ''] };
+    }
+
+    if (Object.keys(filterParams).length > 0) {
+    }
+
+    const cases = await Case.findAll({
+      where,
+    });
     return cases;
   }
 

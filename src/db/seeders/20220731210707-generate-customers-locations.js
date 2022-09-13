@@ -10,14 +10,14 @@ module.exports = {
   async up(queryInterface) {
     await queryInterface.bulkInsert(
       CUSTOMER_LOCATION_TABLE,
-      arr.map(() => {
+      arr.map((_, index) => {
         return {
           line_1: faker.address.streetAddress(),
           zip_code: faker.address.zipCode(),
           city: faker.address.city(),
           state: faker.address.state(),
           contact: faker.phone.number(),
-          customer_id: faker.datatype.number({ min: 1, max: 20 }),
+          customer_id: index,
           created_at: new Date(),
         };
       }),

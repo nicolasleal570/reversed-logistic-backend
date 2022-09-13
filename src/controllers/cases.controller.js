@@ -2,9 +2,10 @@ const CasesService = require('../services/cases.service');
 
 const service = new CasesService();
 
-async function getCasesController(_req, res, next) {
+async function getCasesController(req, res, next) {
   try {
-    const cases = await service.findAll();
+    const filterParams = req.query ?? {};
+    const cases = await service.findAll(filterParams);
     res.json(cases);
   } catch (error) {
     next(error);

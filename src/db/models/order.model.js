@@ -64,6 +64,17 @@ const OrderSchema = {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   },
+  assignedToId: {
+    field: 'assigned_to_id',
+    allowNull: true,
+    type: DataTypes.INTEGER,
+    References: {
+      model: USER_TABLE,
+      key: 'id',
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL',
+  },
   shipmentId: {
     field: 'shipment_id',
     allowNull: true,
@@ -80,6 +91,7 @@ const OrderSchema = {
 class Order extends Model {
   static associate(models) {
     this.belongsTo(models.User, { as: 'createdBy' });
+    this.belongsTo(models.User, { as: 'assignedTo' });
     this.belongsTo(models.CustomerLocation, { as: 'customerLocation' });
     this.belongsTo(models.OrderStatus, { as: 'orderStatus' });
     this.belongsTo(models.Shipment, { as: 'shipment' });
