@@ -27,6 +27,10 @@ const {
   CaseCleanProcessStep,
   CaseCleanProcessStepSchema,
 } = require('./case-clean-process-step.model');
+const {
+  ShipmentStatus,
+  ShipmentStatusSchema,
+} = require('./shipment-status.model');
 
 async function setupModels(sequelize) {
   // Handle models init
@@ -56,6 +60,7 @@ async function setupModels(sequelize) {
     CaseCleanProcessStepSchema,
     CaseCleanProcessStep.config(sequelize)
   );
+  ShipmentStatus.init(ShipmentStatusSchema, ShipmentStatus.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -75,6 +80,7 @@ async function setupModels(sequelize) {
   ProcessStep.associate(sequelize.models);
   CleanProcessOrder.associate(sequelize.models);
   CaseCleanProcessStep.associate(sequelize.models);
+  ShipmentStatus.associate(sequelize.models);
 
   setupHooks(sequelize);
 
