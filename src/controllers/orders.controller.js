@@ -23,7 +23,8 @@ async function getOrderByIdController(req, res, next) {
 
 async function createOrderController(req, res, next) {
   try {
-    const order = await service.create(req.body);
+    const { sub: userId } = req.user;
+    const order = await service.create({ ...req.body, createdById: userId });
     res.json(order);
   } catch (error) {
     next(error);
