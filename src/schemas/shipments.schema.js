@@ -1,10 +1,11 @@
 const Joi = require('joi');
 
 const id = Joi.number().integer();
-const details = Joi.string();
+const details = Joi.string().min(0).allow('').allow(null);
 const createdById = Joi.number().integer();
 const truckId = Joi.number().integer();
-const deliveredAt = Joi.date()
+const shipmentAt = Joi.date().allow(null);
+const deliveredAt = Joi.date().allow(null);
 
 const getShipmentSchema = Joi.object({
   id: id.required(),
@@ -12,14 +13,14 @@ const getShipmentSchema = Joi.object({
 
 const createShipmentSchema = Joi.object({
   details,
-  createdById: createdById.required(),
+  shipmentAt,
   truckId: createdById.required(),
 });
 
 const updateShipmentSchema = Joi.object({
   details,
-  createdById,
   truckId,
+  shipmentAt,
   deliveredAt,
 });
 
@@ -31,5 +32,6 @@ module.exports = {
   details,
   createdById,
   truckId,
+  shipmentAt,
   deliveredAt,
 };

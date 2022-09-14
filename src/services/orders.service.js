@@ -3,8 +3,11 @@ const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 const OrderItemService = require('./order-items.service');
 const CasesContentService = require('./case-content.service');
+const ShipmentService = require('./shipments.service');
 
 const { Order, OrderItem, CustomerLocation } = sequelize.models;
+
+const shipmentService = new ShipmentService();
 
 const casesContentService = new CasesContentService();
 
@@ -137,8 +140,6 @@ class OrdersService {
   async takeOrder(orderId, userId) {
     let order = await this.findOne(orderId);
 
-    console.log(order.orderStatusId);
-
     if (order.orderStatusId !== 1) {
       throw boom.notFound(
         'No puedes tomar una orden que ya fue finalizada, enviada o entregada'
@@ -147,7 +148,7 @@ class OrdersService {
 
     order = await this.update(orderId, {
       assignedToId: userId,
-      orderStatusId: 2, // In transit
+      orderStatusId: 2, // Packing in transit
     });
 
     return order;
@@ -163,23 +164,36 @@ class OrdersService {
     }
 
     order = await this.update(orderId, {
-      orderStatusId: 3, // Finished
+      orderStatusId: 3, // Packing finished
     });
 
     return order;
   }
 
-  async assignShipment(orderId, shipmentId) {
+  async assignShipment(data) {
+    const { orderId, shipmentId } = data;
+
     let order = await this.findOne(orderId);
 
     if (order.orderStatusId > 3) {
       throw boom.notFound('Esta orden ya fue enviada, no puedes editarla');
     }
 
-    order = await this.update(orderId, {
-      orderStatusId: 4, // Shipping in transit
+    const shipment = await shipmentService.findOne(shipmentId);
+
+    let payload = {
+      orderStatusId: 4, // Waiting shipping
       shipmentId,
-    });
+    };
+
+    if (shipment.shipmentAt) {
+      payload = {
+        ...payload,
+        orderStatusId: 5, // Shipping in progress
+      };
+    }
+
+    order = await this.update(orderId, payload);
 
     return order;
   }

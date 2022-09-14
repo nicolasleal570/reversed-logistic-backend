@@ -1,6 +1,6 @@
+const { Op } = require('sequelize');
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
-
 const { Shipment } = sequelize.models;
 
 class ShipmentsService {
@@ -9,13 +9,39 @@ class ShipmentsService {
   async create(data) {
     const newShipment = await Shipment.create({
       ...data,
-      trackNumber: Math.random().toString(36).substring(2, 15)
+      trackNumber: Math.random().toString(36).substring(2, 15),
     });
     return newShipment.toJSON();
   }
 
-  async findAll() {
-    const shipments = await Shipment.findAll();
+  async findAll(params = {}) {
+    const { status } = params;
+    let where = {};
+
+    if (status === 'AVAILABLE') {
+      where = {
+        ...where,
+        shipmentAt: { [Op.is]: null },
+        deliveredAt: { [Op.is]: null },
+      };
+    }
+
+    if (status === 'DONE') {
+      where = {
+        ...where,
+        shipmentAt: {
+          [Op.not]: null,
+        },
+        deliveredAt: {
+          [Op.not]: null,
+        },
+      };
+    }
+
+    const shipments = await Shipment.findAll({
+      include: ['orders', 'truck'],
+      where,
+    });
     return shipments;
   }
 
@@ -34,7 +60,6 @@ class ShipmentsService {
   async update(id, changes) {
     const shipment = await this.findOne(id);
     const res = await shipment.update(changes);
-
     return res;
   }
 

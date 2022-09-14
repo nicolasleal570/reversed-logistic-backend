@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const validatorHandler = require('../middlewares/validator.handler');
 const {
   getShipmentSchema,
@@ -25,12 +26,14 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createShipmentSchema, 'body'),
   createShipmentController
 );
 
 router.patch(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getShipmentSchema, 'params'),
   validatorHandler(updateShipmentSchema, 'body'),
   updateShipmentController
@@ -38,6 +41,7 @@ router.patch(
 
 router.delete(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getShipmentSchema, 'params'),
   destroyShipmentController
 );

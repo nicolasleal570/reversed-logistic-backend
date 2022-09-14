@@ -19,11 +19,10 @@ const ShipmentSchema = {
     allowNull: false,
     type: DataTypes.TEXT,
   },
-  shippedAt: {
-    field: 'shipped_at',
-    allowNull: false,
+  shipmentAt: {
+    field: 'shipment_at',
+    allowNull: true,
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
   },
   deliveredAt: {
     field: 'delivered_at',
@@ -51,6 +50,12 @@ const ShipmentSchema = {
     },
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
+  },
+  createdAt: {
+    field: 'created_at',
+    allowNull: false,
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
 };
 

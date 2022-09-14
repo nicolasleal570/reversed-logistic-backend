@@ -73,6 +73,15 @@ async function markOrderAsReadyController(req, res, next) {
   }
 }
 
+async function assignShipmentController(req, res, next) {
+  try {
+    const order = await service.assignShipment(req.body);
+    res.json(order);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getOrdersController,
   getOrderByIdController,
@@ -81,4 +90,5 @@ module.exports = {
   destroyOrderController,
   takeOrderController,
   markOrderAsReadyController,
+  assignShipmentController,
 };

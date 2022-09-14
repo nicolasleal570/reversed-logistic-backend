@@ -3,6 +3,8 @@ const { USER_TABLE } = require('./user.model');
 
 const TRUCK_TABLE = 'trucks';
 
+const values = ['AVAILABLE', 'BUSY'];
+
 const TruckSchema = {
   id: {
     allowNull: false,
@@ -23,9 +25,14 @@ const TruckSchema = {
     type: DataTypes.STRING,
     defaultValue: 'Camión',
   },
+  status: {
+    allowNull: false,
+    type: DataTypes.ENUM({ values }),
+    defaultValue: values[0],
+  },
   userId: {
     field: 'user_id',
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.INTEGER,
     References: {
       model: USER_TABLE,

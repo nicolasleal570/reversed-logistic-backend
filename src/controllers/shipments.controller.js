@@ -2,9 +2,9 @@ const ShipmentService = require('../services/shipments.service');
 
 const service = new ShipmentService();
 
-async function getShipmentsController(_req, res, next) {
+async function getShipmentsController(req, res, next) {
   try {
-    const shipments = await service.findAll();
+    const shipments = await service.findAll(req.query);
     res.json(shipments);
   } catch (error) {
     next(error);
@@ -23,7 +23,8 @@ async function getShipmentByIdController(req, res, next) {
 
 async function createShipmentController(req, res, next) {
   try {
-    const shipment = await service.create(req.body);
+    const { sub: userId } = req.user;
+    const shipment = await service.create({ ...req.body, createdById: userId });
     res.json(shipment);
   } catch (error) {
     next(error);

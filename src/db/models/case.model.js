@@ -2,13 +2,14 @@ const { Model, DataTypes } = require('sequelize');
 
 const CASE_TABLE = 'cases';
 const availablesStates = {
-  AVAILABLE: 'AVAILABLE',
-  IN_ORDER_PROCESS: 'IN_ORDER_PROCESS',
-  IN_SHIPMENT: 'IN_SHIPMENT',
-  IN_CUSTOMER_SERVICE: 'IN_CUSTOMER_SERVICE',
-  CUSTOMER_OUT_OF_STOCK: 'CUSTOMER_OUT_OF_STOCK',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  IN_CLEAN_PROCESS: 'IN_CLEAN_PROCESS',
+  AVAILABLE: 'AVAILABLE', // Disponible para usarse
+  IN_ORDER_PROCESS: 'IN_ORDER_PROCESS', // En proceso de venta
+  WAITING_SHIPMENT: 'WAITING_SHIPMENT', // Esperando a ser enviado
+  IN_SHIPMENT: 'IN_SHIPMENT', // Fue enviado, va en la vía
+  IN_CUSTOMER_SERVICE: 'IN_CUSTOMER_SERVICE', // Fue entregado, está en uso el case
+  CUSTOMER_OUT_OF_STOCK: 'CUSTOMER_OUT_OF_STOCK', // Se acabó el contenido del case
+  WAITING_PICKUP: 'WAITING_PICKUP', // Esperando que sea recogido donde el cliente
+  IN_CLEAN_PROCESS: 'IN_CLEAN_PROCESS', // Está en proceso de limpieza
 };
 
 const CaseSchema = {

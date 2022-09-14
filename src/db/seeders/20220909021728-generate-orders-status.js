@@ -31,6 +31,14 @@ module.exports = {
           created_at: new Date(),
         },
         {
+          name: 'Esperando que sea enviada',
+          description:
+            'Este estado representa que la órden ya está lista esperando que el envío se haga.',
+          value: 'WAITING_SHIPMENT',
+          created_by_id: 1,
+          created_at: new Date(),
+        },
+        {
           name: 'En proceso de envío',
           description:
             'Este estado representa las órdenes que están en proceso de envío.',

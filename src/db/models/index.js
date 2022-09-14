@@ -76,6 +76,8 @@ async function setupModels(sequelize) {
   CleanProcessOrder.associate(sequelize.models);
   CaseCleanProcessStep.associate(sequelize.models);
 
+  setupHooks(sequelize);
+
   try {
     await sequelize.authenticate();
     console.log('DB connection has been established successfully.');
@@ -84,6 +86,35 @@ async function setupModels(sequelize) {
   }
 }
 
+function setupHooks(_sequelize) {
+  Shipment.addHook(
+    'afterUpdate',
+    'updateOrdersStatusWhenShipmentAtHasChange',
+    async (shipment) => {
+      // Update orders status when shipmentAt date change
+      if (
+        shipment.shipmentAt &&
+        !Number.isNaN(Date.parse(shipment.shipmentAt))
+      ) {
+        await Promise.all(
+          shipment.orders.map((order) =>
+            Order.update({ orderStatusId: 5 }, { where: { id: order.id } })
+          )
+        );
+      } else {
+        // Set shippping orders on WAITING_SHIPMENT status
+        const arr = shipment.orders.filter((order) => order.orderStatusId > 4);
+        await Promise.all(
+          arr.map((order) =>
+            Order.update({ orderStatusId: 4 }, { where: { id: order.id } })
+          )
+        );
+      }
+    }
+  );
+}
+
 module.exports = {
   setupModels,
+  setupHooks,
 };

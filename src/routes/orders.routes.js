@@ -7,6 +7,7 @@ const {
   createOrderSchema,
   takeOrderSchema,
   markOrderAsReadySchema,
+  assignShipmentSchema,
 } = require('../schemas/orders.schema');
 const {
   getOrdersController,
@@ -16,6 +17,7 @@ const {
   createOrderController,
   takeOrderController,
   markOrderAsReadyController,
+  assignShipmentController,
 } = require('../controllers/orders.controller');
 
 const router = express.Router();
@@ -50,15 +52,22 @@ router.delete(
 router.post(
   '/take',
   passport.authenticate('jwt', { session: false }),
-  validatorHandler(takeOrderSchema, 'params'),
+  validatorHandler(takeOrderSchema, 'body'),
   takeOrderController
 );
 
 router.post(
   '/done',
   passport.authenticate('jwt', { session: false }),
-  validatorHandler(markOrderAsReadySchema, 'params'),
+  validatorHandler(markOrderAsReadySchema, 'body'),
   markOrderAsReadyController
+);
+
+router.post(
+  '/assign-shipment',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(assignShipmentSchema, 'body'),
+  assignShipmentController
 );
 
 module.exports = router;

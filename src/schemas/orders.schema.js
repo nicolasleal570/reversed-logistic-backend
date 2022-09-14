@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const { caseId, caseContentId, quantity } = require('./order-items.schema');
-const { id: userId } = require('./user.schema');
+const { id: shipmentId } = require('./shipments.schema');
 
 const id = Joi.number().integer();
 const subTotal = Joi.number();
@@ -50,11 +50,16 @@ const updateOrderSchema = Joi.object({
 });
 
 const takeOrderSchema = Joi.object({
-  orderId: id,
+  orderId: id.required(),
 });
 
 const markOrderAsReadySchema = Joi.object({
-  orderId: id,
+  orderId: id.required(),
+});
+
+const assignShipmentSchema = Joi.object({
+  orderId: id.required(),
+  shipmentId: shipmentId.required(),
 });
 
 module.exports = {
@@ -70,4 +75,5 @@ module.exports = {
   createdById,
   takeOrderSchema,
   markOrderAsReadySchema,
+  assignShipmentSchema,
 };

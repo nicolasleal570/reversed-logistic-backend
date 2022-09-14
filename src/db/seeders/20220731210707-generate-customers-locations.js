@@ -17,7 +17,7 @@ module.exports = {
           city: faker.address.city(),
           state: faker.address.state(),
           contact: faker.phone.number(),
-          customer_id: index,
+          customer_id: index + 1,
           created_at: new Date(),
         };
       }),
