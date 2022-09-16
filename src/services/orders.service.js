@@ -2,13 +2,16 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 const OrderItemService = require('./order-items.service');
+const CasesService = require('./cases.service');
 const CasesContentService = require('./case-content.service');
 const ShipmentService = require('./shipments.service');
+const { orderStateToCaseState } = require('../db/models/case.model');
 
 const { Order, OrderItem, CustomerLocation } = sequelize.models;
 
 const shipmentService = new ShipmentService();
 
+const casesService = new CasesService();
 const casesContentService = new CasesContentService();
 
 class OrdersService {
@@ -45,6 +48,14 @@ class OrdersService {
     await Promise.all(
       items.map((item) =>
         this.orderItemsService.create({ ...item, orderId: newOrder.id })
+      )
+    );
+
+    await Promise.all(
+      items.map((item) =>
+        casesService.update(item.caseId, {
+          state: orderStateToCaseState[orderInfo?.orderStatusId ?? 1],
+        })
       )
     );
 

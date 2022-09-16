@@ -12,6 +12,7 @@ const {
   updateShipmentController,
   destroyShipmentController,
   createShipmentController,
+  startShipmentController,
 } = require('../controllers/shipments.controller');
 
 const router = express.Router();
@@ -44,6 +45,13 @@ router.delete(
   passport.authenticate('jwt', { session: false }),
   validatorHandler(getShipmentSchema, 'params'),
   destroyShipmentController
+);
+
+router.post(
+  '/start-shipping',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(getShipmentSchema, 'body'),
+  startShipmentController
 );
 
 module.exports = router;

@@ -11,7 +11,7 @@ const {
   CustomerLocation,
   CustomerLocationSchema,
 } = require('./customer-location.model');
-const { Case, CaseSchema } = require('./case.model');
+const { Case, CaseSchema, orderStateToCaseState } = require('./case.model');
 const { CaseContent, CaseContentSchema } = require('./case-content.model');
 const { OrderStatus, OrderStatusSchema } = require('./order-status.model');
 const { OrderItem, OrderItemSchema } = require('./order-item.model');
@@ -100,22 +100,117 @@ function setupHooks(_sequelize) {
       // Update orders status when shipmentAt date change
       if (
         shipment.shipmentAt &&
-        !Number.isNaN(Date.parse(shipment.shipmentAt))
+        !Number.isNaN(Date.parse(shipment.shipmentAt)) &&
+        shipment.statusId === 2 &&
+        Number.isNaN(Date.parse(shipment.deliveredAt))
       ) {
+
         await Promise.all(
           shipment.orders.map((order) =>
             Order.update({ orderStatusId: 5 }, { where: { id: order.id } })
           )
         );
-      } else {
-        // Set shippping orders on WAITING_SHIPMENT status
-        const arr = shipment.orders.filter((order) => order.orderStatusId > 4);
+
+        // Update cases state
+        const orderItemsPromises = [];
+        shipment.orders.forEach((order) => {
+          orderItemsPromises.push(
+            OrderItem.findAll({ where: { orderId: order.id } })
+          );
+        });
+        const orderItems = await Promise.all(orderItemsPromises);
         await Promise.all(
-          arr.map((order) =>
-            Order.update({ orderStatusId: 4 }, { where: { id: order.id } })
+          [].concat(...orderItems).map((item) => {
+            return Case.update(
+              { state: orderStateToCaseState['5'] },
+              { where: { id: item.caseId } }
+            );
+          })
+        );
+
+        return;
+      }
+
+      // Update orders status when deliveredAt date change
+      if (
+        shipment.deliveredAt &&
+        shipment.shipmentAt &&
+        !Number.isNaN(Date.parse(shipment.shipmentAt)) &&
+        !Number.isNaN(Date.parse(shipment.deliveredAt)) &&
+        shipment.statusId === 3
+      ) {
+
+        await Promise.all(
+          shipment.orders.map((order) =>
+            Order.update({ orderStatusId: 6 }, { where: { id: order.id } })
           )
         );
+
+        // Update cases state
+        const orderItemsPromises = [];
+        shipment.orders.forEach((order) =>
+          orderItemsPromises.push(
+            OrderItem.findAll({ where: { orderId: order.id } })
+          )
+        );
+        const orderItems = await Promise.all(orderItemsPromises);
+        await Promise.all(
+          [].concat(...orderItems).map((item) => {
+            return Case.update(
+              { state: orderStateToCaseState['6'] },
+              { where: { id: item.caseId } }
+            );
+          })
+        );
+
+        return;
       }
+
+      // Set shippping orders on WAITING_SHIPMENT status
+      const arr = shipment.orders.filter((order) => order.orderStatusId > 4);
+      await Promise.all(
+        arr.map((order) =>
+          Order.update({ orderStatusId: 4 }, { where: { id: order.id } })
+        )
+      );
+
+      // Update cases state
+      const orderItemsPromises = [];
+      shipment.orders.forEach((order) =>
+        orderItemsPromises.push(
+          OrderItem.findAll({ where: { orderId: order.id } })
+        )
+      );
+      const orderItems = await Promise.all(orderItemsPromises);
+      await Promise.all(
+        []
+          .concat(...orderItems)
+          .map((item) =>
+            Case.update(
+              { state: orderStateToCaseState['4'] },
+              { where: { id: item.caseId } }
+            )
+          )
+      );
+    }
+  );
+
+  Order.addHook(
+    'afterUpdate',
+    'updateCasesStatusWhenOrderIsUpdated',
+    async (order) => {
+      const orderItems = await OrderItem.findAll({
+        where: { orderId: order.id },
+      });
+
+      await Promise.all(
+        orderItems.map((item) =>
+          Case.update(
+            { state: orderStateToCaseState[order.orderStatusId] ?? 1 },
+            { where: { id: item.caseId } }
+          )
+        )
+      );
     }
   );
 }

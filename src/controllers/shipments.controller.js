@@ -52,10 +52,21 @@ async function destroyShipmentController(req, res, next) {
   }
 }
 
+async function startShipmentController(req, res, next) {
+  try {
+    const { id: shippingId } = req.body;
+    const shipment = await service.startShipping(shippingId);
+    res.json(shipment);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getShipmentsController,
   getShipmentByIdController,
   createShipmentController,
   updateShipmentController,
   destroyShipmentController,
+  startShipmentController,
 };

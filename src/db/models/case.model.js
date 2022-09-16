@@ -3,13 +3,24 @@ const { Model, DataTypes } = require('sequelize');
 const CASE_TABLE = 'cases';
 const availablesStates = {
   AVAILABLE: 'AVAILABLE', // Disponible para usarse
-  IN_ORDER_PROCESS: 'IN_ORDER_PROCESS', // En proceso de venta
-  WAITING_SHIPMENT: 'WAITING_SHIPMENT', // Esperando a ser enviado
-  IN_SHIPMENT: 'IN_SHIPMENT', // Fue enviado, va en la vía
-  IN_CUSTOMER_SERVICE: 'IN_CUSTOMER_SERVICE', // Fue entregado, está en uso el case
-  CUSTOMER_OUT_OF_STOCK: 'CUSTOMER_OUT_OF_STOCK', // Se acabó el contenido del case
+  QUEUED: 'QUEUED', // Orden en cola
+  IN_TRANSIT: 'IN_TRANSIT', // Orden en proceso de venta
+  FINISHED: 'FINISHED', // Preparación de la orden lista
+  WAITING_SHIPMENT: 'WAITING_SHIPMENT', // Esperando el envío
+  IN_SHIPMENT: 'IN_SHIPMENT', // Envio en progreso
+  SHIPMENT_DONE: 'SHIPMENT_DONE', // Fue entregado, está en uso el case
+  OUT_OF_STOCK: 'OUT_OF_STOCK', // Se acabó el contenido del case
   WAITING_PICKUP: 'WAITING_PICKUP', // Esperando que sea recogido donde el cliente
   IN_CLEAN_PROCESS: 'IN_CLEAN_PROCESS', // Está en proceso de limpieza
+};
+
+const orderStateToCaseState = {
+  1: availablesStates.QUEUED,
+  2: availablesStates.IN_TRANSIT,
+  3: availablesStates.FINISHED,
+  4: availablesStates.WAITING_SHIPMENT,
+  5: availablesStates.IN_SHIPMENT,
+  6: availablesStates.SHIPMENT_DONE,
 };
 
 const CaseSchema = {
@@ -66,4 +77,5 @@ module.exports = {
   CaseSchema,
   Case,
   availablesStates,
+  orderStateToCaseState,
 };

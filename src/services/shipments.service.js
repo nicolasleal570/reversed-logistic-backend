@@ -7,8 +7,19 @@ class ShipmentsService {
   constructor() {}
 
   async create(data) {
-    const newShipment = await Shipment.create({
+    let payload = {
       ...data,
+    };
+
+    if (data.shipmentAt && !Number.isNaN(Date.parse(data.shipmentAt))) {
+      payload = {
+        ...payload,
+        statusId: 2,
+      };
+    }
+
+    const newShipment = await Shipment.create({
+      ...payload,
       trackNumber: Math.random().toString(36).substring(2, 15),
     });
     return newShipment.toJSON();
@@ -39,7 +50,7 @@ class ShipmentsService {
     }
 
     const shipments = await Shipment.findAll({
-      include: ['orders', 'truck'],
+      include: ['createdBy', 'orders', 'truck', 'status'],
       where,
     });
     return shipments;
@@ -47,7 +58,7 @@ class ShipmentsService {
 
   async findOne(id) {
     const shipment = await Shipment.findByPk(id, {
-      include: ['createdBy', 'truck', 'orders'],
+      include: ['createdBy', 'orders', 'truck', 'status'],
     });
 
     if (!shipment) {
@@ -59,13 +70,46 @@ class ShipmentsService {
 
   async update(id, changes) {
     const shipment = await this.findOne(id);
-    const res = await shipment.update(changes);
+
+    let payload = {
+      ...changes,
+    };
+    if (changes.shipmentAt && !Number.isNaN(Date.parse(changes.shipmentAt))) {
+      payload = {
+        ...payload,
+        statusId: 2,
+      };
+    } else if (
+      changes.deliveredAt &&
+      !Number.isNaN(Date.parse(changes.deliveredAt))
+    ) {
+      payload = {
+        ...payload,
+        statusId: 3,
+      };
+    } else {
+      payload = {
+        ...payload,
+        statusId: 1,
+      };
+    }
+
+    const res = await shipment.update(payload);
     return res;
   }
 
   async delete(id) {
     const shipment = await this.findOne(id);
     await shipment.destroy();
+
+    return shipment;
+  }
+
+  async startShipping(shippingId) {
+    const shipment = this.update(shippingId, {
+      shipmentAt: new Date(),
+      statusId: 2,
+    });
 
     return shipment;
   }
