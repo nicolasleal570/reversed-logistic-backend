@@ -75,12 +75,11 @@ class OutOfStockOrder extends Model {
     this.belongsTo(models.User, { as: 'assignedTo' });
     this.belongsTo(models.CustomerLocation, { as: 'customerLocation' });
     this.belongsTo(models.OutOfStockStatus, { as: 'status' });
-    /*
-    this.hasMany(models.OutOfStockOrderItem, {
+    this.hasMany(models.OutOfStockItem, {
       as: 'items',
-      foreignKey: 'orderId',
+      foreignKey: 'outOfStockOrderId',
     });
-    */
+
   }
 
   static config(sequelize) {

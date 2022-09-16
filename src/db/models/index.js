@@ -39,6 +39,10 @@ const {
   OutOfStockOrder,
   OutOfStockOrderSchema,
 } = require('./out-of-stock-order.model');
+const {
+  OutOfStockItem,
+  OutOfStockItemSchema,
+} = require('./out-of-stock-item.model');
 
 async function setupModels(sequelize) {
   // Handle models init
@@ -77,6 +81,7 @@ async function setupModels(sequelize) {
     OutOfStockOrderSchema,
     OutOfStockOrder.config(sequelize)
   );
+  OutOfStockItem.init(OutOfStockItemSchema, OutOfStockItem.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -99,6 +104,7 @@ async function setupModels(sequelize) {
   ShipmentStatus.associate(sequelize.models);
   OutOfStockStatus.associate(sequelize.models);
   OutOfStockOrder.associate(sequelize.models);
+  OutOfStockItem.associate(sequelize.models);
 
   setupHooks(sequelize);
 
