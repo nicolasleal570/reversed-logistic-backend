@@ -2,7 +2,7 @@ const boom = require('@hapi/boom');
 const { availablesStates } = require('../db/models/case.model');
 const { sequelize } = require('../db/sequelize');
 
-const { Case } = sequelize.models;
+const { Case, Order, OrderItem } = sequelize.models;
 
 class CasesService {
   constructor() {}
@@ -34,6 +34,42 @@ class CasesService {
     }
 
     return caseItem;
+  }
+
+  async findCasesByCustomer(customerLocationId) {
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: OrderItem,
+          as: 'items',
+          where: { wasReturned: false },
+          include: [
+            {
+              model: Case,
+              as: 'case',
+              where: { state: 'SHIPMENT_DONE' },
+              attributes: ['id', 'name'],
+            },
+          ],
+        },
+      ],
+      where: {
+        customerLocationId,
+      },
+    });
+
+    const cases = [];
+    orders.forEach((order) => {
+      cases.push(
+        ...order.items.map((orderItem) => ({
+          ...orderItem.case.toJSON(),
+          caseContentId: orderItem.caseContentId,
+          orderId: orderItem.orderId,
+        }))
+      );
+    });
+
+    return { customerLocationId, orders, cases };
   }
 
   async update(id, changes) {

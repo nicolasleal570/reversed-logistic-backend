@@ -22,6 +22,7 @@ const OutOfStockOrderSchema = {
     },
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
+    defaultValue: 1,
   },
   customerLocationId: {
     field: 'customer_location_id',
@@ -79,7 +80,6 @@ class OutOfStockOrder extends Model {
       as: 'items',
       foreignKey: 'outOfStockOrderId',
     });
-
   }
 
   static config(sequelize) {

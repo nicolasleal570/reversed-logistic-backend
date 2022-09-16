@@ -1,10 +1,10 @@
 const Joi = require('joi');
 const { id: orderId } = require('./orders.schema');
+const { id: caseId } = require('./cases.schema');
+const { id: caseContentId } = require('./case-content.schema');
 const { id: outOfStockOrderId } = require('./out-of-stock-order.schema');
 
 const id = Joi.number().integer();
-const caseId = Joi.number().integer();
-const caseContentId = Joi.number().integer();
 
 const getOutOfStockItemSchema = Joi.object({
   id: id.required(),
@@ -29,6 +29,4 @@ module.exports = {
   createOutOfStockItemSchema,
   updateOutOfStockItemSchema,
   id,
-  caseId,
-  caseContentId,
 };

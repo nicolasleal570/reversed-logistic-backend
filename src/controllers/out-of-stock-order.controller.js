@@ -30,7 +30,6 @@ async function createOutOfStockOrderController(req, res, next) {
     const outOfStockOrder = await service.create({
       ...req.body,
       createdById: userId,
-      statusId: 1,
     });
     res.json(outOfStockOrder);
   } catch (error) {

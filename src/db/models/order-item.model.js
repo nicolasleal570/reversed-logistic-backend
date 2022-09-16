@@ -12,6 +12,11 @@ const OrderItemSchema = {
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
+  wasReturned: {
+    allowNull: false,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   caseId: {
     field: 'case_id',
     allowNull: false,

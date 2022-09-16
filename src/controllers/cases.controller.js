@@ -1,3 +1,4 @@
+const boom = require('@hapi/boom');
 const CasesService = require('../services/cases.service');
 
 const service = new CasesService();
@@ -17,6 +18,23 @@ async function getCaseByIdController(req, res, next) {
     const { id } = req.params;
     const caseItem = await service.findOne(id);
     res.json(caseItem);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getCasesByCustomerController(req, res, next) {
+  try {
+    const {
+      sub: { id: customerLocationId, isLocation },
+    } = req.user;
+
+    if (!isLocation) {
+      throw boom.forbidden('This action is not supported for regular users');
+    }
+
+    const cases = await service.findCasesByCustomer(customerLocationId);
+    res.json(cases);
   } catch (error) {
     next(error);
   }
@@ -55,6 +73,7 @@ async function destroyCaseController(req, res, next) {
 module.exports = {
   getCasesController,
   getCaseByIdController,
+  getCasesByCustomerController,
   createCaseController,
   updateCaseController,
   destroyCaseController,

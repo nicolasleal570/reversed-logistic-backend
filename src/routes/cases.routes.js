@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const validatorHandler = require('../middlewares/validator.handler');
 const {
   getCaseSchema,
@@ -8,6 +9,7 @@ const {
 const {
   getCasesController,
   getCaseByIdController,
+  getCasesByCustomerController,
   createCaseController,
   updateCaseController,
   destroyCaseController,
@@ -17,6 +19,12 @@ const router = express.Router();
 
 // Get All Cases
 router.get('/', getCasesController);
+
+router.get(
+  '/cases-by-customer',
+  passport.authenticate('jwt', { session: false }),
+  getCasesByCustomerController
+);
 
 // Get One Case
 router.get(

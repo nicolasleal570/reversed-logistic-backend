@@ -25,6 +25,12 @@ const orderStateToCaseState = {
   6: availablesStates.SHIPMENT_DONE,
 };
 
+const outOfStockOrderStateToCaseState = {
+  1: availablesStates.OUT_OF_STOCK,
+  2: availablesStates.PICKUP_IN_PROGRESS,
+  3: availablesStates.PICKUP_DONE,
+};
+
 const CaseSchema = {
   id: {
     allowNull: false,
@@ -80,4 +86,5 @@ module.exports = {
   Case,
   availablesStates,
   orderStateToCaseState,
+  outOfStockOrderStateToCaseState,
 };

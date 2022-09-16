@@ -1,8 +1,12 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
+const OutOfStockItemService = require('./out-of-stock-items.service');
+const { outOfStockOrderStateToCaseState } = require('../db/models/case.model');
 
-const { OutOfStockOrder } = sequelize.models;
+const { OutOfStockOrder, Case } = sequelize.models;
+
+const outOfStockItemService = new OutOfStockItemService();
 
 class OutOfStockOrderService {
   constructor() {
@@ -10,20 +14,51 @@ class OutOfStockOrderService {
   }
 
   async create(data) {
-    const newOutOfStockOrder = await OutOfStockOrder.create(data);
-    return newOutOfStockOrder.toJSON();
+    let { items, ...restData } = data;
+    let newOutOfStockOrder = await OutOfStockOrder.create({
+      ...restData,
+      statusId: 1,
+    });
+    newOutOfStockOrder = newOutOfStockOrder.toJSON();
+
+    if (items.length) {
+      // Create out of stock items
+      items = await Promise.all(
+        items.map((item) =>
+          outOfStockItemService.create({
+            ...item,
+            outOfStockOrderId: newOutOfStockOrder.id,
+          })
+        )
+      );
+
+      // Update cases state
+      await Promise.all(
+        items.map((item) =>
+          Case.update(
+            {
+              state:
+                outOfStockOrderStateToCaseState[newOutOfStockOrder.statusId],
+            },
+            { where: { id: item.caseId } }
+          )
+        )
+      );
+    }
+
+    return { ...newOutOfStockOrder, items };
   }
 
   async findAll() {
     const outOfStockOrder = await OutOfStockOrder.findAll({
-      include: ['createdBy'],
+      include: ['createdBy', 'items', 'status', 'assignedTo'],
     });
     return outOfStockOrder;
   }
 
   async findOne(id) {
     const outOfStockOrder = await OutOfStockOrder.findByPk(id, {
-      include: ['createdBy'],
+      include: ['createdBy', 'items', 'status', 'assignedTo'],
     });
 
     if (!outOfStockOrder) {
