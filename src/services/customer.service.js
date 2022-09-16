@@ -60,11 +60,20 @@ class CustomersService {
     const res = await customer.update(restData);
 
     if (locations && locations.length > 0) {
-      await Promise.all(
-        locations.map((item) =>
+      const locationsForUpdate = locations.filter((item) => item.id);
+      const locationsForCreate = locations.filter((item) => !item.id);
+
+      await Promise.all([
+        ...locationsForUpdate.map((item) =>
           this.customerLocationService.update(item.id, item)
-        )
-      );
+        ),
+        ...locationsForCreate.map(({ id: _, ...item }) =>
+          this.customerLocationService.create({
+            ...item,
+            customerId: Number.parseInt(id, 10),
+          })
+        ),
+      ]);
     }
 
     return res;

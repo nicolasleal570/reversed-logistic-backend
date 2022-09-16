@@ -7,7 +7,10 @@ class CustomerLocationsService {
   constructor() {}
 
   async create(data) {
-    const newCustomerLocation = await CustomerLocation.create(data);
+    const newCustomerLocation = await CustomerLocation.create({
+      ...data,
+      password: data?.password || 'password',
+    });
     return newCustomerLocation.toJSON();
   }
 
@@ -16,12 +19,19 @@ class CustomerLocationsService {
     return customers;
   }
 
-  async findOne(id) {
+  async findByEmail(email) {
+    const location = await CustomerLocation.findOne({
+      where: { email },
+    });
+    return location?.toJSON();
+  }
+
+  async findOne(id, disabledValidation) {
     const customerLocation = await CustomerLocation.findByPk(id, {
       include: ['customer'],
     });
 
-    if (!customerLocation) {
+    if (!customerLocation && !disabledValidation) {
       throw boom.notFound('Customer Location not found');
     }
 

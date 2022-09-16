@@ -19,11 +19,9 @@ class CasesService {
       where = { ...where, state: availablesStates[filterParams?.state ?? ''] };
     }
 
-    if (Object.keys(filterParams).length > 0) {
-    }
-
     const cases = await Case.findAll({
       where,
+      order: [['id', 'ASC']],
     });
     return cases;
   }

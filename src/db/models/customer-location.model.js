@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const {CUSTOMER_TABLE} = require('./customer.model')
+const { CUSTOMER_TABLE } = require('./customer.model');
 
 const CUSTOMER_LOCATION_TABLE = 'customers_locations';
 
@@ -9,6 +9,15 @@ const CustomerLocationSchema = {
     autoIncrement: true,
     primaryKey: true,
     type: DataTypes.INTEGER,
+  },
+  email: {
+    allowNull: false,
+    unique: true,
+    type: DataTypes.STRING,
+  },
+  password: {
+    allowNull: false,
+    type: DataTypes.STRING,
   },
   line1: {
     field: 'line_1',

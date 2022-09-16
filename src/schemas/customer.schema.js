@@ -6,6 +6,7 @@ const {
   city,
   state,
   contact,
+  email,
   country,
 } = require('./customer-location.schema');
 
@@ -16,13 +17,14 @@ const description = Joi.string();
 const website = Joi.string();
 
 const locationItem = Joi.object().keys({
-  id,
+  id: id.min(0).allow(null).allow(''),
   line1: line1.required(),
   line2,
   zipCode: zipCode.required(),
   city: city.required(),
   state: state.required(),
   contact: contact.required(),
+  email: email.required(),
   country,
 });
 

@@ -8,6 +8,7 @@ const city = Joi.string();
 const state = Joi.string();
 const country = Joi.string();
 const contact = Joi.string();
+const email = Joi.string().email();
 const customerId = Joi.number().integer();
 
 const getCustomerSchema = Joi.object({
@@ -26,6 +27,7 @@ const createCustomerSchema = Joi.object({
   state: state.required(),
   country,
   contact: contact.required(),
+  email: email.required(),
   customerId: customerId.required(),
 });
 
@@ -37,6 +39,7 @@ const updateCustomerSchema = Joi.object({
   state,
   country,
   contact,
+  email,
   customerId,
 });
 
@@ -53,5 +56,6 @@ module.exports = {
   state,
   country,
   contact,
+  email,
   customerId,
 };

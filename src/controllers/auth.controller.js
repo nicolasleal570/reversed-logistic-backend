@@ -1,13 +1,22 @@
-const UserService = require('../services/users.service');
 const AuthService = require('../services/auth.service');
+const CustomerLocationsService = require('../services/customer-location.service');
 
-const usersService = new UserService();
 const authService = new AuthService();
+const customerLocationService = new CustomerLocationsService();
 
 async function currentUserAuthController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
-    const user = await authService.getCurrentUser(userId);
+    const {
+      sub: { id, isLocation },
+    } = req.user;
+
+    if (isLocation) {
+      const location = await customerLocationService.findOne(id, true);
+      res.status(201).json({ location });
+      return;
+    }
+
+    const user = await authService.getCurrentUser(id);
     res.status(201).json({ user });
   } catch (error) {
     next(error);

@@ -10,14 +10,19 @@ const usersService = new UserService();
 class AuthService {
   constructor() {}
 
-  signToken(user) {
-    const payload = {
-      sub: user.id,
+  signToken(data) {
+    const { id, isLocation } = data ?? {};
+    let payload = {
+      sub: {
+        isLocation,
+        id,
+      },
     };
 
     const token = jwt.sign(payload, config.tokenSecret);
 
     return {
+      isLocation,
       token,
     };
   }

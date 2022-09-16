@@ -11,6 +11,8 @@ const availablesStates = {
   SHIPMENT_DONE: 'SHIPMENT_DONE', // Fue entregado, está en uso el case
   OUT_OF_STOCK: 'OUT_OF_STOCK', // Se acabó el contenido del case
   WAITING_PICKUP: 'WAITING_PICKUP', // Esperando que sea recogido donde el cliente
+  PICKUP_DONE: 'PICKUP_DONE', // Se recogieron los case
+  WAITING_CLEAN_PROCESS: 'WAITING_CLEAN_PROCESS', // Esperando que por limpieza
   IN_CLEAN_PROCESS: 'IN_CLEAN_PROCESS', // Está en proceso de limpieza
 };
 
