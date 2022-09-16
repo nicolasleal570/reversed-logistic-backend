@@ -23,7 +23,9 @@ async function getProcessStepByIdController(req, res, next) {
 
 async function createProcessStepController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
+    const {
+      sub: { id: userId, isLocation },
+    } = req.user;
     const processStep = await service.create({...req.body, createdById: userId});
     res.json(processStep);
   } catch (error) {

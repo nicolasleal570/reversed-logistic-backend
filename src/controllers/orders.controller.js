@@ -23,7 +23,9 @@ async function getOrderByIdController(req, res, next) {
 
 async function createOrderController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
+    const {
+      sub: { id: userId },
+    } = req.user;
     const order = await service.create({ ...req.body, createdById: userId });
     res.json(order);
   } catch (error) {
@@ -54,7 +56,9 @@ async function destroyOrderController(req, res, next) {
 
 async function takeOrderController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
+    const {
+      sub: { id: userId, isLocation },
+    } = req.user;
     const { orderId } = req.body;
     //TODO: Check user role and permissions
     const order = await service.takeOrder(orderId, userId);

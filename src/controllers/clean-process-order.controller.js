@@ -25,7 +25,9 @@ async function getCleanProcessOrderByIdController(req, res, next) {
 
 async function createCleanProcessOrderController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
+    const {
+      sub: { id: userId, isLocation },
+    } = req.user;
     const cleanProcessOrder = await service.create({
       ...req.body,
       createdById: userId,
@@ -38,7 +40,9 @@ async function createCleanProcessOrderController(req, res, next) {
 
 async function createFullCleanProcessOrderController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
+    const {
+      sub: { id: userId, isLocation },
+    } = req.user;
     const { steps, ...restData } = req.body;
 
     // Create clean process order

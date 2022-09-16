@@ -23,7 +23,9 @@ async function getShipmentStatusByIdController(req, res, next) {
 
 async function createShipmentStatusController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
+    const {
+      sub: { id: userId, isLocation },
+    } = req.user;
     const shipmentStatus = await service.create({
       ...req.body,
       createdById: userId,

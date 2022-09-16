@@ -23,8 +23,14 @@ async function getCaseCleanProcessStepByIdController(req, res, next) {
 
 async function createCaseCleanProcessStepController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
-    const caseCleanProcessStep = await service.create({...req.body, createdById: userId});
+    const {
+      sub: { id: userId, isLocation },
+    } = req.user;
+
+    const caseCleanProcessStep = await service.create({
+      ...req.body,
+      createdById: userId,
+    });
     res.json(caseCleanProcessStep);
   } catch (error) {
     next(error);

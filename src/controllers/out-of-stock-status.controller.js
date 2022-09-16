@@ -23,7 +23,13 @@ async function getOutOfStockStatusByIdController(req, res, next) {
 
 async function createOutOfStockStatusController(req, res, next) {
   try {
-    const outOfStockStatus = await service.create(req.body);
+    const {
+      sub: { id: userId },
+    } = req.user;
+    const outOfStockStatus = await service.create({
+      ...req.body,
+      createdById: userId,
+    });
     res.json(outOfStockStatus);
   } catch (error) {
     next(error);

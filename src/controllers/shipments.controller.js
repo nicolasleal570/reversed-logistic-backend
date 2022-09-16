@@ -23,7 +23,9 @@ async function getShipmentByIdController(req, res, next) {
 
 async function createShipmentController(req, res, next) {
   try {
-    const { sub: userId } = req.user;
+    const {
+      sub: { id: userId, isLocation },
+    } = req.user;
     const shipment = await service.create({ ...req.body, createdById: userId });
     res.json(shipment);
   } catch (error) {
