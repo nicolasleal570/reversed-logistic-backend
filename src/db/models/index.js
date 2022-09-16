@@ -31,6 +31,10 @@ const {
   ShipmentStatus,
   ShipmentStatusSchema,
 } = require('./shipment-status.model');
+const {
+  OutOfStockStatus,
+  OutOfStockStatusSchema,
+} = require('./out-of-stock-status.model');
 
 async function setupModels(sequelize) {
   // Handle models init
@@ -61,6 +65,7 @@ async function setupModels(sequelize) {
     CaseCleanProcessStep.config(sequelize)
   );
   ShipmentStatus.init(ShipmentStatusSchema, ShipmentStatus.config(sequelize));
+  OutOfStockStatus.init(OutOfStockStatusSchema, OutOfStockStatus.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -81,6 +86,7 @@ async function setupModels(sequelize) {
   CleanProcessOrder.associate(sequelize.models);
   CaseCleanProcessStep.associate(sequelize.models);
   ShipmentStatus.associate(sequelize.models);
+  OutOfStockStatus.associate(sequelize.models);
 
   setupHooks(sequelize);
 

@@ -16,6 +16,7 @@ const shipmentStatusRoutes = require('./shipment-status.routes');
 const processStepsRoutes = require('./process-steps.routes');
 const cleanProcessOrderRoutes = require('./clean-process-orders.routes');
 const caseCleanProcessStepsRoutes = require('./case-clean-process-steps.routes');
+const outOfStockStatusRoutes = require('./out-of-stock-status.routes');
 
 const { checkApiKey } = require('../middlewares/auth.handler');
 
@@ -40,6 +41,7 @@ function routerApi(app) {
   router.use('/process-steps', processStepsRoutes);
   router.use('/clean-process-orders', cleanProcessOrderRoutes);
   router.use('/case-clean-process-steps', caseCleanProcessStepsRoutes);
+  router.use('/out-of-stock-status', outOfStockStatusRoutes);
 }
 
 module.exports = routerApi;
