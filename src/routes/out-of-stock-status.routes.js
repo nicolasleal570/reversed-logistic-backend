@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const validatorHandler = require('../middlewares/validator.handler');
 const {
   getOutOfStockStatusSchema,
@@ -25,6 +26,7 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createOutOfStockStatusSchema, 'body'),
   createOutOfStockStatusController
 );

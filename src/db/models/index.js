@@ -35,6 +35,10 @@ const {
   OutOfStockStatus,
   OutOfStockStatusSchema,
 } = require('./out-of-stock-status.model');
+const {
+  OutOfStockOrder,
+  OutOfStockOrderSchema,
+} = require('./out-of-stock-order.model');
 
 async function setupModels(sequelize) {
   // Handle models init
@@ -65,7 +69,14 @@ async function setupModels(sequelize) {
     CaseCleanProcessStep.config(sequelize)
   );
   ShipmentStatus.init(ShipmentStatusSchema, ShipmentStatus.config(sequelize));
-  OutOfStockStatus.init(OutOfStockStatusSchema, OutOfStockStatus.config(sequelize));
+  OutOfStockStatus.init(
+    OutOfStockStatusSchema,
+    OutOfStockStatus.config(sequelize)
+  );
+  OutOfStockOrder.init(
+    OutOfStockOrderSchema,
+    OutOfStockOrder.config(sequelize)
+  );
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -87,6 +98,7 @@ async function setupModels(sequelize) {
   CaseCleanProcessStep.associate(sequelize.models);
   ShipmentStatus.associate(sequelize.models);
   OutOfStockStatus.associate(sequelize.models);
+  OutOfStockOrder.associate(sequelize.models);
 
   setupHooks(sequelize);
 
@@ -110,7 +122,6 @@ function setupHooks(_sequelize) {
         shipment.statusId === 2 &&
         Number.isNaN(Date.parse(shipment.deliveredAt))
       ) {
-
         await Promise.all(
           shipment.orders.map((order) =>
             Order.update({ orderStatusId: 5 }, { where: { id: order.id } })
@@ -145,7 +156,6 @@ function setupHooks(_sequelize) {
         !Number.isNaN(Date.parse(shipment.deliveredAt)) &&
         shipment.statusId === 3
       ) {
-
         await Promise.all(
           shipment.orders.map((order) =>
             Order.update({ orderStatusId: 6 }, { where: { id: order.id } })
