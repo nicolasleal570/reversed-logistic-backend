@@ -11,7 +11,12 @@ const {
   CustomerLocation,
   CustomerLocationSchema,
 } = require('./customer-location.model');
-const { Case, CaseSchema, orderStateToCaseState } = require('./case.model');
+const {
+  Case,
+  CaseSchema,
+  orderStateToCaseState,
+  outOfStockOrderStateToCaseState,
+} = require('./case.model');
 const { CaseContent, CaseContentSchema } = require('./case-content.model');
 const { OrderStatus, OrderStatusSchema } = require('./order-status.model');
 const { OrderItem, OrderItemSchema } = require('./order-item.model');
@@ -229,6 +234,27 @@ function setupHooks(_sequelize) {
         orderItems.map((item) =>
           Case.update(
             { state: orderStateToCaseState[order.orderStatusId] ?? 1 },
+            { where: { id: item.caseId } }
+          )
+        )
+      );
+    }
+  );
+
+  OutOfStockOrder.addHook(
+    'afterUpdate',
+    'updateCasesStatusWhenOutOfStockOrderIsUpdated',
+    async (order) => {
+      const orderItems = await OutOfStockItem.findAll({
+        where: { outOfStockOrderId: order.id },
+      });
+
+      await Promise.all(
+        orderItems.map((item) =>
+          Case.update(
+            {
+              state: outOfStockOrderStateToCaseState[order.statusId] ?? 1,
+            },
             { where: { id: item.caseId } }
           )
         )

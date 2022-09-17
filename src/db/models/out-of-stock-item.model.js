@@ -13,6 +13,26 @@ const OutOfStockItemSchema = {
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
+  wasReturned: {
+    field: 'was_returned',
+    allowNull: false,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  needsCleanProcess: {
+    field: 'needs_clean_process',
+    allowNull: true,
+    type: DataTypes.BOOLEAN,
+  },
+  cleanProcessDone: {
+    field: 'clean_process_done',
+    allowNull: true,
+    type: DataTypes.BOOLEAN,
+  },
+  finished: {
+    allowNull: true,
+    type: DataTypes.BOOLEAN,
+  },
   caseId: {
     field: 'case_id',
     allowNull: false,

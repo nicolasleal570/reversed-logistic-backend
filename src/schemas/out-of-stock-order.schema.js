@@ -8,6 +8,7 @@ const { id: orderId } = require('./orders.schema');
 const id = Joi.number().integer();
 const assignedToId = Joi.number().integer();
 const pickedUpAt = Joi.date().min(0).allow(null).allow('');
+const doneAt = Joi.date().min(0).allow(null).allow('');
 
 const item = Joi.object().keys({
   caseId: caseId.required(),
@@ -39,7 +40,8 @@ const updateOutOfStockOrderSchema = Joi.object({
   statusId,
   assignedToId,
   pickedUpAt,
-  items: updateItems.required(),
+  doneAt,
+  items: updateItems,
 });
 
 module.exports = {
@@ -47,4 +49,7 @@ module.exports = {
   createOutOfStockOrderSchema,
   updateOutOfStockOrderSchema,
   id,
+  statusId,
+  pickedUpAt,
+  doneAt,
 };

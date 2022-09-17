@@ -9,7 +9,7 @@ module.exports = {
       OUT_OF_STOCK_STATUS_TABLE,
       [
         {
-          name: 'Contenido agotado',
+          name: 'Se requiere recogida',
           description:
             'Este estado representa que los cases fueron reportados como agotados.',
           value: 'OUT_OF_STOCK',
@@ -25,9 +25,9 @@ module.exports = {
           created_at: new Date(),
         },
         {
-          name: 'Recogida lista',
+          name: 'Recogida completada',
           description:
-            'Este estado representa que los cases ya fueron recogidos.',
+            'Este estado representa que los cases ya fueron recogidos y están en el almacén.',
           value: 'PICKUP_DONE',
           created_by_id: 1,
           created_at: new Date(),

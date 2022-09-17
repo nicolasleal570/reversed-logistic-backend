@@ -3,6 +3,7 @@ const Joi = require('joi');
 const id = Joi.number().integer();
 const name = Joi.string();
 const description = Joi.string();
+const state = Joi.string();
 const volume = Joi.number().integer();
 const weight = Joi.number().integer();
 
@@ -22,6 +23,7 @@ const updateCaseSchema = Joi.object({
   description,
   volume,
   weight,
+  state,
 });
 
 module.exports = {

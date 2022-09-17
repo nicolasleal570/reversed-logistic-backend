@@ -12,6 +12,8 @@ const {
   updateOutOfStockOrderController,
   destroyOutOfStockOrderController,
   createOutOfStockOrderController,
+  takeOutOfStockOrderController,
+  finishOutOfStockOrderController,
 } = require('../controllers/out-of-stock-order.controller');
 
 const router = express.Router();
@@ -42,6 +44,20 @@ router.delete(
   '/:id',
   validatorHandler(getOutOfStockOrderSchema, 'params'),
   destroyOutOfStockOrderController
+);
+
+router.post(
+  '/take-order',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(getOutOfStockOrderSchema, 'body'),
+  takeOutOfStockOrderController
+);
+
+router.post(
+  '/finish',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(getOutOfStockOrderSchema, 'body'),
+  finishOutOfStockOrderController
 );
 
 module.exports = router;

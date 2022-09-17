@@ -5,6 +5,10 @@ const { id: caseContentId } = require('./case-content.schema');
 const { id: outOfStockOrderId } = require('./out-of-stock-order.schema');
 
 const id = Joi.number().integer();
+const wasReturned = Joi.boolean();
+const needsCleanProcess = Joi.boolean();
+const cleanProcessDone = Joi.boolean();
+const finished = Joi.boolean();
 
 const getOutOfStockItemSchema = Joi.object({
   id: id.required(),
@@ -22,6 +26,10 @@ const updateOutOfStockItemSchema = Joi.object({
   caseContentId,
   orderId,
   outOfStockOrderId,
+  wasReturned,
+  needsCleanProcess,
+  cleanProcessDone,
+  finished,
 });
 
 module.exports = {

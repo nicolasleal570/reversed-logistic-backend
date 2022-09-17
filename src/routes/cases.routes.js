@@ -13,6 +13,7 @@ const {
   createCaseController,
   updateCaseController,
   destroyCaseController,
+  getCasesWaitingCleanProcessController,
 } = require('../controllers/cases.controller');
 
 const router = express.Router();
@@ -24,6 +25,12 @@ router.get(
   '/cases-by-customer',
   passport.authenticate('jwt', { session: false }),
   getCasesByCustomerController
+);
+
+router.get(
+  '/waiting-clean-process',
+  passport.authenticate('jwt', { session: false }),
+  getCasesWaitingCleanProcessController
 );
 
 // Get One Case

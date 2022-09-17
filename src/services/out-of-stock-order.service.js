@@ -2,9 +2,13 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 const OutOfStockItemService = require('./out-of-stock-items.service');
-const { outOfStockOrderStateToCaseState } = require('../db/models/case.model');
+const {
+  outOfStockOrderStateToCaseState,
+  availablesStates,
+} = require('../db/models/case.model');
 
-const { OutOfStockOrder, Case } = sequelize.models;
+const { OutOfStockOrder, OutOfStockItem, Case, CustomerLocation } =
+  sequelize.models;
 
 const outOfStockItemService = new OutOfStockItemService();
 
@@ -51,14 +55,38 @@ class OutOfStockOrderService {
 
   async findAll() {
     const outOfStockOrder = await OutOfStockOrder.findAll({
-      include: ['createdBy', 'items', 'status', 'assignedTo'],
+      include: [
+        'createdBy',
+        'items',
+        'status',
+        'assignedTo',
+        {
+          model: CustomerLocation,
+          as: 'customerLocation',
+          include: ['customer'],
+        },
+      ],
     });
     return outOfStockOrder;
   }
 
   async findOne(id) {
     const outOfStockOrder = await OutOfStockOrder.findByPk(id, {
-      include: ['createdBy', 'items', 'status', 'assignedTo'],
+      include: [
+        'createdBy',
+        {
+          model: OutOfStockItem,
+          as: 'items',
+          include: ['case', 'caseContent', 'order'],
+        },
+        'status',
+        'assignedTo',
+        {
+          model: CustomerLocation,
+          as: 'customerLocation',
+          include: ['customer'],
+        },
+      ],
     });
 
     if (!outOfStockOrder) {
@@ -72,7 +100,10 @@ class OutOfStockOrderService {
     const outOfStockOrder = await this.findOne(id);
     const res = await outOfStockOrder.update(changes);
 
-    return res;
+    return {
+      ...res.toJSON(),
+      items: outOfStockOrder.toJSON().items,
+    };
   }
 
   async delete(id) {
@@ -80,6 +111,49 @@ class OutOfStockOrderService {
     await outOfStockOrder.destroy();
 
     return outOfStockOrder;
+  }
+
+  async takeOutOfStockOrder(id, userId) {
+    const updatedOrder = await this.update(id, {
+      statusId: 2,
+      pickedUpAt: new Date(),
+      assignedToId: userId,
+    });
+
+    await Promise.all(
+      updatedOrder.items
+        //.filter((item) => item.case.state === availablesStates.OUT_OF_STOCK)
+        .map((item) => {
+          return Case.update(
+            {
+              state: outOfStockOrderStateToCaseState[updatedOrder.statusId],
+            },
+            { where: { id: item.id, state: availablesStates.OUT_OF_STOCK } }
+          );
+        })
+    );
+
+    return updatedOrder;
+  }
+
+  async finishOutOfStockOrder(id) {
+    const updatedOrder = await this.update(id, {
+      statusId: 3,
+      doneAt: new Date(),
+    });
+
+    await Promise.all(
+      updatedOrder.items.map((item) => {
+        return Case.update(
+          {
+            state: outOfStockOrderStateToCaseState[updatedOrder.statusId],
+          },
+          { where: { id: item.id, state: availablesStates.PICKUP_IN_PROGRESS } }
+        );
+      })
+    );
+
+    return updatedOrder;
   }
 }
 

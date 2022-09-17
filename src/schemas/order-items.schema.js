@@ -5,7 +5,6 @@ const caseId = Joi.number().integer();
 const caseContentId = Joi.number().integer();
 const orderId = Joi.number().integer();
 const quantity = Joi.number().integer();
-const wasReturned = Joi.boolean();
 
 const getOrderItemSchema = Joi.object({
   id: id.required(),
@@ -23,7 +22,6 @@ const updateOrderItemSchema = Joi.object({
   caseContentId,
   orderId,
   quantity,
-  wasReturned,
 });
 
 module.exports = {

@@ -70,10 +70,20 @@ async function destroyCaseController(req, res, next) {
   }
 }
 
+async function getCasesWaitingCleanProcessController(_req, res, next) {
+  try {
+    const data = await service.findCasesWaitingCleanProcess();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getCasesController,
   getCaseByIdController,
   getCasesByCustomerController,
+  getCasesWaitingCleanProcessController,
   createCaseController,
   updateCaseController,
   destroyCaseController,

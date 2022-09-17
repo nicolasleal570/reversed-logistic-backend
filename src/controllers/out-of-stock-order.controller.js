@@ -58,10 +58,44 @@ async function destroyOutOfStockOrderController(req, res, next) {
   }
 }
 
+async function takeOutOfStockOrderController(req, res, next) {
+  try {
+    const {
+      sub: { id: userId },
+    } = req.user;
+
+    const { id: outOfStockOrderId } = req.body;
+
+    const outOfStockOrder = await service.takeOutOfStockOrder(
+      outOfStockOrderId,
+      userId
+    );
+
+    res.json(outOfStockOrder);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function finishOutOfStockOrderController(req, res, next) {
+  try {
+    const { id: outOfStockOrderId } = req.body;
+    const outOfStockOrder = await service.finishOutOfStockOrder(
+      outOfStockOrderId
+    );
+
+    res.json(outOfStockOrder);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getOutOfStockOrderController,
   getOutOfStockOrderByIdController,
   createOutOfStockOrderController,
   updateOutOfStockOrderController,
   destroyOutOfStockOrderController,
+  takeOutOfStockOrderController,
+  finishOutOfStockOrderController,
 };

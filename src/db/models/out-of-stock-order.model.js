@@ -51,6 +51,11 @@ const OutOfStockOrderSchema = {
     allowNull: true,
     type: DataTypes.DATE,
   },
+  doneAt: {
+    field: 'done_at',
+    allowNull: true,
+    type: DataTypes.DATE,
+  },
   createdAt: {
     field: 'created_at',
     allowNull: false,

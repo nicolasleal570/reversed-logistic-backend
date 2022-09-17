@@ -2,7 +2,8 @@ const boom = require('@hapi/boom');
 const { availablesStates } = require('../db/models/case.model');
 const { sequelize } = require('../db/sequelize');
 
-const { Case, Order, OrderItem } = sequelize.models;
+const { Case, Order, OrderItem, OutOfStockItem, OutOfStockOrder } =
+  sequelize.models;
 
 class CasesService {
   constructor() {}
@@ -36,13 +37,13 @@ class CasesService {
     return caseItem;
   }
 
+  // Show cases which have been using by customer
   async findCasesByCustomer(customerLocationId) {
     const orders = await Order.findAll({
       include: [
         {
           model: OrderItem,
           as: 'items',
-          where: { wasReturned: false },
           include: [
             {
               model: Case,
@@ -70,6 +71,38 @@ class CasesService {
     });
 
     return { customerLocationId, orders, cases };
+  }
+
+  // Show cases which have been waiting for clean process
+  async findCasesWaitingCleanProcess() {
+    const orders = await OutOfStockOrder.findAll({
+      include: [
+        {
+          model: OutOfStockItem,
+          as: 'items',
+          include: [
+            {
+              model: Case,
+              as: 'case',
+              where: { state: 'WAITING_CLEAN_PROCESS' },
+            },
+          ],
+        },
+      ],
+    });
+
+    const cases = [];
+    orders.forEach((order) => {
+      cases.push(
+        ...order.items.map((orderItem) => ({
+          ...orderItem.case.toJSON(),
+          caseContentId: orderItem.caseContentId,
+          orderId: orderItem.orderId,
+        }))
+      );
+    });
+
+    return { orders, cases };
   }
 
   async update(id, changes) {
