@@ -19,19 +19,28 @@ const OutOfStockItemSchema = {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  atWarehouse: {
+    field: 'clean_process_done',
+    allowNull: true,
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   needsCleanProcess: {
     field: 'needs_clean_process',
     allowNull: true,
     type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   cleanProcessDone: {
     field: 'clean_process_done',
     allowNull: true,
     type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   finished: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   caseId: {
     field: 'case_id',

@@ -5,6 +5,7 @@ const {
   getCaseSchema,
   updateCaseSchema,
   createCaseSchema,
+  handleCaseStateAfterPickupDoneSchema,
 } = require('../schemas/cases.schema');
 const {
   getCasesController,
@@ -14,6 +15,8 @@ const {
   updateCaseController,
   destroyCaseController,
   getCasesWaitingCleanProcessController,
+  getCaseLastOutOfStockInfo,
+  handleCaseStateAfterPickupDoneController,
 } = require('../controllers/cases.controller');
 
 const router = express.Router();
@@ -40,11 +43,24 @@ router.get(
   getCaseByIdController
 );
 
+router.get(
+  '/:id/out-of-stock',
+  validatorHandler(getCaseSchema, 'params'),
+  getCaseLastOutOfStockInfo
+);
+
 // Create new case
 router.post(
   '/',
   validatorHandler(createCaseSchema, 'body'),
   createCaseController
+);
+
+router.post(
+  '/:id/after-out-of-stock',
+  validatorHandler(getCaseSchema, 'params'),
+  validatorHandler(handleCaseStateAfterPickupDoneSchema, 'body'),
+  handleCaseStateAfterPickupDoneController
 );
 
 // Update Case

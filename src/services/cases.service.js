@@ -1,9 +1,16 @@
 const boom = require('@hapi/boom');
+const { Op } = require('sequelize');
 const { availablesStates } = require('../db/models/case.model');
 const { sequelize } = require('../db/sequelize');
 
-const { Case, Order, OrderItem, OutOfStockItem, OutOfStockOrder } =
-  sequelize.models;
+const {
+  Case,
+  Order,
+  OrderItem,
+  OutOfStockItem,
+  OutOfStockOrder,
+  CustomerLocation,
+} = sequelize.models;
 
 class CasesService {
   constructor() {}
@@ -105,6 +112,41 @@ class CasesService {
     return { orders, cases };
   }
 
+  async findCaseLastOutOfStockInfo(caseId) {
+    const list = await OutOfStockItem.findOne({
+      include: [
+        {
+          model: Case,
+          as: 'case',
+          where: {
+            state: {
+              [Op.or]: ['PICKUP_DONE', 'WAITING_CLEAN_PROCESS'],
+            },
+          },
+        },
+        'caseContent',
+        {
+          model: Order,
+          as: 'order',
+          include: [
+            {
+              model: CustomerLocation,
+              as: 'customerLocation',
+              include: 'customer',
+            },
+          ],
+        },
+      ],
+      where: { caseId, finished: false },
+    });
+
+    if (!list) {
+      throw boom.notFound('No se encontraron resultados');
+    }
+
+    return list;
+  }
+
   async update(id, changes) {
     const caseItem = await this.findOne(id);
     const res = await caseItem.update(changes);
@@ -117,6 +159,54 @@ class CasesService {
     await caseItem.destroy();
 
     return caseItem;
+  }
+
+  async handleCaseStateAfterPickupDone(id, data) {
+    const { outOfStockItemId, currentStatus } = data;
+    const caseItem = await this.findOne(id);
+    const outOfStockItem = await OutOfStockItem.findByPk(outOfStockItemId, {
+      include: [
+        {
+          model: Case,
+          as: 'case',
+          attributes: ['id'],
+        },
+      ],
+    });
+
+    if (!outOfStockItem) {
+      throw boom.notFound('No se encontró este out of stock order item');
+    }
+
+    if (caseItem.id !== outOfStockItem.case.id) {
+      throw boom.badRequest('Este case no pertenece a esta orden de recogida');
+    }
+
+    if (caseItem.state !== availablesStates.PICKUP_DONE) {
+      throw boom.badRequest('Este case no se encuentra en el estado correcto');
+    }
+
+    // Update case state, if needs clean set WAITING_CLEAN_PROCESS. If not, set AVAILABLE
+    if (currentStatus === 'SET_AVAILABLE') {
+      await caseItem.update({ state: availablesStates.AVAILABLE });
+      await outOfStockItem.update({
+        finished: true,
+      });
+    }
+
+    if (currentStatus === 'SET_DIRTY') {
+      await caseItem.update({ state: availablesStates.WAITING_CLEAN_PROCESS });
+      await outOfStockItem.update({
+        needsCleanProcess: true,
+      });
+    }
+
+    // Update Order item and set finished
+
+    return {
+      case: caseItem,
+      outOfStockItem,
+    };
   }
 }
 

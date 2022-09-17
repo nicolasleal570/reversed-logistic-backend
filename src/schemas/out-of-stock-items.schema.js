@@ -6,6 +6,7 @@ const { id: outOfStockOrderId } = require('./out-of-stock-order.schema');
 
 const id = Joi.number().integer();
 const wasReturned = Joi.boolean();
+const atWarehouse = Joi.boolean();
 const needsCleanProcess = Joi.boolean();
 const cleanProcessDone = Joi.boolean();
 const finished = Joi.boolean();
@@ -27,6 +28,7 @@ const updateOutOfStockItemSchema = Joi.object({
   orderId,
   outOfStockOrderId,
   wasReturned,
+  atWarehouse,
   needsCleanProcess,
   cleanProcessDone,
   finished,

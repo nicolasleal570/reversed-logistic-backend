@@ -79,12 +79,34 @@ async function getCasesWaitingCleanProcessController(_req, res, next) {
   }
 }
 
+async function getCaseLastOutOfStockInfo(req, res, next) {
+  try {
+    const { id } = req.params;
+    const data = await service.findCaseLastOutOfStockInfo(id);
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function handleCaseStateAfterPickupDoneController(req, res, next) {
+  try {
+    const { id } = req.params;
+    const data = await service.handleCaseStateAfterPickupDone(id, req.body);
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getCasesController,
   getCaseByIdController,
   getCasesByCustomerController,
   getCasesWaitingCleanProcessController,
+  getCaseLastOutOfStockInfo,
   createCaseController,
   updateCaseController,
   destroyCaseController,
+  handleCaseStateAfterPickupDoneController,
 };

@@ -1,5 +1,8 @@
 const Joi = require('joi');
 
+const SET_DIRTY = 'SET_DIRTY';
+const SET_AVAILABLE = 'SET_AVAILABLE';
+
 const id = Joi.number().integer();
 const name = Joi.string();
 const description = Joi.string();
@@ -26,10 +29,16 @@ const updateCaseSchema = Joi.object({
   state,
 });
 
+const handleCaseStateAfterPickupDoneSchema = Joi.object({
+  currentStatus: Joi.string().valid(SET_DIRTY, SET_AVAILABLE).required(),
+  outOfStockItemId: id.required(),
+});
+
 module.exports = {
   getCaseSchema,
   createCaseSchema,
   updateCaseSchema,
+  handleCaseStateAfterPickupDoneSchema,
   id,
   name,
   description,

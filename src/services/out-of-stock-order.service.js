@@ -120,18 +120,16 @@ class OutOfStockOrderService {
       assignedToId: userId,
     });
 
-    await Promise.all(
-      updatedOrder.items
-        //.filter((item) => item.case.state === availablesStates.OUT_OF_STOCK)
-        .map((item) => {
-          return Case.update(
-            {
-              state: outOfStockOrderStateToCaseState[updatedOrder.statusId],
-            },
-            { where: { id: item.id, state: availablesStates.OUT_OF_STOCK } }
-          );
-        })
-    );
+    await Promise.all([
+      ...updatedOrder.items.map((item) => {
+        return OutOfStockItem.update(
+          {
+            wasReturned: true,
+          },
+          { where: { id: item.id } }
+        );
+      }),
+    ]);
 
     return updatedOrder;
   }
@@ -142,16 +140,16 @@ class OutOfStockOrderService {
       doneAt: new Date(),
     });
 
-    await Promise.all(
-      updatedOrder.items.map((item) => {
-        return Case.update(
+    await Promise.all([
+      ...updatedOrder.items.map((item) => {
+        return OutOfStockItem.update(
           {
-            state: outOfStockOrderStateToCaseState[updatedOrder.statusId],
+            atWarehouse: true,
           },
-          { where: { id: item.id, state: availablesStates.PICKUP_IN_PROGRESS } }
+          { where: { id: item.id } }
         );
-      })
-    );
+      }),
+    ]);
 
     return updatedOrder;
   }
