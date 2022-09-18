@@ -12,8 +12,9 @@ const availablesStates = {
   OUT_OF_STOCK: 'OUT_OF_STOCK', // Se acabó el contenido del case
   PICKUP_IN_PROGRESS: 'PICKUP_IN_PROGRESS', // Esperando que sea recogido donde el cliente
   PICKUP_DONE: 'PICKUP_DONE', // Se recogieron los case
-  WAITING_CLEAN_PROCESS: 'WAITING_CLEAN_PROCESS', // Esperando que por limpieza
+  CLEAN_PROCESS_QUEUED: 'CLEAN_PROCESS_QUEUED', // Esperando en cola por limpieza
   IN_CLEAN_PROCESS: 'IN_CLEAN_PROCESS', // Está en proceso de limpieza
+  CLEAN_PROCESS_DONE: 'CLEAN_PROCESS_DONE', // Está lista la limpieza
 };
 
 const orderStateToCaseState = {
@@ -29,6 +30,12 @@ const outOfStockOrderStateToCaseState = {
   1: availablesStates.OUT_OF_STOCK,
   2: availablesStates.PICKUP_IN_PROGRESS,
   3: availablesStates.PICKUP_DONE,
+};
+
+const cleanProcessOrderState = {
+  1: availablesStates.CLEAN_PROCESS_QUEUED,
+  2: availablesStates.IN_CLEAN_PROCESS,
+  3: availablesStates.CLEAN_PROCESS_DONE,
 };
 
 const CaseSchema = {
@@ -87,4 +94,5 @@ module.exports = {
   availablesStates,
   orderStateToCaseState,
   outOfStockOrderStateToCaseState,
+  cleanProcessOrderState,
 };

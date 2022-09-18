@@ -14,6 +14,7 @@ const trucksRoutes = require('./trucks.routes');
 const shipmentsRoutes = require('./shipments.routes');
 const shipmentStatusRoutes = require('./shipment-status.routes');
 const processStepsRoutes = require('./process-steps.routes');
+const cleanProcessStatusRoutes = require('./clean-process-status.routes');
 const cleanProcessOrderRoutes = require('./clean-process-orders.routes');
 const caseCleanProcessStepsRoutes = require('./case-clean-process-steps.routes');
 const outOfStockStatusRoutes = require('./out-of-stock-status.routes');
@@ -41,6 +42,7 @@ function routerApi(app) {
   router.use('/shipments', shipmentsRoutes);
   router.use('/shipment-status', shipmentStatusRoutes);
   router.use('/process-steps', processStepsRoutes);
+  router.use('/clean-process-status', cleanProcessStatusRoutes);
   router.use('/clean-process-orders', cleanProcessOrderRoutes);
   router.use('/case-clean-process-steps', caseCleanProcessStepsRoutes);
   router.use('/out-of-stock-status', outOfStockStatusRoutes);

@@ -25,6 +25,10 @@ const { Truck, TruckSchema } = require('./truck.model');
 const { Shipment, ShipmentSchema } = require('./shipment.model');
 const { ProcessStep, ProcessStepSchema } = require('./process-step.model');
 const {
+  CleanProcessStatus,
+  CleanProcessStatusSchema,
+} = require('./clean-process-status.model');
+const {
   CleanProcessOrder,
   CleanProcessOrderSchema,
 } = require('./clean-process-order.model');
@@ -69,6 +73,10 @@ async function setupModels(sequelize) {
   Truck.init(TruckSchema, Truck.config(sequelize));
   Shipment.init(ShipmentSchema, Shipment.config(sequelize));
   ProcessStep.init(ProcessStepSchema, ProcessStep.config(sequelize));
+  CleanProcessStatus.init(
+    CleanProcessStatusSchema,
+    CleanProcessStatus.config(sequelize)
+  );
   CleanProcessOrder.init(
     CleanProcessOrderSchema,
     CleanProcessOrder.config(sequelize)
@@ -104,6 +112,7 @@ async function setupModels(sequelize) {
   Truck.associate(sequelize.models);
   Shipment.associate(sequelize.models);
   ProcessStep.associate(sequelize.models);
+  CleanProcessStatus.associate(sequelize.models);
   CleanProcessOrder.associate(sequelize.models);
   CaseCleanProcessStep.associate(sequelize.models);
   ShipmentStatus.associate(sequelize.models);
