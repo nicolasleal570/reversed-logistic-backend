@@ -6,7 +6,12 @@ const UserService = require('./users.service');
 
 const caseService = new CasesService();
 
-const { CleanProcessOrder, CustomerLocation } = sequelize.models;
+const {
+  CleanProcessOrder,
+  CustomerLocation,
+  CaseCleanProcessStep,
+  OutOfStockItem,
+} = sequelize.models;
 
 class CleanProcessOrdersService {
   constructor() {
@@ -26,6 +31,7 @@ class CleanProcessOrdersService {
   async findAll() {
     const cleanProcessOrders = await CleanProcessOrder.findAll({
       include: [
+        'status',
         'createdBy',
         'steps',
         'case',
@@ -42,7 +48,22 @@ class CleanProcessOrdersService {
 
   async findOne(id) {
     const cleanProcessOrder = await CleanProcessOrder.findByPk(id, {
-      include: ['createdBy', 'steps'],
+      include: [
+        'status',
+        'createdBy',
+        {
+          model: CaseCleanProcessStep,
+          as: 'steps',
+          include: ['processStep'],
+        },
+        'case',
+        'caseContent',
+        {
+          model: CustomerLocation,
+          as: 'customerLocation',
+          include: ['customer'],
+        },
+      ],
     });
 
     if (!cleanProcessOrder) {
@@ -64,6 +85,86 @@ class CleanProcessOrdersService {
     await cleanProcessOrder.destroy();
 
     return cleanProcessOrder;
+  }
+
+  async startCleanProcess(id) {
+    const cleanProcessOrder = await this.findOne(id);
+
+    cleanProcessOrder.update({ startedAt: new Date(), statusId: 2 });
+
+    await CaseCleanProcessStep.update(
+      {
+        isCurrent: true,
+      },
+      {
+        where: {
+          id: cleanProcessOrder.steps.find((item) => item.order === 1).id,
+        },
+      }
+    );
+
+    return this.findOne(id);
+  }
+
+  async setStepDone(id, data) {
+    const cleanProcessOrder = await this.findOne(id);
+    const { stepId } = data;
+
+    let currentCaseCleanProcessStep = await CaseCleanProcessStep.findByPk(
+      stepId
+    );
+
+    currentCaseCleanProcessStep.update({
+      isCurrent: false,
+      isDone: true,
+    });
+
+    currentCaseCleanProcessStep = currentCaseCleanProcessStep.toJSON();
+
+    const nextStep = cleanProcessOrder.steps.find((item) => {
+      return item.order === currentCaseCleanProcessStep.order + 1;
+    });
+
+    if (nextStep) {
+      await CaseCleanProcessStep.update(
+        {
+          isCurrent: true,
+        },
+        {
+          where: {
+            id: nextStep.id,
+          },
+        }
+      );
+    }
+
+    return this.findOne(id);
+  }
+
+  async markAsDone(id) {
+    const cleanProcessOrder = await this.findOne(id);
+
+    await cleanProcessOrder.update({ finishedAt: new Date(), statusId: 3 });
+
+    await caseService.update(cleanProcessOrder.caseId, {
+      state: availablesStates.CLEAN_PROCESS_DONE,
+    });
+
+    let outOfStockItem = await OutOfStockItem.findOne({
+      where: {
+        caseId: cleanProcessOrder.caseId,
+        finished: false,
+      },
+    });
+
+    if (outOfStockItem) {
+      outOfStockItem.update({
+        cleanProcessDone: true,
+        finished: true,
+      });
+    }
+
+    return this.findOne(id);
   }
 }
 

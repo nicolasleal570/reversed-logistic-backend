@@ -20,7 +20,7 @@ const OutOfStockItemSchema = {
     defaultValue: false,
   },
   atWarehouse: {
-    field: 'clean_process_done',
+    field: 'at_warehouse',
     allowNull: true,
     type: DataTypes.BOOLEAN,
     defaultValue: false,

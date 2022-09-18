@@ -90,6 +90,36 @@ async function destroyCleanProcessOrderController(req, res, next) {
   }
 }
 
+async function startCleanProcessOrderController(req, res, next) {
+  try {
+    const { id } = req.params;
+    const updatedCleanProcess = await service.startCleanProcess(id);
+    res.json(updatedCleanProcess);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function stepDoneCleanProcessOrderController(req, res, next) {
+  try {
+    const { id } = req.params;
+    const updatedCleanProcess = await service.setStepDone(id, req.body);
+    res.json(updatedCleanProcess);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function doneCleanProcessOrderController(req, res, next) {
+  try {
+    const { id } = req.params;
+    const updatedCleanProcess = await service.markAsDone(id);
+    res.json(updatedCleanProcess);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getCleanProcessOrdersController,
   getCleanProcessOrderByIdController,
@@ -97,4 +127,7 @@ module.exports = {
   createFullCleanProcessOrderController,
   updateCleanProcessOrderController,
   destroyCleanProcessOrderController,
+  startCleanProcessOrderController,
+  stepDoneCleanProcessOrderController,
+  doneCleanProcessOrderController,
 };

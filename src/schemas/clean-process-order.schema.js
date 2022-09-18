@@ -5,6 +5,7 @@ const { id: customerLocationId } = require('./customer-location.schema');
 const { id: processStepId } = require('./process-steps.schema');
 
 const id = Joi.number().integer();
+const statusId = Joi.number().integer();
 const details = Joi.string().min(0).allow('').allow(null);
 const finishedAt = Joi.date();
 const stepItem = Joi.object().keys({
@@ -39,6 +40,11 @@ const updateCleanProcessOrderSchema = Joi.object({
   customerLocationId,
   details,
   finishedAt,
+  statusId,
+});
+
+const stepDoneCleanProcessOrderSchema = Joi.object({
+  stepId: caseId.required(),
 });
 
 module.exports = {
@@ -46,6 +52,7 @@ module.exports = {
   createCleanProcessOrderSchema,
   createFullCleanProcessOrderSchema,
   updateCleanProcessOrderSchema,
+  stepDoneCleanProcessOrderSchema,
   id,
   details,
   finishedAt,

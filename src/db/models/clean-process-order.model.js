@@ -24,6 +24,7 @@ const CleanProcessOrderSchema = {
     },
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
+    defaultValue: 1,
   },
   caseId: {
     field: 'case_id',
@@ -67,6 +68,11 @@ const CleanProcessOrderSchema = {
     allowNull: false,
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
+  },
+  startedAt: {
+    field: 'startedAt',
+    allowNull: true,
+    type: DataTypes.DATE,
   },
   finishedAt: {
     field: 'finished_at',

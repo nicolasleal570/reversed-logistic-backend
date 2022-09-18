@@ -140,16 +140,20 @@ class OutOfStockOrderService {
       doneAt: new Date(),
     });
 
-    await Promise.all([
-      ...updatedOrder.items.map((item) => {
+    await Promise.all(
+      updatedOrder.items.map((item) => {
+        console.log(item);
+
         return OutOfStockItem.update(
           {
             atWarehouse: true,
+            needsCleanProcess: false,
+            cleanProcessDone: false,
           },
           { where: { id: item.id } }
         );
-      }),
-    ]);
+      })
+    );
 
     return updatedOrder;
   }

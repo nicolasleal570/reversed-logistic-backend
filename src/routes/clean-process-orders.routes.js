@@ -6,6 +6,7 @@ const {
   updateCleanProcessOrderSchema,
   createCleanProcessOrderSchema,
   createFullCleanProcessOrderSchema,
+  stepDoneCleanProcessOrderSchema,
 } = require('../schemas/clean-process-order.schema');
 const {
   getCleanProcessOrdersController,
@@ -14,6 +15,9 @@ const {
   destroyCleanProcessOrderController,
   createCleanProcessOrderController,
   createFullCleanProcessOrderController,
+  startCleanProcessOrderController,
+  stepDoneCleanProcessOrderController,
+  doneCleanProcessOrderController,
 } = require('../controllers/clean-process-order.controller');
 
 const router = express.Router();
@@ -51,6 +55,25 @@ router.delete(
   '/:id',
   validatorHandler(getCleanProcessOrderSchema, 'params'),
   destroyCleanProcessOrderController
+);
+
+router.post(
+  '/:id/start',
+  validatorHandler(getCleanProcessOrderSchema, 'params'),
+  startCleanProcessOrderController
+);
+
+router.post(
+  '/:id/step-done',
+  validatorHandler(getCleanProcessOrderSchema, 'params'),
+  validatorHandler(stepDoneCleanProcessOrderSchema, 'body'),
+  stepDoneCleanProcessOrderController
+);
+
+router.post(
+  '/:id/finished',
+  validatorHandler(getCleanProcessOrderSchema, 'params'),
+  doneCleanProcessOrderController
 );
 
 module.exports = router;

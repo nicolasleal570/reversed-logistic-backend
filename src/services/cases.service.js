@@ -94,7 +94,7 @@ class CasesService {
             {
               model: Case,
               as: 'case',
-              where: { state: 'WAITING_CLEAN_PROCESS' },
+              where: { state: 'CLEAN_PROCESS_QUEUED' },
             },
           ],
         },
@@ -123,7 +123,7 @@ class CasesService {
           as: 'case',
           where: {
             state: {
-              [Op.or]: ['PICKUP_DONE', 'WAITING_CLEAN_PROCESS'],
+              [Op.or]: ['PICKUP_DONE', 'CLEAN_PROCESS_QUEUED'],
             },
           },
         },
@@ -189,7 +189,7 @@ class CasesService {
       throw boom.badRequest('Este case no se encuentra en el estado correcto');
     }
 
-    // Update case state, if needs clean set WAITING_CLEAN_PROCESS. If not, set AVAILABLE
+    // Update case state, if needs clean set CLEAN_PROCESS_QUEUED. If not, set AVAILABLE
     if (currentStatus === 'SET_AVAILABLE') {
       await caseItem.update({ state: availablesStates.AVAILABLE });
       await outOfStockItem.update({
@@ -198,13 +198,11 @@ class CasesService {
     }
 
     if (currentStatus === 'SET_DIRTY') {
-      await caseItem.update({ state: availablesStates.WAITING_CLEAN_PROCESS });
+      await caseItem.update({ state: availablesStates.CLEAN_PROCESS_QUEUED });
       await outOfStockItem.update({
         needsCleanProcess: true,
       });
     }
-
-    // Update Order item and set finished
 
     return {
       case: caseItem,
