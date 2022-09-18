@@ -19,6 +19,7 @@ const createCaseSchema = Joi.object({
   description: description.default(''),
   volume: volume.required(),
   weight: weight.required(),
+  state,
 });
 
 const updateCaseSchema = Joi.object({

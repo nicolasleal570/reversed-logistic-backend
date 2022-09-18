@@ -16,7 +16,10 @@ class CasesService {
   constructor() {}
 
   async create(data) {
-    const newCase = await Case.create(data);
+    const newCase = await Case.create({
+      ...data,
+      state: data?.state ?? 'AVAILABLE',
+    });
     return newCase.toJSON();
   }
 

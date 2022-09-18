@@ -8,6 +8,7 @@
     "start": "NODE_ENV=production node src/index.js",
     "format": "prettier --write \"**/*.{js,jsx,css,ts,tsx,json}\"",
     "db:create": "sequelize-cli db:create",
+    "db:remove": "sequelize-cli db:drop",
     "db:create-admin": "sequelize-cli db:seed --seed 20220715191051-generate-super-admin.js",
     "migration:generate": "sequelize-cli migration:generate --name",
     "migration:run": "sequelize-cli db:migrate",

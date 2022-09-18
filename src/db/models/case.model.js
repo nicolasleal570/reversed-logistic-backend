@@ -56,7 +56,7 @@ const CaseSchema = {
   },
   state: {
     allowNull: true,
-    type: DataTypes.ENUM({ values: Object.values(availablesStates) }),
+    type: DataTypes.STRING,
     defaultValue: availablesStates.AVAILABLE,
   },
   createdAt: {
