@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const validatorHandler = require('../middlewares/validator.handler');
 const {
   getRoleSchema,
@@ -31,6 +32,7 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createRoleSchema, 'body'),
   createRoleController
 );

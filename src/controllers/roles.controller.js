@@ -23,7 +23,14 @@ async function getRoleByIdController(req, res, next) {
 
 async function createRoleController(req, res, next) {
   try {
-    const role = await service.create(req.body);
+    const {
+      sub: { id: userId },
+    } = req.user;
+
+    const role = await service.create({
+      ...req.body,
+      createdById: userId,
+    });
     res.json(role);
   } catch (error) {
     next(error);

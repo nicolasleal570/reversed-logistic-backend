@@ -1,5 +1,6 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
+const { slugify } = require('../utils/slugify');
 const UserService = require('./users.service');
 
 const { Role, RolePermission, UserRoles } = sequelize.models;
@@ -10,7 +11,10 @@ class RolesService {
   }
 
   async create(data) {
-    const newRole = await Role.create(data);
+    const newRole = await Role.create({
+      ...data,
+      value: slugify(data.name),
+    });
     return newRole.toJSON();
   }
 
