@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const id = Joi.number().integer();
+const name = Joi.string();
 const line1 = Joi.string();
 const line2 = Joi.string();
 const zipCode = Joi.string();
@@ -20,6 +21,7 @@ const getCustomerLocationByCustomerIdSchema = Joi.object({
 });
 
 const createCustomerSchema = Joi.object({
+  name: name.required(),
   line1: line1.required(),
   line2,
   zipCode: zipCode.required(),
@@ -32,6 +34,7 @@ const createCustomerSchema = Joi.object({
 });
 
 const updateCustomerSchema = Joi.object({
+  name,
   line1,
   line2,
   zipCode,
@@ -49,6 +52,7 @@ module.exports = {
   updateCustomerSchema,
   getCustomerLocationByCustomerIdSchema,
   id,
+  name,
   line1,
   line2,
   zipCode,

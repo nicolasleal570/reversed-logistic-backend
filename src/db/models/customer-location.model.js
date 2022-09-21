@@ -10,6 +10,10 @@ const CustomerLocationSchema = {
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
+  name: {
+    allowNull: true,
+    type: DataTypes.STRING,
+  },
   email: {
     allowNull: false,
     unique: true,

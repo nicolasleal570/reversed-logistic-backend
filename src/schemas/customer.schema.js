@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const {
+  name,
   line1,
   line2,
   zipCode,
@@ -18,6 +19,7 @@ const website = Joi.string();
 
 const locationItem = Joi.object().keys({
   id: id.min(0).allow(null).allow(''),
+  name: name.required(),
   line1: line1.required(),
   line2,
   zipCode: zipCode.required(),

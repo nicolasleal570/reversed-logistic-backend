@@ -15,6 +15,7 @@ module.exports = {
       CUSTOMER_LOCATION_TABLE,
       arr.map((_, index) => {
         return {
+          name: faker.company.companyName(),
           email: faker.internet.email('', '', '', {
             allowSpecialCharacters: false,
           }),
