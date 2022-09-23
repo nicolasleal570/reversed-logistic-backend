@@ -75,7 +75,14 @@ const CaseSchema = {
 };
 
 class Case extends Model {
-  static associate(_models) {}
+  static associate(models) {
+    this.belongsToMany(models.Order, {
+      as: 'orders',
+      through: models.OrderItem,
+      foreignKey: 'caseId',
+      otherKey: 'orderId',
+    });
+  }
 
   static config(sequelize) {
     return {

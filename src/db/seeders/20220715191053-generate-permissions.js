@@ -293,6 +293,37 @@ const customersPermissions = [
   },
 ];
 
+const outOfStockPermissions = [
+  {
+    name: 'Lectura',
+    description: 'Puede leer información del módulo de agotamiento',
+    value: 'OUT_OF_STOCK_READ',
+    created_at: new Date(),
+    created_by_id: 1,
+  },
+  {
+    name: 'Crear',
+    description: 'Puede crear nueva información en el módulo de agotamiento',
+    value: 'OUT_OF_STOCK_CREATE',
+    created_at: new Date(),
+    created_by_id: 1,
+  },
+  {
+    name: 'Actualizar',
+    description: 'Puede actualizar información en el módulo de agotamiento',
+    value: 'OUT_OF_STOCK_UPDATE',
+    created_at: new Date(),
+    created_by_id: 1,
+  },
+  {
+    name: 'Eliminar',
+    description: 'Puede eliminar información en el módulo de agotamiento',
+    value: 'OUT_OF_STOCK_DELETE',
+    created_at: new Date(),
+    created_by_id: 1,
+  },
+];
+
 module.exports = {
   async up(queryInterface) {
     await queryInterface.bulkInsert(
@@ -307,6 +338,7 @@ module.exports = {
         ...cleanStepsPermissions,
         ...usersPermissions,
         ...customersPermissions,
+        ...outOfStockPermissions,
       ],
       {}
     );

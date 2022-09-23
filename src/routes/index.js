@@ -1,5 +1,5 @@
 const express = require('express');
-const helpersRoutes = require('./helpers.routes');
+const analyticsRoutes = require('./analytics.routes');
 const authRoutes = require('./auth.routes');
 const usersRoutes = require('./users.routes');
 const rolesRoutes = require('./roles.routes');
@@ -28,6 +28,7 @@ function routerApi(app) {
   const router = express.Router();
   app.use('/api/v1', checkApiKey, router);
 
+  router.use('/analytics', analyticsRoutes);
   router.use('/auth', authRoutes);
   router.use('/users', usersRoutes);
   router.use('/roles', rolesRoutes);
@@ -49,10 +50,6 @@ function routerApi(app) {
   router.use('/out-of-stock-status', outOfStockStatusRoutes);
   router.use('/out-of-stock-order', outOfStockOrderRoutes);
   router.use('/out-of-stock-items', outOfStockItemsRoutes);
-
-  if (process.env.NODE_ENV === 'development') {
-    router.use('/helpers', helpersRoutes);
-  }
 }
 
 module.exports = routerApi;

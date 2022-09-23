@@ -1,9 +1,12 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const { slugify } = require('../utils/slugify');
+const PermissionsService = require('../services/permissions.service');
 const UserService = require('./users.service');
 
 const { Role, RolePermission, UserRoles } = sequelize.models;
+
+const permissionsService = new PermissionsService();
 
 class RolesService {
   constructor() {
@@ -11,15 +14,35 @@ class RolesService {
   }
 
   async create(data) {
-    const newRole = await Role.create({
+    let newRole = await Role.create({
       ...data,
       value: slugify(data.name),
     });
-    return newRole.toJSON();
+
+    newRole = newRole.toJSON();
+
+    if (data.permissions && data.permissions.length > 0) {
+      const permissions = await Promise.all(
+        data.permissions.map((item) =>
+          permissionsService.findOneByWhere({ value: item[0].toUpperCase() })
+        )
+      );
+
+      await Promise.all(
+        permissions.map((permission) =>
+          this.appendPermission(newRole.id, permission.id)
+        )
+      );
+    }
+
+    return newRole;
   }
 
   async findAll() {
-    const roles = await Role.findAll({ include: ['createdBy', 'permissions'] });
+    const roles = await Role.findAll({
+      order: [['id', 'ASC']],
+      include: ['createdBy', 'permissions'],
+    });
     return roles;
   }
 

@@ -16,6 +16,7 @@ const getRoleSchema = Joi.object({
 const createRoleSchema = Joi.object({
   name: name.required(),
   description: description,
+  permissions: Joi.array().items(Joi.any()),
   createdById: createdById.map((object) => object.required()),
 });
 
