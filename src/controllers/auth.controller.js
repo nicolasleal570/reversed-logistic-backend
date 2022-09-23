@@ -12,12 +12,12 @@ async function currentUserAuthController(req, res, next) {
 
     if (isLocation) {
       const location = await customerLocationService.findOne(id, true);
-      res.status(201).json({ location });
+      res.status(201).json({ location, isLocation });
       return;
     }
 
     const user = await authService.getCurrentUser(id);
-    res.status(201).json({ user });
+    res.status(201).json({ user, isLocation });
   } catch (error) {
     next(error);
   }

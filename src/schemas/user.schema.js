@@ -17,13 +17,12 @@ const createUserSchema = Joi.object({
   password: password.required(),
   phone: phone.required(),
   roleId: roleId.required(),
-  permissions: Joi.array().items(Joi.any()),
 });
 
 const updateUserSchema = Joi.object({
-  fullName: fullName,
-  email,
+  fullName,
   phone,
+  roleId,
 });
 
 module.exports = {

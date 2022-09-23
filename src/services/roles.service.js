@@ -2,16 +2,13 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const { slugify } = require('../utils/slugify');
 const PermissionsService = require('../services/permissions.service');
-const UserService = require('./users.service');
 
-const { Role, RolePermission, UserRoles } = sequelize.models;
+const { Role, RolePermission, UserRoles, User } = sequelize.models;
 
 const permissionsService = new PermissionsService();
 
 class RolesService {
-  constructor() {
-    this.userService = new UserService();
-  }
+  constructor() {}
 
   async create(data) {
     let newRole = await Role.create({
@@ -74,14 +71,42 @@ class RolesService {
 
   async appendRoleToUser(userId, roleId) {
     const role = await (await this.findOne(roleId)).toJSON();
-    const user = await (await this.userService.findOne(userId)).toJSON();
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      throw boom.notFound('Este usuario no existe');
+    }
 
     const newUserWithRole = await UserRoles.create({
       roleId: role.id,
-      userId: user.id,
+      userId: user.toJSON().id,
     });
 
     return newUserWithRole.toJSON();
+  }
+
+  async detachRoleToUser(userId, roleId) {
+    const role = await this.findOne(roleId);
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      throw boom.notFound('Este usuario no existe');
+    }
+
+    const userRole = await UserRoles.findOne({
+      where: {
+        roleId: role.toJSON().id,
+        userId: user.toJSON().id,
+      },
+    });
+
+    if (!userRole) {
+      throw boom.notFound('Este usuario no tiene este rol asignado');
+    }
+
+    await userRole.destroy();
+
+    return userRole.toJSON();
   }
 
   async appendPermission(roleId, permissionId) {

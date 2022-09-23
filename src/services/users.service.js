@@ -1,6 +1,9 @@
 const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
 const { sequelize } = require('../db/sequelize');
+const RoleService = require('./roles.service');
+
+const rolesService = new RoleService();
 
 const { User, Role } = sequelize.models;
 
@@ -55,7 +58,16 @@ class UserService {
 
   async update(id, changes) {
     const user = await this.findOne(id);
-    const res = await user.update(changes);
+
+    const { roleId, ...rest } = changes;
+    const userData = user.toJSON();
+
+    if (userData.roles[0].id !== Number.parseInt(roleId, 10)) {
+      await rolesService.detachRoleToUser(userData.id, user.roles[0].id);
+      await rolesService.appendRoleToUser(userData.id, roleId);
+    }
+
+    const res = await user.update(rest);
 
     return res;
   }
