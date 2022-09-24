@@ -14,6 +14,7 @@ module.exports = {
           password: hash,
           phone: '584241743990',
           created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}

@@ -38,6 +38,17 @@ const UserSchema = {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  updatedAt: {
+    field: 'updated_at',
+    allowNull: false,
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  deletedAt: {
+    field: 'deleted_at',
+    allowNull: true,
+    type: DataTypes.DATE,
+  },
 };
 
 class User extends Model {

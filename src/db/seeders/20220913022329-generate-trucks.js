@@ -14,6 +14,7 @@ module.exports = {
         type: faker.vehicle.type(),
         license_plate: faker.vehicle.vrm(),
         created_at: new Date(),
+        updated_at: new Date(),
       })),
       {}
     );

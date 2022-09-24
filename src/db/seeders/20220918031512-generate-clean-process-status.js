@@ -15,6 +15,7 @@ module.exports = {
           value: 'CLEAN_PROCESS_QUEUED',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'En proceso de limpieza',
@@ -23,6 +24,7 @@ module.exports = {
           value: 'IN_CLEAN_PROCESS',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Limpieza terminada',
@@ -31,6 +33,7 @@ module.exports = {
           value: 'CLEAN_PROCESS_DONE',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}

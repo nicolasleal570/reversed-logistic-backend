@@ -34,6 +34,7 @@ class CasesService {
       where,
       order: [['id', 'ASC']],
     });
+
     return cases;
   }
 

@@ -13,6 +13,7 @@ module.exports = {
         details: '',
         created_by_id: 1,
         created_at: new Date(),
+        updated_at: new Date(),
       })),
       {}
     );

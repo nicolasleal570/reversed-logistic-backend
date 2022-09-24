@@ -15,6 +15,7 @@ module.exports = {
           description: '',
           website: faker.internet.url(),
           created_at: new Date(),
+          updated_at: new Date(),
         };
       }),
       {}

@@ -15,6 +15,7 @@ module.exports = {
           weight: faker.datatype.number({ min: 5, max: 50 }),
           state: availablesStates.AVAILABLE,
           created_at: new Date(),
+          updated_at: new Date(),
         };
       }),
       {}

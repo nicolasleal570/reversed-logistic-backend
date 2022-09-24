@@ -13,6 +13,7 @@ module.exports = {
           value: 'WAITING_SHIPMENT',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'En proceso de envío',
@@ -21,6 +22,7 @@ module.exports = {
           value: 'IN_SHIPMENT',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Entregado en destino',
@@ -29,6 +31,7 @@ module.exports = {
           value: 'SHIPMENT_DONE',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}

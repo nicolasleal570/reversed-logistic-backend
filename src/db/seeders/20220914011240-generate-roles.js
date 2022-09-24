@@ -12,6 +12,7 @@ module.exports = {
           description:
             'Usuario con acceso a todos los módulos de la aplicación',
           created_at: new Date(),
+          updated_at: new Date(),
           created_by_id: 1,
         },
         {
@@ -19,6 +20,7 @@ module.exports = {
           value: 'PACKING_AUX',
           description: 'Usuario que ayuda a empacar los pedidos a los clientes',
           created_at: new Date(),
+          updated_at: new Date(),
           created_by_id: 1,
         },
         {
@@ -26,6 +28,7 @@ module.exports = {
           value: 'SHIPPING_AUX',
           description: 'Usuario que se encarga de asignar un pedido a un envío',
           created_at: new Date(),
+          updated_at: new Date(),
           created_by_id: 1,
         },
         {
@@ -34,6 +37,7 @@ module.exports = {
           description:
             'Usuario que se encarga de revisar las órdenes de recogida de los cases',
           created_at: new Date(),
+          updated_at: new Date(),
           created_by_id: 1,
         },
         {
@@ -42,6 +46,7 @@ module.exports = {
           description:
             'Usuario que maneja los camiones para hacer las entregas',
           created_at: new Date(),
+          updated_at: new Date(),
           created_by_id: 1,
         },
       ],

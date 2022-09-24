@@ -15,6 +15,7 @@ module.exports = {
             'Debe retirar la tapa y desechar todo el contenido interno del case',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Limpiar con agua a presión',
@@ -23,6 +24,7 @@ module.exports = {
           instructions: 'Limpiar con agua a presión',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Hervir el case',
@@ -33,6 +35,7 @@ module.exports = {
             'Debe poner a hervir el case a 100 grados C por 30 minutos',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}

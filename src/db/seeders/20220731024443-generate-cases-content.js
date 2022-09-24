@@ -14,6 +14,7 @@ module.exports = {
           description: faker.commerce.productDescription(),
           price: faker.commerce.price(),
           created_at: new Date(),
+          updated_at: new Date(),
         };
       }),
       {}

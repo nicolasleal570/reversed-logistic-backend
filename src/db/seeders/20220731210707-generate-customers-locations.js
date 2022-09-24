@@ -27,6 +27,7 @@ module.exports = {
           contact: faker.phone.number(),
           customer_id: index + 1,
           created_at: new Date(),
+          updated_at: new Date(),
         };
       }),
       {}

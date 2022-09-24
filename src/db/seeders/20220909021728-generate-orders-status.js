@@ -13,6 +13,7 @@ module.exports = {
           value: 'QUEUED',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'En preparación',
@@ -21,6 +22,7 @@ module.exports = {
           value: 'IN_TRANSIT',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Preparación finalizada',
@@ -29,6 +31,7 @@ module.exports = {
           value: 'FINISHED',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Esperando que sea enviada',
@@ -37,6 +40,7 @@ module.exports = {
           value: 'WAITING_SHIPMENT',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'En proceso de envío',
@@ -45,6 +49,7 @@ module.exports = {
           value: 'IN_SHIPMENT',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Entregado en destino',
@@ -53,6 +58,7 @@ module.exports = {
           value: 'SHIPMENT_DONE',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Cancelada',
@@ -61,6 +67,7 @@ module.exports = {
           value: 'CANCELLED',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}

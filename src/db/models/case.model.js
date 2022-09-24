@@ -72,6 +72,17 @@ const CaseSchema = {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  updatedAt: {
+    field: 'updated_at',
+    allowNull: false,
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  deletedAt: {
+    field: 'deleted_at',
+    allowNull: true,
+    type: DataTypes.DATE,
+  },
 };
 
 class Case extends Model {
@@ -89,7 +100,7 @@ class Case extends Model {
       sequelize,
       tableName: CASE_TABLE,
       modelName: 'Case',
-      timestamps: false,
+      paranoid: true,
     };
   }
 }

@@ -15,6 +15,7 @@ module.exports = {
           value: 'OUT_OF_STOCK',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Recogida en progreso',
@@ -23,6 +24,7 @@ module.exports = {
           value: 'PICKUP_IN_PROGRESS',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           name: 'Recogida completada',
@@ -31,6 +33,7 @@ module.exports = {
           value: 'PICKUP_DONE',
           created_by_id: 1,
           created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}
