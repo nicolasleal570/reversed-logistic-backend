@@ -11,6 +11,42 @@ async function mostUsedCasesController(_req, res, next) {
   }
 }
 
+async function bestCustomersController(_req, res, next) {
+  try {
+    res.json({ hola: 'mundo' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function worstCustomersController(_req, res, next) {
+  try {
+    res.json({ hola: 'mundo' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function bestFlavorsController(_req, res, next) {
+  try {
+    res.json({ hola: 'mundo' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function bestTrucksController(_req, res, next) {
+  try {
+    res.json({ hola: 'mundo' });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   mostUsedCasesController,
+  bestCustomersController,
+  worstCustomersController,
+  bestFlavorsController,
+  bestTrucksController,
 };

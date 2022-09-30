@@ -30,16 +30,47 @@ class CasesService {
       where = { ...where, state: availablesStates[filterParams?.state ?? ''] };
     }
 
-    const cases = await Case.findAll({
+    let cases = await Case.findAll({
       where,
+      include: [
+        {
+          model: OutOfStockItem,
+          as: 'outOfStockItems',
+        },
+      ],
       order: [['id', 'ASC']],
+    });
+
+    cases = cases.map((item) => {
+      const { outOfStockItems, ...rest } = item.toJSON();
+      const currentOutOfStock = outOfStockItems.find(
+        (elem) =>
+          elem.wasReturned === false &&
+          elem.atWarehouse === false &&
+          elem.needsCleanProcess === false &&
+          elem.cleanProcessDone === false &&
+          elem.finished === false
+      );
+
+      return {
+        ...rest,
+        currentOutOfStockOrderId: currentOutOfStock?.outOfStockOrderId || null,
+      };
     });
 
     return cases;
   }
 
   async findOne(id) {
-    const caseItem = await Case.findByPk(id);
+    const caseItem = await Case.findByPk(id, {
+      include: [
+        {
+          model: Order,
+          as: 'orders',
+          include: ['createdBy', 'assignedTo', 'orderStatus'],
+        },
+      ],
+    });
 
     if (!caseItem) {
       throw boom.notFound('Case not found');

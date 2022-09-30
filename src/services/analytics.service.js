@@ -1,13 +1,27 @@
 //const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
-const { Case } = sequelize.models;
+const { Case, Order, OrderStatus } = sequelize.models;
 
 class AnalyticsService {
   constructor() {}
 
   async mostUsed() {
     let cases = await Case.findAll({
-      include: ['orders'],
+      include: [
+        {
+          model: Order,
+          as: 'orders',
+          include: [
+            {
+              model: OrderStatus,
+              as: 'orderStatus',
+              where: {
+                value: 'SHIPMENT_DONE',
+              },
+            },
+          ],
+        },
+      ],
     });
 
     cases = [...cases.sort((a, b) => b.orders.length - a.orders.length)]

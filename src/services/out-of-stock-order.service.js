@@ -131,7 +131,7 @@ class OutOfStockOrderService {
       }),
     ]);
 
-    return updatedOrder;
+    return this.findOne(id);
   }
 
   async finishOutOfStockOrder(id) {
@@ -155,7 +155,7 @@ class OutOfStockOrderService {
       })
     );
 
-    return updatedOrder;
+    return this.findOne(id);
   }
 }
 

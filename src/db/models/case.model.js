@@ -93,6 +93,11 @@ class Case extends Model {
       foreignKey: 'caseId',
       otherKey: 'orderId',
     });
+
+    this.hasMany(models.OutOfStockItem, {
+      as: 'outOfStockItems',
+      foreignKey: 'caseId',
+    });
   }
 
   static config(sequelize) {

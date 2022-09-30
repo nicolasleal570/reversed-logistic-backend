@@ -16,7 +16,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          name: 'En proceso de envío',
+          name: 'En camino',
           description:
             'Este estado representa las órdenes que están en proceso de envío.',
           value: 'IN_SHIPMENT',

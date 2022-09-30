@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
-const { Shipment } = sequelize.models;
+const { Shipment, Order } = sequelize.models;
 
 class ShipmentsService {
   constructor() {}
@@ -52,13 +52,23 @@ class ShipmentsService {
     const shipments = await Shipment.findAll({
       include: ['createdBy', 'orders', 'truck', 'status'],
       where,
+      order: [['deliveredAt', 'DESC']],
     });
     return shipments;
   }
 
   async findOne(id) {
     const shipment = await Shipment.findByPk(id, {
-      include: ['createdBy', 'orders', 'truck', 'status'],
+      include: [
+        'createdBy',
+        {
+          model: Order,
+          as: 'orders',
+          include: ['orderStatus'],
+        },
+        'truck',
+        'status',
+      ],
     });
 
     if (!shipment) {
@@ -94,8 +104,9 @@ class ShipmentsService {
       };
     }
 
-    const res = await shipment.update(payload);
-    return res;
+    await shipment.update(payload);
+
+    return this.findOne(id);
   }
 
   async delete(id) {
@@ -106,12 +117,12 @@ class ShipmentsService {
   }
 
   async startShipping(shippingId) {
-    const shipment = this.update(shippingId, {
+    await this.update(shippingId, {
       shipmentAt: new Date(),
       statusId: 2,
     });
 
-    return shipment;
+    return this.findOne(shippingId);
   }
 }
 

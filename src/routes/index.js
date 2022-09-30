@@ -1,5 +1,6 @@
 const express = require('express');
 const analyticsRoutes = require('./analytics.routes');
+const helpersRoutes = require('./helpers.routes');
 const authRoutes = require('./auth.routes');
 const usersRoutes = require('./users.routes');
 const rolesRoutes = require('./roles.routes');
@@ -23,6 +24,7 @@ const outOfStockOrderRoutes = require('./out-of-stock-order.routes');
 const outOfStockItemsRoutes = require('./out-of-stock-items.routes');
 
 const { checkApiKey } = require('../middlewares/auth.handler');
+const { config } = require('../config/environment');
 
 function routerApi(app) {
   const router = express.Router();
@@ -50,6 +52,10 @@ function routerApi(app) {
   router.use('/out-of-stock-status', outOfStockStatusRoutes);
   router.use('/out-of-stock-order', outOfStockOrderRoutes);
   router.use('/out-of-stock-items', outOfStockItemsRoutes);
+
+  if (!config.isProd) {
+    router.use('/helpers', helpersRoutes);
+  }
 }
 
 module.exports = routerApi;

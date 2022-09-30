@@ -57,7 +57,7 @@ async function destroyOrderController(req, res, next) {
 async function takeOrderController(req, res, next) {
   try {
     const {
-      sub: { id: userId, isLocation },
+      sub: { id: userId },
     } = req.user;
     const { orderId } = req.body;
     //TODO: Check user role and permissions

@@ -26,7 +26,7 @@ async function getCleanProcessOrderByIdController(req, res, next) {
 async function createCleanProcessOrderController(req, res, next) {
   try {
     const {
-      sub: { id: userId, isLocation },
+      sub: { id: userId },
     } = req.user;
     const cleanProcessOrder = await service.create({
       ...req.body,

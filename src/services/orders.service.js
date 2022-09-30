@@ -64,7 +64,7 @@ class OrdersService {
 
   async findAll() {
     const orders = await Order.findAll({
-      include: ['createdBy', 'assignedTo', 'orderStatus'],
+      include: ['createdBy', 'assignedTo', 'orderStatus', 'customerLocation'],
       order: [
         ['orderStatusId', 'ASC'],
         ['purchaseDate', 'ASC'],
@@ -132,6 +132,7 @@ class OrdersService {
       await order.update({
         subTotal: newOrderPrice,
         total: newOrderPrice,
+        updatedAt: new Date(),
       });
     }
 
@@ -162,7 +163,7 @@ class OrdersService {
       orderStatusId: 2, // Packing in transit
     });
 
-    return order;
+    return this.findOne(orderId);
   }
 
   async markAsReady(orderId) {
@@ -178,7 +179,7 @@ class OrdersService {
       orderStatusId: 3, // Packing finished
     });
 
-    return order;
+    return this.findOne(orderId);
   }
 
   async assignShipment(data) {
@@ -206,7 +207,7 @@ class OrdersService {
 
     order = await this.update(orderId, payload);
 
-    return order;
+    return this.findOne(orderId);
   }
 }
 
