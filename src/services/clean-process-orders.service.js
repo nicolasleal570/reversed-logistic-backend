@@ -114,7 +114,7 @@ class CleanProcessOrdersService {
       stepId
     );
 
-    currentCaseCleanProcessStep.update({
+    await currentCaseCleanProcessStep.update({
       isCurrent: false,
       isDone: true,
     });

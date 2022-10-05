@@ -9,7 +9,7 @@ module.exports = {
       CLEAN_PROCESS_STATUS_TABLE,
       [
         {
-          name: 'En cola de limpieza',
+          name: 'En cola',
           description:
             'Este estado representa el case aún está en cola esperando ser atendido por el departamento de limpieza.',
           value: 'CLEAN_PROCESS_QUEUED',
@@ -18,7 +18,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          name: 'En proceso de limpieza',
+          name: 'En proceso',
           description:
             'Este estado representa que el case ya están siendo limpiado y procesado.',
           value: 'IN_CLEAN_PROCESS',
@@ -27,7 +27,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          name: 'Limpieza terminada',
+          name: 'Finalizado',
           description:
             'Este estado representa que el case ya fue terminado y está listo para habilitarse.',
           value: 'CLEAN_PROCESS_DONE',
