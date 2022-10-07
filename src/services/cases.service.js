@@ -69,6 +69,10 @@ class CasesService {
           as: 'orders',
           include: ['createdBy', 'assignedTo', 'orderStatus'],
         },
+        {
+          model: OutOfStockItem,
+          as: 'outOfStockItems',
+        },
       ],
     });
 
@@ -76,7 +80,25 @@ class CasesService {
       throw boom.notFound('Case not found');
     }
 
-    return caseItem;
+    const { outOfStockItems, ...rest } = caseItem.toJSON();
+    const currentOutOfStock = outOfStockItems.find(
+      (elem) =>
+        elem.wasReturned === false &&
+        elem.atWarehouse === false &&
+        elem.needsCleanProcess === false &&
+        elem.cleanProcessDone === false &&
+        elem.finished === false
+    );
+
+    console.log(currentOutOfStock);
+
+    return {
+      modelInstance: caseItem,
+      jsonData: {
+        ...rest,
+        currentOutOfStockOrderId: currentOutOfStock?.outOfStockOrderId || null,
+      },
+    };
   }
 
   // Show cases which have been using by customer
@@ -183,22 +205,22 @@ class CasesService {
   }
 
   async update(id, changes) {
-    const caseItem = await this.findOne(id);
-    const res = await caseItem.update(changes);
+    const { modelInstance } = await this.findOne(id);
+    await modelInstance.update(changes);
 
-    return res;
+    return this.findOne(id);
   }
 
   async delete(id) {
-    const caseItem = await this.findOne(id);
-    await caseItem.destroy();
+    const { modelInstance } = await this.findOne(id);
+    await modelInstance.destroy();
 
-    return caseItem;
+    return modelInstance;
   }
 
   async handleCaseStateAfterPickupDone(id, data) {
     const { outOfStockItemId, currentStatus } = data;
-    const caseItem = await this.findOne(id);
+    const { modelInstance: caseItem } = await this.findOne(id);
     const outOfStockItem = await OutOfStockItem.findByPk(outOfStockItemId, {
       include: [
         {

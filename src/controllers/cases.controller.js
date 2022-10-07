@@ -16,7 +16,7 @@ async function getCasesController(req, res, next) {
 async function getCaseByIdController(req, res, next) {
   try {
     const { id } = req.params;
-    const caseItem = await service.findOne(id);
+    const { jsonData: caseItem } = await service.findOne(id);
     res.json(caseItem);
   } catch (error) {
     next(error);
@@ -53,7 +53,7 @@ async function updateCaseController(req, res, next) {
   try {
     const { id } = req.params;
     const { body } = req;
-    const caseItem = await service.update(id, body);
+    const { jsonData: caseItem } = await service.update(id, body);
     res.json(caseItem);
   } catch (error) {
     next(error);
