@@ -23,6 +23,7 @@ const createRoleSchema = Joi.object({
 const updateRoleSchema = Joi.object({
   name,
   description,
+  permissions: Joi.array().items(Joi.any()),
 });
 
 const appendPermissionToRoleSchema = Joi.object({

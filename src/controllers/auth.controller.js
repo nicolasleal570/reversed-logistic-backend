@@ -11,7 +11,7 @@ async function currentUserAuthController(req, res, next) {
     } = req.user;
 
     if (isLocation) {
-      const location = await customerLocationService.findOne(id, true);
+      const location = await customerLocationService.findOne(id);
       res.status(201).json({ location, isLocation });
       return;
     }

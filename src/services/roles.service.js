@@ -57,9 +57,31 @@ class RolesService {
 
   async update(id, changes) {
     const role = await this.findOne(id);
-    const res = await role.update(changes);
+    const { permissions, ...data } = changes;
 
-    return res;
+    if (permissions && permissions.length > 0) {
+      const permissionsData = await Promise.all(
+        permissions.map((item) =>
+          permissionsService.findOneByWhere({ value: item[0].toUpperCase() })
+        )
+      );
+
+      await Promise.all(
+        permissionsData
+          .filter((permission) => {
+            const idx = role.permissions.findIndex(
+              (item) => item.id === permission.id
+            );
+
+            return idx === -1;
+          })
+          .map((permission) => this.appendPermission(role.id, permission.id))
+      );
+    }
+
+    await role.update(data);
+
+    return this.findOne(id);
   }
 
   async delete(id) {

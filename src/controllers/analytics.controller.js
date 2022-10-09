@@ -4,7 +4,7 @@ const service = new AnalyticsService();
 
 async function mostUsedCasesController(_req, res, next) {
   try {
-    const data = await service.mostUsed();
+    const data = await service.caseMostUsed();
     res.json(data);
   } catch (error) {
     next(error);

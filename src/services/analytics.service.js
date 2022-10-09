@@ -5,7 +5,7 @@ const { Case, Order, OrderStatus } = sequelize.models;
 class AnalyticsService {
   constructor() {}
 
-  async mostUsed() {
+  async caseMostUsed() {
     let cases = await Case.findAll({
       include: [
         {
