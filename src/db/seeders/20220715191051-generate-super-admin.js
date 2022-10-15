@@ -1,6 +1,7 @@
 'use strict';
 const bcrypt = require('bcrypt');
 const { USER_TABLE } = require('../models/user.model');
+const { USER_ROLES_TABLE } = require('../models/user-roles.model');
 
 module.exports = {
   async up(queryInterface) {
@@ -13,6 +14,19 @@ module.exports = {
           email: 'admin@email.com',
           password: hash,
           phone: '584241743990',
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      ],
+      {}
+    );
+
+    await queryInterface.bulkInsert(
+      USER_ROLES_TABLE,
+      [
+        {
+          user_id: 1,
+          role_id: 1,
           created_at: new Date(),
           updated_at: new Date(),
         },
