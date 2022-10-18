@@ -1,19 +1,22 @@
 const express = require('express');
 const passport = require('passport');
+const validatorHandler = require('../middlewares/validator.handler');
+const { ordersByCustomerLocations } = require('../schemas/analytics.schema');
 const {
-  mostUsedCasesController,
+  ordersByCustomerLocationsController,
   bestCustomersController,
-  worstCustomersController,
-  bestFlavorsController,
+  bestCaseContetsController,
   bestTrucksController,
+  bestCasesController,
 } = require('../controllers/analytics.controller');
 
 const router = express.Router();
 
-router.get(
-  '/cases-most-used',
+router.post(
+  '/orders-by-customer-locations',
   passport.authenticate('jwt', { session: false }),
-  mostUsedCasesController
+  validatorHandler(ordersByCustomerLocations, 'body'),
+  ordersByCustomerLocationsController
 );
 
 router.get(
@@ -23,15 +26,15 @@ router.get(
 );
 
 router.get(
-  '/worst-customers',
+  '/best-case-contents',
   passport.authenticate('jwt', { session: false }),
-  worstCustomersController
+  bestCaseContetsController
 );
 
 router.get(
-  '/best-flavors',
+  '/best-cases',
   passport.authenticate('jwt', { session: false }),
-  bestFlavorsController
+  bestCasesController
 );
 
 router.get(

@@ -2,9 +2,9 @@ const AnalyticsService = require('../services/analytics.service');
 
 const service = new AnalyticsService();
 
-async function mostUsedCasesController(_req, res, next) {
+async function ordersByCustomerLocationsController(req, res, next) {
   try {
-    const data = await service.caseMostUsed();
+    const data = await service.getOrdersByCustomerLocations(req.body);
     res.json(data);
   } catch (error) {
     next(error);
@@ -13,23 +13,26 @@ async function mostUsedCasesController(_req, res, next) {
 
 async function bestCustomersController(_req, res, next) {
   try {
-    res.json({ hola: 'mundo' });
+    const data = await service.getBestCustomers();
+    res.json(data);
   } catch (error) {
     next(error);
   }
 }
 
-async function worstCustomersController(_req, res, next) {
+async function bestCaseContetsController(_req, res, next) {
   try {
-    res.json({ hola: 'mundo' });
+    const data = await service.getBestCaseContents();
+    res.json(data);
   } catch (error) {
     next(error);
   }
 }
 
-async function bestFlavorsController(_req, res, next) {
+async function bestCasesController(_req, res, next) {
   try {
-    res.json({ hola: 'mundo' });
+    const data = await service.getBestCases();
+    res.json(data);
   } catch (error) {
     next(error);
   }
@@ -44,9 +47,9 @@ async function bestTrucksController(_req, res, next) {
 }
 
 module.exports = {
-  mostUsedCasesController,
+  bestCasesController,
+  ordersByCustomerLocationsController,
   bestCustomersController,
-  worstCustomersController,
-  bestFlavorsController,
+  bestCaseContetsController,
   bestTrucksController,
 };
