@@ -64,7 +64,12 @@ class ShipmentsService {
         {
           model: Order,
           as: 'orders',
-          include: ['orderStatus'],
+          include: [
+            'orderStatus',
+            'createdBy',
+            'assignedTo',
+            'customerLocation',
+          ],
         },
         'truck',
         'status',

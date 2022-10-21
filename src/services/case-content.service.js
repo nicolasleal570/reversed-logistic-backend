@@ -28,16 +28,16 @@ class CaseContentsService {
 
   async update(id, changes) {
     const caseContent = await this.findOne(id);
-    const res = await caseContent.update(changes);
+    await caseContent.update(changes);
 
-    return res;
+    return this.findOne(id);
   }
 
   async delete(id) {
     const caseContent = await this.findOne(id);
     await caseContent.destroy();
 
-    return caseContent;
+    return this.findOne(id);
   }
 }
 

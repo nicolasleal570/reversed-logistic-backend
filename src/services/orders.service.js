@@ -137,16 +137,15 @@ class OrdersService {
     }
 
     await order.update(restChanges);
-    order = await this.findOne(id);
 
-    return order;
+    return this.findOne(id);
   }
 
   async delete(id) {
     const order = await this.findOne(id);
     await order.destroy();
 
-    return order;
+    return this.findOne(id);
   }
 
   async takeOrder(orderId, userId) {

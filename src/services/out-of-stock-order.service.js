@@ -66,6 +66,7 @@ class OutOfStockOrderService {
           include: ['customer'],
         },
       ],
+      order: [['statusId', 'ASC']],
     });
     return outOfStockOrder;
   }

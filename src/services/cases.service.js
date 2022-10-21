@@ -258,8 +258,10 @@ class CasesService {
       });
     }
 
+    const updatedCase = await this.findOne(id);
+
     return {
-      case: caseItem,
+      case: updatedCase.jsonData,
       outOfStockItem,
     };
   }
