@@ -32,7 +32,7 @@ class UserService {
 
   async findOne(id) {
     const user = await User.findByPk(id, {
-      attributes: ['id', 'fullName', 'email', 'phone'],
+      attributes: ['id', 'fullName', 'email', 'phone', 'recoveryToken'],
       include: [{ model: Role, as: 'roles', include: ['permissions'] }],
     });
 
@@ -43,10 +43,10 @@ class UserService {
     return user;
   }
 
-  async findByEmail(email) {
+  async findByEmail(email, withRelations = true) {
     const user = await User.findOne({
       where: { email },
-      include: ['roles'],
+      include: withRelations ? ['roles'] : [],
     });
 
     if (!user) {
@@ -62,9 +62,11 @@ class UserService {
     const { roleId, ...rest } = changes;
     const userData = user.toJSON();
 
-    if (userData.roles[0].id !== Number.parseInt(roleId, 10)) {
-      await rolesService.detachRoleToUser(userData.id, user.roles[0].id);
-      await rolesService.appendRoleToUser(userData.id, roleId);
+    if (roleId) {
+      if (userData.roles[0].id !== Number.parseInt(roleId, 10)) {
+        await rolesService.detachRoleToUser(userData.id, user.roles[0].id);
+        await rolesService.appendRoleToUser(userData.id, roleId);
+      }
     }
 
     const res = await user.update(rest);

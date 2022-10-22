@@ -10,7 +10,7 @@
     "db:create": "sequelize-cli db:create",
     "db:remove": "sequelize-cli db:drop",
     "db:create-admin": "sequelize-cli db:seed --seed 20220715191051-generate-super-admin.js",
-    "db:create-status": "sequelize-cli db:seed --seed 20220909021728-generate-orders-status.js 20220916044118-generate-out-of-stock-status.js 20220914042419-generate-shipments-status.js 20220918031512-generate-clean-process-status.js",
+    "db:create-status": "sequelize-cli db:seed --seed 20220909021728-generate-orders-status.js 20220916044118-generate-out-of-stock-status.js 20220914042419-generate-shipments-status.js 20220918031512-generate-clean-process-status.js 20220715191053-generate-permissions.js",
     "migration:generate": "sequelize-cli migration:generate --name",
     "migration:run": "sequelize-cli db:migrate",
     "migration:revert": "sequelize-cli db:migrate:undo",

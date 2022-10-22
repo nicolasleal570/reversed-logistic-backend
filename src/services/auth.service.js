@@ -53,7 +53,8 @@ class AuthService {
   }
 
   async sendRecovery(email) {
-    const user = await usersService.findByEmail(email);
+    const userFound = await usersService.findByEmail(email, false);
+    const user = userFound.toJSON();
 
     const payload = {
       sub: user.id,
@@ -65,10 +66,10 @@ class AuthService {
     await usersService.update(user.id, { recoveryToken: token });
 
     const mail = {
-      from: config.nodemailerEmail,
+      from: 'noreply@gmail.com',
       to: user.email,
-      subject: 'Recupera tu cuenta!',
-      html: `<b>Parece que olvidaste tu contraseña. utiliza este link para recuperarla: <a href="${link}">link</a>`,
+      subject: '¡Recupera tu cuenta!',
+      html: `Parece que olvidaste tu contraseña. utiliza este link para recuperarla: <a href="${link}">link</a>`,
     };
 
     return this.sendMail(mail);
@@ -78,7 +79,8 @@ class AuthService {
     try {
       const { sub: userId } = jwt.verify(recoveryToken, config.tokenSecret);
 
-      const user = await usersService.findOne(userId);
+      const foundUser = await usersService.findOne(userId);
+      const user = foundUser.toJSON();
 
       if (user.recoveryToken !== recoveryToken) {
         throw boom.unauthorized();
