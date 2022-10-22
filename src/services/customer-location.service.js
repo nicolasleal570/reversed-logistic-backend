@@ -28,7 +28,7 @@ class CustomerLocationsService {
 
   async findOne(id, disabledValidation) {
     const customerLocation = await CustomerLocation.findByPk(id, {
-      include: ['customer'],
+      include: ['customer', 'orders'],
     });
 
     if (!customerLocation && !disabledValidation) {

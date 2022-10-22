@@ -90,8 +90,6 @@ class CasesService {
         elem.finished === false
     );
 
-    console.log(currentOutOfStock);
-
     return {
       modelInstance: caseItem,
       jsonData: {

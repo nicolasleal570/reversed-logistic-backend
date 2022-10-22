@@ -86,16 +86,19 @@ class AnalyticsService {
 
   async getBestCustomers() {
     const [results] = await sequelize.query(`
-      SELECT COUNT("foo"."customerId") AS "count", "foo"."customerId" as "customerId" FROM (
+      SELECT * FROM (
+    SELECT COUNT("foo"."customerId") AS "count", "foo"."customerId" as "customerId" FROM (
         SELECT "CustomerLocation"."id", 
-        "CustomerLocation"."name",
-        "CustomerLocation"."customer_id" AS "customerId"
+        "CustomerLocation"."name", 
+        "CustomerLocation"."customer_id" AS "customerId", 
+        "orders"."id" AS "order_id", 
+        "orders"."order_status_id" AS "order_status_id"
         FROM "customers_locations" AS "CustomerLocation" 
-        LEFT OUTER JOIN "customers" AS "customer" ON "CustomerLocation"."customer_id" = "customer"."id"
-      ) foo
-      GROUP BY "foo"."customerId"
-      ORDER BY "count" DESC
-      LIMIT 5;
+        LEFT OUTER JOIN "orders" AS "orders" ON "CustomerLocation"."id" = "orders"."customer_location_id"
+    ) foo
+    GROUP BY "foo"."customerId"
+) "counts"
+WHERE "counts"."count" > 1
     `);
 
     const customers = await Promise.all(
@@ -119,7 +122,6 @@ class AnalyticsService {
         LEFT OUTER JOIN "cases_content" AS "items->caseContent" ON "items"."case_content_id" = "items->caseContent"."id"
       ) foo
       GROUP BY "caseContentId"
-      ORDER BY "count" DESC
     `);
 
     const caseContents = await Promise.all(
@@ -141,7 +143,6 @@ class AnalyticsService {
         LEFT OUTER JOIN "order_items" AS "items" ON "Order"."id" = "items"."order_id"
       ) foo
       GROUP BY "caseId"
-      ORDER BY "count" DESC
     `);
 
     const cases = await Promise.all(

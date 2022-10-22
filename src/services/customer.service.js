@@ -2,7 +2,7 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const CustomerLocationService = require('./customer-location.service');
 
-const { Customer } = sequelize.models;
+const { Customer, CustomerLocation, Order } = sequelize.models;
 
 class CustomersService {
   constructor() {
@@ -37,7 +37,29 @@ class CustomersService {
 
   async findOne(id) {
     const customer = await Customer.findByPk(id, {
-      include: ['locations'],
+      include: [
+        {
+          model: CustomerLocation,
+          as: 'locations',
+          include: [
+            {
+              model: Order,
+              as: 'orders',
+              include: [
+                'createdBy',
+                'assignedTo',
+                'orderStatus',
+                'shipment',
+                {
+                  model: CustomerLocation,
+                  as: 'customerLocation',
+                  include: ['customer'],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
     if (!customer) {

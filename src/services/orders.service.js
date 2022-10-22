@@ -20,6 +20,18 @@ class OrdersService {
     this.orderItemsService = new OrderItemService();
   }
 
+  async casesAreAvailable(items) {
+    const casesContent = await Promise.all(
+      items.map((item) => casesService.findOne(item.caseId))
+    );
+
+    return (
+      casesContent
+        .map((item) => item.jsonData.state)
+        .filter((item) => item !== 'AVAILABLE').length === 0
+    );
+  }
+
   async calculateOrderPrice(items) {
     const casesContent = await Promise.all(
       items.map((item) => casesContentService.findOne(item.caseContentId))
@@ -33,6 +45,13 @@ class OrdersService {
 
   async create(data) {
     const { items, ...orderInfo } = data;
+
+    const canContinue = await this.casesAreAvailable(items);
+
+    if (!canContinue) {
+      throw boom.badRequest('Some cases are unavailable');
+    }
+
     const orderPrice = await this.calculateOrderPrice(items);
 
     let newOrder = await Order.create({

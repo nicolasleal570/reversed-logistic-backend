@@ -88,6 +88,10 @@ const CustomerLocationSchema = {
 class CustomerLocation extends Model {
   static associate(models) {
     this.belongsTo(models.Customer, { as: 'customer' });
+    this.hasMany(models.Order, {
+      as: 'orders',
+      foreignKey: 'customerLocationId',
+    });
   }
 
   static config(sequelize) {
