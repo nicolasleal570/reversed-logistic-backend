@@ -35,9 +35,9 @@ class ProcessStepsService {
 
   async update(id, changes) {
     const processSteps = await this.findOne(id);
-    const res = await processSteps.update(changes);
+    await processSteps.update(changes);
 
-    return res;
+    return this.findOne(id);
   }
 
   async delete(id) {

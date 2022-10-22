@@ -49,15 +49,17 @@ class CustomersService {
 
   async update(id, changes) {
     const customer = await this.findOne(id);
-    const res = await customer.update(changes);
 
-    return res;
+    await customer.update(changes);
+
+    return this.findOne(id);
   }
 
   async updateWithLocations(id, changes) {
     const { locations, ...restData } = changes;
     const customer = await this.findOne(id);
-    const res = await customer.update(restData);
+
+    await customer.update(restData);
 
     if (locations && locations.length > 0) {
       const locationsForUpdate = locations.filter((item) => item.id);
@@ -76,14 +78,14 @@ class CustomersService {
       ]);
     }
 
-    return res;
+    return this.findOne(id);
   }
 
   async delete(id) {
     const customer = await this.findOne(id);
     await customer.destroy();
 
-    return customer;
+    return this.findOne(id);
   }
 }
 

@@ -79,6 +79,7 @@ class OrdersService {
         'createdBy',
         'assignedTo',
         'orderStatus',
+        'shipment',
         {
           model: CustomerLocation,
           as: 'customerLocation',
