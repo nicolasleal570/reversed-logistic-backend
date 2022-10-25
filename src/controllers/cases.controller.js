@@ -16,7 +16,8 @@ async function getCasesController(req, res, next) {
 async function getCaseByIdController(req, res, next) {
   try {
     const { id } = req.params;
-    const { jsonData: caseItem } = await service.findOne(id);
+    const { paranoid } = req.query;
+    const { jsonData: caseItem } = await service.findOne(id, { paranoid });
     res.json(caseItem);
   } catch (error) {
     next(error);
@@ -63,8 +64,8 @@ async function updateCaseController(req, res, next) {
 async function destroyCaseController(req, res, next) {
   try {
     const { id } = req.params;
-    await service.delete(id);
-    res.json({ message: 'Deleted successfully' });
+    const { jsonData } = await service.delete(id);
+    res.json(jsonData);
   } catch (error) {
     next(error);
   }
@@ -99,6 +100,16 @@ async function handleCaseStateAfterPickupDoneController(req, res, next) {
   }
 }
 
+async function recoverCaseController(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { jsonData } = await service.recover(id);
+    res.json(jsonData);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getCasesController,
   getCaseByIdController,
@@ -109,4 +120,5 @@ module.exports = {
   updateCaseController,
   destroyCaseController,
   handleCaseStateAfterPickupDoneController,
+  recoverCaseController,
 };

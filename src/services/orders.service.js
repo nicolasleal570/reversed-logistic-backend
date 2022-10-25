@@ -7,7 +7,7 @@ const CasesContentService = require('./case-content.service');
 const ShipmentService = require('./shipments.service');
 const { orderStateToCaseState } = require('../db/models/case.model');
 
-const { Order, OrderItem, CustomerLocation } = sequelize.models;
+const { Order, OrderItem, CustomerLocation, Case } = sequelize.models;
 
 const shipmentService = new ShipmentService();
 
@@ -104,7 +104,18 @@ class OrdersService {
           as: 'customerLocation',
           include: ['customer'],
         },
-        { model: OrderItem, as: 'items', include: ['case', 'caseContent'] },
+        {
+          model: OrderItem,
+          as: 'items',
+          include: [
+            {
+              model: Case,
+              as: 'case',
+              paranoid: false,
+            },
+            'caseContent',
+          ],
+        },
       ],
     });
 

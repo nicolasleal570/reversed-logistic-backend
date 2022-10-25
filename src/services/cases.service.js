@@ -26,6 +26,15 @@ class CasesService {
   async findAll(filterParams = {}) {
     let where = {};
 
+    if (filterParams.state === 'DELETED') {
+      where = {
+        ...where,
+        deletedAt: {
+          [Op.not]: null,
+        },
+      };
+    }
+
     if (availablesStates[filterParams?.state ?? '']) {
       where = { ...where, state: availablesStates[filterParams?.state ?? ''] };
     }
@@ -39,6 +48,7 @@ class CasesService {
         },
       ],
       order: [['id', 'ASC']],
+      paranoid: filterParams?.state !== 'DELETED',
     });
 
     cases = cases.map((item) => {
@@ -61,7 +71,12 @@ class CasesService {
     return cases;
   }
 
-  async findOne(id) {
+  async findOne(id, { paranoid } = {}) {
+    const paranoidValue =
+      typeof paranoid === 'string' ? paranoid === 'true' : paranoid;
+
+    console.log({ paranoidValue });
+
     const caseItem = await Case.findByPk(id, {
       include: [
         {
@@ -74,6 +89,7 @@ class CasesService {
           as: 'outOfStockItems',
         },
       ],
+      paranoid: paranoidValue,
     });
 
     if (!caseItem) {
@@ -112,6 +128,7 @@ class CasesService {
               as: 'case',
               where: { state: 'SHIPMENT_DONE' },
               attributes: ['id', 'name'],
+              paranoid: false,
             },
           ],
         },
@@ -147,6 +164,7 @@ class CasesService {
               model: Case,
               as: 'case',
               where: { state: 'CLEAN_PROCESS_QUEUED' },
+              paranoid: false,
             },
           ],
         },
@@ -178,6 +196,7 @@ class CasesService {
               [Op.or]: ['PICKUP_DONE', 'CLEAN_PROCESS_QUEUED'],
             },
           },
+          paranoid: false,
         },
         'caseContent',
         {
@@ -210,10 +229,19 @@ class CasesService {
   }
 
   async delete(id) {
-    const { modelInstance } = await this.findOne(id);
+    const { modelInstance, jsonData: caseInfo } = await this.findOne(id, {
+      paranoid: false,
+    });
+
+    if (caseInfo.state !== 'AVAILABLE') {
+      throw boom.badRequest('Este case está en uso y no puede ser eliminado.');
+    }
+
     await modelInstance.destroy();
 
-    return modelInstance;
+    return this.findOne(id, {
+      paranoid: false,
+    });
   }
 
   async handleCaseStateAfterPickupDone(id, data) {
@@ -225,6 +253,7 @@ class CasesService {
           model: Case,
           as: 'case',
           attributes: ['id'],
+          paranoid: false,
         },
       ],
     });
@@ -262,6 +291,20 @@ class CasesService {
       case: updatedCase.jsonData,
       outOfStockItem,
     };
+  }
+
+  async recover(id) {
+    const { modelInstance, jsonData: caseInfo } = await this.findOne(id, {
+      paranoid: false,
+    });
+
+    if (!caseInfo.deletedAt) {
+      throw boom.badRequest('Este case ya fue habilitado.');
+    }
+
+    await modelInstance.restore();
+
+    return this.findOne(id);
   }
 }
 

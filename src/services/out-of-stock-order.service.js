@@ -78,7 +78,15 @@ class OutOfStockOrderService {
         {
           model: OutOfStockItem,
           as: 'items',
-          include: ['case', 'caseContent', 'order'],
+          include: [
+            {
+              model: Case,
+              as: 'case',
+              paranoid: false,
+            },
+            'caseContent',
+            'order',
+          ],
         },
         'status',
         'assignedTo',

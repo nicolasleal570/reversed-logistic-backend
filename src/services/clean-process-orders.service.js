@@ -11,6 +11,7 @@ const {
   CustomerLocation,
   CaseCleanProcessStep,
   OutOfStockItem,
+  Case,
 } = sequelize.models;
 
 class CleanProcessOrdersService {
@@ -34,7 +35,11 @@ class CleanProcessOrdersService {
         'status',
         'createdBy',
         'steps',
-        'case',
+        {
+          model: Case,
+          as: 'case',
+          paranoid: false,
+        },
         'caseContent',
         {
           model: CustomerLocation,

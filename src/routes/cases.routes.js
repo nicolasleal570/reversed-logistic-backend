@@ -17,6 +17,7 @@ const {
   getCasesWaitingCleanProcessController,
   getCaseLastOutOfStockInfo,
   handleCaseStateAfterPickupDoneController,
+  recoverCaseController,
 } = require('../controllers/cases.controller');
 
 const router = express.Router();
@@ -76,6 +77,12 @@ router.delete(
   '/:id',
   validatorHandler(getCaseSchema, 'params'),
   destroyCaseController
+);
+
+router.post(
+  '/:id/recover',
+  validatorHandler(getCaseSchema, 'params'),
+  recoverCaseController
 );
 
 module.exports = router;

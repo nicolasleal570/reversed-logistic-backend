@@ -4,7 +4,7 @@ const CaseService = require('./cases.service');
 const CaseContentService = require('./case-content.service');
 const { availablesStates } = require('../db/models/case.model');
 
-const { OrderItem } = sequelize.models;
+const { OrderItem, Case } = sequelize.models;
 
 class OrderItemsService {
   constructor() {
@@ -36,7 +36,15 @@ class OrderItemsService {
 
   async findOne(id) {
     const orderItem = await OrderItem.findByPk(id, {
-      include: ['case', 'caseContent', 'order'],
+      include: [
+        {
+          model: Case,
+          as: 'case',
+          paranoid: false,
+        },
+        'caseContent',
+        'order',
+      ],
     });
 
     if (!orderItem) {
