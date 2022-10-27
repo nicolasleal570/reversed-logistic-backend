@@ -28,6 +28,7 @@
     "npm": "8.x.x"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@hapi/boom": "10.0.0",
     "bcrypt": "5.0.1",
     "cors": "2.8.5",
@@ -47,7 +48,6 @@
     "sequelize-cli": "6.4.1"
   },
   "devDependencies": {
-    "@faker-js/faker": "7.3.0",
     "nodemon": "2.0.16",
     "prettier": "2.6.2"
   }

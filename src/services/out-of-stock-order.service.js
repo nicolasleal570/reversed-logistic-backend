@@ -7,8 +7,13 @@ const {
   availablesStates,
 } = require('../db/models/case.model');
 
-const { OutOfStockOrder, OutOfStockItem, Case, CustomerLocation } =
-  sequelize.models;
+const {
+  OutOfStockOrder,
+  OutOfStockItem,
+  Case,
+  CustomerLocation,
+  CasesStatusLog,
+} = sequelize.models;
 
 const outOfStockItemService = new OutOfStockItemService();
 
@@ -37,17 +42,28 @@ class OutOfStockOrderService {
       );
 
       // Update cases state
-      await Promise.all(
-        items.map((item) =>
+      const promises = [];
+
+      items.forEach((item) => {
+        promises.push(
           Case.update(
             {
               state:
                 outOfStockOrderStateToCaseState[newOutOfStockOrder.statusId],
             },
             { where: { id: item.caseId } }
-          )
-        )
-      );
+          ),
+          CasesStatusLog.create({
+            status:
+              outOfStockOrderStateToCaseState[newOutOfStockOrder.statusId],
+            caseId: item.caseId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+        );
+      });
+
+      await Promise.all(promises);
     }
 
     return { ...newOutOfStockOrder, items };

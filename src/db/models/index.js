@@ -52,6 +52,7 @@ const {
   OutOfStockItem,
   OutOfStockItemSchema,
 } = require('./out-of-stock-item.model');
+const { CasesStatusLog, CasesStatusLogsSchema } = require('./case-status-log');
 
 async function setupModels(sequelize) {
   // Handle models init
@@ -95,6 +96,7 @@ async function setupModels(sequelize) {
     OutOfStockOrder.config(sequelize)
   );
   OutOfStockItem.init(OutOfStockItemSchema, OutOfStockItem.config(sequelize));
+  CasesStatusLog.init(CasesStatusLogsSchema, CasesStatusLog.config(sequelize));
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -119,6 +121,7 @@ async function setupModels(sequelize) {
   OutOfStockStatus.associate(sequelize.models);
   OutOfStockOrder.associate(sequelize.models);
   OutOfStockItem.associate(sequelize.models);
+  CasesStatusLog.associate(sequelize.models);
 
   setupHooks(sequelize);
 
@@ -165,6 +168,17 @@ function setupHooks(_sequelize) {
           })
         );
 
+        await Promise.all(
+          [].concat(...orderItems).map((item) => {
+            return CasesStatusLog.create({
+              status: orderStateToCaseState['5'],
+              caseId: item.caseId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          })
+        );
+
         return;
       }
 
@@ -198,6 +212,16 @@ function setupHooks(_sequelize) {
             );
           })
         );
+        await Promise.all(
+          [].concat(...orderItems).map((item) => {
+            return CasesStatusLog.create({
+              status: orderStateToCaseState['6'],
+              caseId: item.caseId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          })
+        );
 
         return;
       }
@@ -228,6 +252,17 @@ function setupHooks(_sequelize) {
             )
           )
       );
+
+      await Promise.all(
+        [].concat(...orderItems).map((item) =>
+          CasesStatusLog.create({
+            status: orderStateToCaseState['4'],
+            caseId: item.caseId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+        )
+      );
     }
   );
 
@@ -239,14 +274,24 @@ function setupHooks(_sequelize) {
         where: { orderId: order.id },
       });
 
-      await Promise.all(
-        orderItems.map((item) =>
+      const promises = [];
+
+      orderItems.forEach((item) => {
+        promises.push(
           Case.update(
             { state: orderStateToCaseState[order.orderStatusId] ?? 1 },
             { where: { id: item.caseId } }
-          )
-        )
-      );
+          ),
+          CasesStatusLog.create({
+            status: orderStateToCaseState[order.orderStatusId],
+            caseId: item.caseId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+        );
+      });
+
+      await Promise.all(promises);
     }
   );
 
@@ -258,16 +303,52 @@ function setupHooks(_sequelize) {
         where: { outOfStockOrderId: order.id },
       });
 
-      await Promise.all(
-        orderItems.map((item) =>
+      const promises = [];
+
+      orderItems.forEach((item) => {
+        promises.push(
           Case.update(
             {
-              state: outOfStockOrderStateToCaseState[order.statusId] ?? 1,
+              state: outOfStockOrderStateToCaseState[order.statusId],
             },
             { where: { id: item.caseId } }
-          )
-        )
-      );
+          ),
+          CasesStatusLog.create({
+            status: outOfStockOrderStateToCaseState[order.statusId],
+            caseId: item.caseId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+        );
+      });
+
+      await Promise.all(promises);
+    }
+  );
+
+  Case.addHook(
+    'afterCreate',
+    'createCaseStatusLogAfterCaseCreate',
+    async (caseInfo) => {
+      await CasesStatusLog.create({
+        status: caseInfo.state,
+        caseId: caseInfo.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
+  );
+
+  Case.addHook(
+    'afterUpdate',
+    'createCaseStatusLogAfterCaseUpdate',
+    async (caseInfo) => {
+      await CasesStatusLog.create({
+        status: caseInfo.state,
+        caseId: caseInfo.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
     }
   );
 }
