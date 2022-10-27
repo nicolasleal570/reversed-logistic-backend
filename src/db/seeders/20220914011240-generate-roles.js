@@ -7,7 +7,7 @@ module.exports = {
       ROLE_TABLE,
       [
         {
-          name: 'Súper usuario',
+          name: 'Administrador',
           value: 'SUDO',
           description:
             'Usuario con acceso a todos los módulos de la aplicación',
@@ -16,7 +16,7 @@ module.exports = {
           created_by_id: 1,
         },
         {
-          name: 'Auxiliar de packing',
+          name: 'Coordinador de packing',
           value: 'PACKING_AUX',
           description: 'Usuario que ayuda a empacar los pedidos a los clientes',
           created_at: new Date(),
@@ -24,7 +24,7 @@ module.exports = {
           created_by_id: 1,
         },
         {
-          name: 'Auxiliar de envíos',
+          name: 'Coordinador de envíos',
           value: 'SHIPPING_AUX',
           description: 'Usuario que se encarga de asignar un pedido a un envío',
           created_at: new Date(),
@@ -32,7 +32,7 @@ module.exports = {
           created_by_id: 1,
         },
         {
-          name: 'Auxiliar de recogida',
+          name: 'Coordinador de recogidas',
           value: 'PICKUP_AUX',
           description:
             'Usuario que se encarga de revisar las órdenes de recogida de los cases',
