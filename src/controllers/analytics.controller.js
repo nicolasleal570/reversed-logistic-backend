@@ -38,9 +38,19 @@ async function bestCasesController(_req, res, next) {
   }
 }
 
+// TODO: Add this query
 async function bestTrucksController(_req, res, next) {
   try {
     res.json({ hola: 'mundo' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deliveryAtTimeController(req, res, next) {
+  try {
+    const data = await service.getDeliveryAtTime(req.params);
+    res.json(data);
   } catch (error) {
     next(error);
   }
@@ -52,4 +62,5 @@ module.exports = {
   bestCustomersController,
   bestCaseContetsController,
   bestTrucksController,
+  deliveryAtTimeController,
 };

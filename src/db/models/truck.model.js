@@ -72,6 +72,7 @@ const TruckSchema = {
 class Truck extends Model {
   static associate(models) {
     this.belongsTo(models.User, { as: 'driver', foreignKey: 'userId' });
+    this.hasMany(models.Shipment, { as: 'shipments', foreignKey: 'truckId' });
   }
 
   static config(sequelize) {

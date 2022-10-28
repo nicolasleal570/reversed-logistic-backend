@@ -9,7 +9,7 @@ const total = Joi.number();
 const customerLocationId = Joi.number().integer();
 const orderStatusId = Joi.number().integer();
 const createdById = Joi.number().integer();
-const expectedDeliveryDate = Joi.date().allow(null);
+const expectedDeliveryDate = Joi.date();
 
 const orderItem = Joi.object().keys({
   caseId: caseId.required(),
@@ -39,7 +39,7 @@ const createOrderSchema = Joi.object({
   orderStatusId,
   createdById,
   items: items.required(),
-  expectedDeliveryDate,
+  expectedDeliveryDate: expectedDeliveryDate.required(),
 });
 
 const updateOrderSchema = Joi.object({

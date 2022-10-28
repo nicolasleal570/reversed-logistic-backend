@@ -1,6 +1,8 @@
 const boom = require('@hapi/boom');
+const dayjs = require('dayjs');
 const { sequelize } = require('../db/sequelize');
-const { Case, CaseContent, Order, OrderStatus, Customer } = sequelize.models;
+const { Case, CaseContent, Order, OrderStatus, Customer, Shipment, Truck } =
+  sequelize.models;
 
 class AnalyticsService {
   constructor() {}
@@ -153,6 +155,74 @@ WHERE "counts"."count" > 1
       ...caseInfo.toJSON(),
       Ventas: Number.parseInt(results[idx].count, 10) || 0,
     }));
+  }
+
+  async getDeliveryAtTime({ driverId }) {
+    const trucks = await Truck.findAll({
+      where: { userId: driverId },
+      include: [
+        {
+          model: Shipment,
+          as: 'shipments',
+          include: ['orders'],
+        },
+      ],
+    });
+
+    if (!trucks.length) {
+      throw boom.notFound('No hay transportes asociados a este usuario');
+    }
+
+    const ordersItems = [];
+    trucks
+      .map((item) => item.toJSON())
+      .forEach((truck) => {
+        const { shipments } = truck;
+
+        shipments.forEach((shipment) => {
+          const { orders, ...restShipment } = shipment;
+
+          // Shipment is set delivered at date
+          if (restShipment.deliveredAt) {
+            orders.forEach((order) => {
+              if (order.expectedDeliveryDate) {
+                ordersItems.push({
+                  order,
+                  shipment: restShipment,
+                });
+              }
+            });
+          }
+        });
+      });
+
+    if (!ordersItems.length) {
+      throw boom.notFound('Este conductor no tiene envíos');
+    }
+
+    let format = 'minutos';
+    let avg =
+      ordersItems.reduce((acc, curr) => {
+        const { order, shipment } = curr;
+        const first = dayjs(order.expectedDeliveryDate);
+        const second = dayjs(shipment.deliveredAt);
+
+        return first.diff(second, 'minute');
+      }, 0) / ordersItems.length;
+
+    // Hours
+    if (avg > 60) {
+      avg = Math.round(avg / 60);
+      format = 'houras';
+    }
+
+    // Days
+    if (avg > 24) {
+      avg = Math.round(avg / 24);
+      format = 'días';
+    }
+
+    return { count: { avg, format }, trucks };
   }
 }
 

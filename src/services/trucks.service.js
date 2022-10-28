@@ -24,7 +24,7 @@ class TrucksService {
 
   async findOne(id) {
     const truck = await Truck.findByPk(id, {
-      include: ['driver'],
+      include: ['driver', 'shipments'],
     });
 
     if (!truck) {
