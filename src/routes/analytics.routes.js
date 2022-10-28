@@ -4,6 +4,7 @@ const validatorHandler = require('../middlewares/validator.handler');
 const {
   ordersByCustomerLocations,
   deliveryAtTimeSchema,
+  shipmentsCountSchema,
 } = require('../schemas/analytics.schema');
 const {
   ordersByCustomerLocationsController,
@@ -12,6 +13,8 @@ const {
   bestTrucksController,
   bestCasesController,
   deliveryAtTimeController,
+  shipmentsCountController,
+  lateDeliveriesController,
 } = require('../controllers/analytics.controller');
 
 const router = express.Router();
@@ -52,6 +55,19 @@ router.get(
   passport.authenticate('jwt', { session: false }),
   validatorHandler(deliveryAtTimeSchema, 'params'),
   deliveryAtTimeController
+);
+
+router.get(
+  '/shipments-count',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(shipmentsCountSchema, 'query'),
+  shipmentsCountController
+);
+
+router.get(
+  '/late-deliveries',
+  passport.authenticate('jwt', { session: false }),
+  lateDeliveriesController
 );
 
 module.exports = router;

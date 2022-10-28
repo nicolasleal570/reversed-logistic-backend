@@ -56,6 +56,24 @@ async function deliveryAtTimeController(req, res, next) {
   }
 }
 
+async function shipmentsCountController(req, res, next) {
+  try {
+    const data = await service.getShipmentsCount(req.query);
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function lateDeliveriesController(req, res, next) {
+  try {
+    const data = await service.getLateDeliveries(req.query);
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   bestCasesController,
   ordersByCustomerLocationsController,
@@ -63,4 +81,6 @@ module.exports = {
   bestCaseContetsController,
   bestTrucksController,
   deliveryAtTimeController,
+  shipmentsCountController,
+  lateDeliveriesController,
 };

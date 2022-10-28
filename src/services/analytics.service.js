@@ -1,5 +1,6 @@
 const boom = require('@hapi/boom');
 const dayjs = require('dayjs');
+const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
 const { Case, CaseContent, Order, OrderStatus, Customer, Shipment, Truck } =
   sequelize.models;
@@ -223,6 +224,67 @@ WHERE "counts"."count" > 1
     }
 
     return { count: { avg, format }, trucks };
+  }
+
+  async getShipmentsCount({ month: monthNumber }) {
+    const baseDate = dayjs().month(monthNumber);
+    const daysInMonth = baseDate.daysInMonth();
+    const firstDay = baseDate.clone().date(1).hour(0);
+    const lastDay = baseDate.clone().date(daysInMonth).hour(23);
+
+    const shipments = await Shipment.findAll({
+      where: {
+        deliveredAt: {
+          [Op.not]: null,
+          [Op.between]: [firstDay.toDate(), lastDay.toDate()],
+        },
+      },
+    });
+
+    const shipmentsData = shipments.map((item) => item.toJSON());
+
+    return {
+      graph: {
+        count: shipmentsData.length,
+      },
+      shipments,
+    };
+  }
+
+  async getLateDeliveries() {
+    const shipments = await Shipment.findAll({
+      include: ['orders'],
+    });
+
+    const ordersItems = [];
+    shipments
+      .map((item) => item.toJSON())
+      .forEach((shipment) => {
+        const { orders, ...restShipment } = shipment;
+
+        // Shipment is set delivered at date
+        if (restShipment.deliveredAt) {
+          orders.forEach((order) => {
+            if (order.expectedDeliveryDate) {
+              ordersItems.push({
+                order,
+                shipment: restShipment,
+              });
+            }
+          });
+        }
+      });
+
+    const count = ordersItems
+      .map(({ order, shipment }) => {
+        const expected = dayjs(order.expectedDeliveryDate);
+        const real = dayjs(shipment.deliveredAt);
+
+        return expected.diff(real, 'hour');
+      })
+      .filter((item) => item <= 0);
+
+    return { graph: { count: count.length }, ordersItems };
   }
 }
 
