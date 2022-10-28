@@ -10,7 +10,7 @@ module.exports = {
       arr.map((_, idx) => {
         return {
           status: 'AVAILABLE',
-          case_id: idx,
+          case_id: idx + 1,
           created_at: new Date(),
           updated_at: new Date(),
         };

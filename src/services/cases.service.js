@@ -1,3 +1,4 @@
+const boom = require('@hapi/boom');
 const { Op } = require('sequelize');
 const { availablesStates } = require('../db/models/case.model');
 const { sequelize } = require('../db/sequelize');

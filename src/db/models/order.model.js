@@ -47,6 +47,11 @@ const OrderSchema = {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   },
+  expectedDeliveryDate: {
+    field: 'expected_delivery_date',
+    allowNull: true,
+    type: DataTypes.DATE,
+  },
   purchaseDate: {
     field: 'purchase_date',
     allowNull: false,
