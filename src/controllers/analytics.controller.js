@@ -74,6 +74,15 @@ async function lateDeliveriesController(req, res, next) {
   }
 }
 
+async function inventoryTurnoverController(_req, res, next) {
+  try {
+    const data = await service.getInventoryTurnover();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   bestCasesController,
   ordersByCustomerLocationsController,
@@ -83,4 +92,5 @@ module.exports = {
   deliveryAtTimeController,
   shipmentsCountController,
   lateDeliveriesController,
+  inventoryTurnoverController,
 };

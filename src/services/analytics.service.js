@@ -2,8 +2,16 @@ const boom = require('@hapi/boom');
 const dayjs = require('dayjs');
 const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
-const { Case, CaseContent, Order, OrderStatus, Customer, Shipment, Truck } =
-  sequelize.models;
+const {
+  Case,
+  CaseContent,
+  CasesStatusLog,
+  Order,
+  OrderStatus,
+  Customer,
+  Shipment,
+  Truck,
+} = sequelize.models;
 
 class AnalyticsService {
   constructor() {}
@@ -285,6 +293,40 @@ WHERE "counts"."count" > 1
       .filter((item) => item <= 0);
 
     return { graph: { count: count.length }, ordersItems };
+  }
+
+  async getInventoryTurnover() {
+    const cases = await Case.findAll();
+    const logs = await CasesStatusLog.findAll({
+      where: {
+        status: 'SHIPMENT_DONE',
+      },
+    });
+
+    let count = 0;
+    let leftSlice = 0;
+    let rightSlice = cases.length;
+    const arr = [];
+
+    cases.forEach(() => {
+      arr.push(logs.slice(leftSlice, rightSlice));
+      leftSlice += cases.length;
+      rightSlice += cases.length;
+    });
+
+    arr.forEach((item) => {
+      let done = [];
+
+      item.forEach((obj) => {
+        done.push(obj.caseId);
+      });
+
+      if (done.length === cases.length) {
+        count += 1;
+      }
+    });
+
+    return { graph: { count } };
   }
 }
 
