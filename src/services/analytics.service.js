@@ -328,6 +328,41 @@ WHERE "counts"."count" > 1
 
     return { graph: { count } };
   }
+
+  async getStockRotation() {
+    const cases = await Case.findAll();
+    const logs = await CasesStatusLog.findAll({
+      where: {
+        status: 'AVAILABLE',
+      },
+      order: [['createdAt', 'ASC']],
+    });
+
+    let count = 0;
+    let leftSlice = 0;
+    let rightSlice = cases.length;
+    const arr = [];
+
+    cases.forEach(() => {
+      arr.push(logs.slice(leftSlice, rightSlice));
+      leftSlice += cases.length;
+      rightSlice += cases.length;
+    });
+
+    arr.forEach((item) => {
+      let done = [];
+
+      item.forEach((obj) => {
+        done.push(obj.caseId);
+      });
+
+      if (done.length === cases.length) {
+        count += 1;
+      }
+    });
+
+    return { graph: { count } };
+  }
 }
 
 module.exports = AnalyticsService;

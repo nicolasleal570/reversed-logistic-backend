@@ -16,6 +16,7 @@ const {
   shipmentsCountController,
   lateDeliveriesController,
   inventoryTurnoverController,
+  stockRotationController,
 } = require('../controllers/analytics.controller');
 
 const router = express.Router();
@@ -75,6 +76,12 @@ router.get(
   '/inventory-turnover',
   passport.authenticate('jwt', { session: false }),
   inventoryTurnoverController
+);
+
+router.get(
+  '/stock-rotation',
+  passport.authenticate('jwt', { session: false }),
+  stockRotationController
 );
 
 module.exports = router;

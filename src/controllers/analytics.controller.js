@@ -83,6 +83,15 @@ async function inventoryTurnoverController(_req, res, next) {
   }
 }
 
+async function stockRotationController(_req, res, next) {
+  try {
+    const data = await service.getStockRotation();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   bestCasesController,
   ordersByCustomerLocationsController,
@@ -93,4 +102,5 @@ module.exports = {
   shipmentsCountController,
   lateDeliveriesController,
   inventoryTurnoverController,
+  stockRotationController,
 };
