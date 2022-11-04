@@ -12,7 +12,10 @@ const LocalStrategy = new Strategy(
   },
   async (email, password, done) => {
     try {
-      const location = await customerLocationsService.findByEmail(email);
+      const location = await customerLocationsService.getAuthLocation(
+        email,
+        password
+      );
 
       if (location) {
         done(null, { isLocation: true, ...location });

@@ -69,19 +69,17 @@ class UserService {
       }
     }
 
-    const res = await user.update(rest);
+    await user.update(rest);
 
-    return res;
+    return this.findOne(id);
   }
 
   async delete(id) {
     const user = await this.findOne(id);
     await user.destroy();
 
-    return user;
+    return this.findOne(id);
   }
-
-  async getUserRoles(userId) {}
 }
 
 module.exports = UserService;

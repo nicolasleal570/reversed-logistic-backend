@@ -2,7 +2,7 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 
-const { Truck } = sequelize.models;
+const { Truck, Shipment } = sequelize.models;
 
 class TrucksService {
   constructor() {
@@ -24,7 +24,14 @@ class TrucksService {
 
   async findOne(id) {
     const truck = await Truck.findByPk(id, {
-      include: ['driver', 'shipments'],
+      include: [
+        'driver',
+        {
+          model: Shipment,
+          as: 'shipments',
+          include: ['createdBy', 'orders', 'status'],
+        },
+      ],
     });
 
     if (!truck) {

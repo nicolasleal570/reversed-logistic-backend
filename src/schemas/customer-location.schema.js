@@ -10,6 +10,7 @@ const state = Joi.string();
 const country = Joi.string();
 const contact = Joi.string();
 const email = Joi.string().email();
+const password = Joi.string().min(8);
 const customerId = Joi.number().integer();
 
 const getCustomerSchema = Joi.object({
@@ -30,6 +31,7 @@ const createCustomerSchema = Joi.object({
   country,
   contact: contact.required(),
   email: email.required(),
+  password,
   customerId: customerId.required(),
 });
 

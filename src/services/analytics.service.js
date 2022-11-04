@@ -54,12 +54,12 @@ class AnalyticsService {
     const { locations, companyName: customerName } = customer.toJSON();
 
     const orders = await Promise.all(
-      locations.map((location) =>
-        Order.findAll({
+      locations.map((location) => {
+        return Order.findAll({
           where: { customerLocationId: location.id },
           include: ['customerLocation'],
-        })
-      )
+        });
+      })
     );
 
     const items = [];
@@ -222,7 +222,7 @@ WHERE "counts"."count" > 1
     // Hours
     if (avg > 60) {
       avg = Math.round(avg / 60);
-      format = 'houras';
+      format = 'horas';
     }
 
     // Days

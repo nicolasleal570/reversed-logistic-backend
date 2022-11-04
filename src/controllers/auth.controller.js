@@ -26,7 +26,8 @@ async function currentUserAuthController(req, res, next) {
 async function loginAuthController(req, res, next) {
   try {
     const { user: authUser } = req;
-    res.status(200).json(authService.signToken(authUser));
+    const data = await authService.signToken(authUser);
+    res.status(200).json(data);
   } catch (error) {
     next(error);
   }
