@@ -98,19 +98,19 @@ class AnalyticsService {
   async getBestCustomers() {
     const [results] = await sequelize.query(`
       SELECT * FROM (
-    SELECT COUNT("foo"."customerId") AS "count", "foo"."customerId" as "customerId" FROM (
-        SELECT "CustomerLocation"."id", 
-        "CustomerLocation"."name", 
-        "CustomerLocation"."customer_id" AS "customerId", 
-        "orders"."id" AS "order_id", 
-        "orders"."order_status_id" AS "order_status_id"
-        FROM "customers_locations" AS "CustomerLocation" 
-        LEFT OUTER JOIN "orders" AS "orders" ON "CustomerLocation"."id" = "orders"."customer_location_id"
-    ) foo
-    GROUP BY "foo"."customerId"
-) "counts"
-WHERE "counts"."count" > 1
-    `);
+        SELECT COUNT("foo"."customerId") AS "count", "foo"."customerId" as "customerId" FROM (
+          SELECT "CustomerLocation"."id", 
+          "CustomerLocation"."name", 
+          "CustomerLocation"."customer_id" AS "customerId", 
+          "orders"."id" AS "order_id", 
+          "orders"."order_status_id" AS "order_status_id"
+          FROM "customers_locations" AS "CustomerLocation" 
+          LEFT OUTER JOIN "orders" AS "orders" ON "CustomerLocation"."id" = "orders"."customer_location_id"
+        ) foo
+        GROUP BY "foo"."customerId"
+      ) "counts
+      ORDER BY count DESC
+    "`);
 
     const customers = await Promise.all(
       results.map((item) => Customer.findByPk(item.customerId))
