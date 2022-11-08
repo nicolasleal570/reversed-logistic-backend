@@ -99,17 +99,15 @@ class AnalyticsService {
     const [results] = await sequelize.query(`
       SELECT * FROM (
         SELECT COUNT("foo"."customerId") AS "count", "foo"."customerId" as "customerId" FROM (
-          SELECT "CustomerLocation"."id", 
-          "CustomerLocation"."name", 
-          "CustomerLocation"."customer_id" AS "customerId", 
-          "orders"."id" AS "order_id", 
-          "orders"."order_status_id" AS "order_status_id"
-          FROM "customers_locations" AS "CustomerLocation" 
-          LEFT OUTER JOIN "orders" AS "orders" ON "CustomerLocation"."id" = "orders"."customer_location_id"
+          SELECT "Order"."id", 
+          "Order"."customer_location_id" AS "customerLocationId",
+          "customerLocation"."customer_id" AS "customerId" 
+          FROM "orders" AS "Order" 
+          LEFT OUTER JOIN "customers_locations" AS "customerLocation" 
+          ON "Order"."customer_location_id" = "customerLocation"."id"
         ) foo
         GROUP BY "foo"."customerId"
       ) counts
-      ORDER BY count DESC
     `);
 
     const customers = await Promise.all(
