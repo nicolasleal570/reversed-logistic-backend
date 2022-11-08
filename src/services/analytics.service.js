@@ -108,13 +108,15 @@ class AnalyticsService {
           LEFT OUTER JOIN "orders" AS "orders" ON "CustomerLocation"."id" = "orders"."customer_location_id"
         ) foo
         GROUP BY "foo"."customerId"
-      ) "counts
+      ) counts
       ORDER BY count DESC
-    "`);
+    `);
 
     const customers = await Promise.all(
       results.map((item) => Customer.findByPk(item.customerId))
     );
+
+    console.log(results);
 
     return customers.map((customer, idx) => ({
       ...customer.toJSON(),
