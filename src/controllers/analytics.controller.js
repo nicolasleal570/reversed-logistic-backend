@@ -20,6 +20,15 @@ async function bestCustomersController(_req, res, next) {
   }
 }
 
+async function bestCustomersLocationController(_req, res, next) {
+  try {
+    const data = await service.getBestCustomersLocation();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function bestCaseContetsController(_req, res, next) {
   try {
     const data = await service.getBestCaseContents();
@@ -96,6 +105,7 @@ module.exports = {
   bestCasesController,
   ordersByCustomerLocationsController,
   bestCustomersController,
+  bestCustomersLocationController,
   bestCaseContetsController,
   bestTrucksController,
   deliveryAtTimeController,

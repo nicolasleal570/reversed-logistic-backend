@@ -9,6 +9,7 @@ const {
   Order,
   OrderStatus,
   Customer,
+  CustomerLocation,
   Shipment,
   Truck,
 } = sequelize.models;
@@ -97,7 +98,6 @@ class AnalyticsService {
 
   async getBestCustomers() {
     const [results] = await sequelize.query(`
-      SELECT * FROM (
         SELECT COUNT("foo"."customerId") AS "count", "foo"."customerId" as "customerId" FROM (
           SELECT "Order"."id", 
           "Order"."customer_location_id" AS "customerLocationId",
@@ -107,24 +107,52 @@ class AnalyticsService {
           ON "Order"."customer_location_id" = "customerLocation"."id"
         ) foo
         GROUP BY "foo"."customerId"
-      ) counts
+        ORDER BY "count" DESC
+        LIMIT 5
     `);
 
     const customers = await Promise.all(
       results.map((item) => Customer.findByPk(item.customerId))
     );
 
-    console.log(results);
-
     return customers.map((customer, idx) => ({
       ...customer.toJSON(),
-      Total: Number.parseInt(results[idx]?.count, 10) || 0,
+      totalOrders: Number.parseInt(results[idx]?.count, 10) || 0,
+    }));
+  }
+
+  async getBestCustomersLocation() {
+    const [results] = await sequelize.query(`
+        SELECT COUNT("foo"."customerLocationId") AS "count", "foo"."customerLocationId" FROM (
+          SELECT "Order"."id", 
+          "Order"."customer_location_id" AS "customerLocationId",
+          "customerLocation"."customer_id" AS "customerId" 
+          FROM "orders" AS "Order" 
+          LEFT OUTER JOIN "customers_locations" AS "customerLocation" 
+          ON "Order"."customer_location_id" = "customerLocation"."id"
+        ) foo
+        GROUP BY "foo"."customerLocationId"
+        ORDER BY "foo"."count" DESC
+        LIMIT 5
+    `);
+
+    const locations = await Promise.all(
+      results.map((item) =>
+        CustomerLocation.findByPk(item.customerLocationId, {
+          include: ['customer'],
+        })
+      )
+    );
+
+    return locations.map((location, idx) => ({
+      ...location.toJSON(),
+      totalOrders: Number.parseInt(results[idx]?.count, 10) || 0,
     }));
   }
 
   async getBestCaseContents() {
     const [results] = await sequelize.query(`
-      SELECT COUNT("foo"."caseContentId"), "foo"."caseContentId" AS "caseContentId" FROM (
+      SELECT COUNT("foo"."caseContentId") AS "count", "foo"."caseContentId" AS "caseContentId" FROM (
         SELECT "Order"."id", 
         "items"."case_content_id" AS "caseContentId", 
         "items"."order_id" AS "orderId"
@@ -133,6 +161,8 @@ class AnalyticsService {
         LEFT OUTER JOIN "cases_content" AS "items->caseContent" ON "items"."case_content_id" = "items->caseContent"."id"
       ) foo
       GROUP BY "caseContentId"
+      ORDER BY "count" DESC
+      LIMIT 5
     `);
 
     const caseContents = await Promise.all(
@@ -141,19 +171,21 @@ class AnalyticsService {
 
     return caseContents.map((content, idx) => ({
       ...content.toJSON(),
-      Ventas: Number.parseInt(results[idx].count, 10) || 0,
+      usesCount: Number.parseInt(results[idx].count, 10) || 0,
     }));
   }
 
   async getBestCases() {
     const [results] = await sequelize.query(`
-      SELECT COUNT("foo"."caseId"), "foo"."caseId" AS "caseId" FROM (
+      SELECT COUNT("foo"."caseId") AS "count", "foo"."caseId" AS "caseId" FROM (
         SELECT "Order"."id", 
         "items"."case_id" AS "caseId" 
         FROM "orders" AS "Order" 
         LEFT OUTER JOIN "order_items" AS "items" ON "Order"."id" = "items"."order_id"
       ) foo
       GROUP BY "caseId"
+      ORDER BY "count" DESC
+      LIMIT 5
     `);
 
     const cases = await Promise.all(
@@ -162,7 +194,7 @@ class AnalyticsService {
 
     return cases.map((caseInfo, idx) => ({
       ...caseInfo.toJSON(),
-      Ventas: Number.parseInt(results[idx].count, 10) || 0,
+      usesCount: Number.parseInt(results[idx].count, 10) || 0,
     }));
   }
 
@@ -183,27 +215,25 @@ class AnalyticsService {
     }
 
     const ordersItems = [];
-    trucks
-      .map((item) => item.toJSON())
-      .forEach((truck) => {
-        const { shipments } = truck;
+    trucks.forEach((truck) => {
+      const { shipments } = truck.toJSON();
 
-        shipments.forEach((shipment) => {
-          const { orders, ...restShipment } = shipment;
+      shipments.forEach((shipment) => {
+        const { orders, ...restShipment } = shipment;
 
-          // Shipment is set delivered at date
-          if (restShipment.deliveredAt) {
-            orders.forEach((order) => {
-              if (order.expectedDeliveryDate) {
-                ordersItems.push({
-                  order,
-                  shipment: restShipment,
-                });
-              }
-            });
-          }
-        });
+        // Shipment is set delivered at date
+        if (restShipment.deliveredAt) {
+          orders.forEach((order) => {
+            if (order.expectedDeliveryDate) {
+              ordersItems.push({
+                order,
+                shipment: restShipment,
+              });
+            }
+          });
+        }
       });
+    });
 
     if (!ordersItems.length) {
       throw boom.notFound('Este conductor no tiene envíos');

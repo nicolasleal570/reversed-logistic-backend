@@ -14,7 +14,7 @@ const {
 const id = Joi.number().integer();
 const companyName = Joi.string();
 const rif = Joi.string();
-const description = Joi.string();
+const description = Joi.string().allow(null).allow('');
 const website = Joi.string();
 
 const locationItem = Joi.object().keys({

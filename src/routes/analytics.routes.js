@@ -17,6 +17,7 @@ const {
   lateDeliveriesController,
   inventoryTurnoverController,
   stockRotationController,
+  bestCustomersLocationController,
 } = require('../controllers/analytics.controller');
 
 const router = express.Router();
@@ -32,6 +33,12 @@ router.get(
   '/best-customers',
   passport.authenticate('jwt', { session: false }),
   bestCustomersController
+);
+
+router.get(
+  '/best-customers-location',
+  passport.authenticate('jwt', { session: false }),
+  bestCustomersLocationController
 );
 
 router.get(

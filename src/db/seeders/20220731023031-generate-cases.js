@@ -1,21 +1,24 @@
 'use strict';
-const { faker } = require('@faker-js/faker');
+const dayjs = require('dayjs');
 const { CASE_TABLE, availablesStates } = require('../models/case.model');
 
 module.exports = {
   async up(queryInterface) {
-    const arr = new Array(20).fill(null);
+    const arr = new Array(8).fill(null);
+
     await queryInterface.bulkInsert(
       CASE_TABLE,
-      arr.map(() => {
+      arr.map((_, idx) => {
+        const date = dayjs().subtract(1, 'day').toDate();
+
         return {
-          name: `Case #${faker.datatype.number({ min: 100, max: 500 })}`,
+          name: `Case #00${idx + 1}`,
           description: '',
-          volume: faker.datatype.number({ min: 5, max: 50 }),
-          weight: faker.datatype.number({ min: 5, max: 50 }),
+          volume: 50,
+          weight: 50,
           state: availablesStates.AVAILABLE,
-          created_at: new Date(),
-          updated_at: new Date(),
+          created_at: date,
+          updated_at: date,
         };
       }),
       {}
