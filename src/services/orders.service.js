@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 const OrderItemService = require('./order-items.service');
@@ -6,8 +7,10 @@ const CasesService = require('./cases.service');
 const CasesContentService = require('./case-content.service');
 const ShipmentService = require('./shipments.service');
 const { orderStateToCaseState } = require('../db/models/case.model');
+const dayjs = require('dayjs');
 
-const { Order, OrderItem, CustomerLocation, Case } = sequelize.models;
+const { Order, OrderItem, CustomerLocation, Case, InventoryTurnoverAnalytic } =
+  sequelize.models;
 
 const shipmentService = new ShipmentService();
 
@@ -41,6 +44,42 @@ class OrdersService {
       const currentCaseContent = casesContent[index];
       return acc + currentCaseContent.price * curr.quantity;
     }, 0);
+  }
+
+  async checkInventoryTurnover() {
+    const availableCasesCount = await Case.count({
+      where: { state: 'AVAILABLE' },
+    });
+
+    if (availableCasesCount === 0) {
+      const monthNumber = dayjs().get('month');
+      const baseDate = dayjs().month(monthNumber);
+      const daysInMonth = baseDate.daysInMonth();
+      const firstDay = baseDate.clone().date(1).hour(0);
+      const lastDay = baseDate
+        .clone()
+        .date(daysInMonth)
+        .hour(23)
+        .subtract(1, 'day');
+
+      const currentInventoryTurnover = await InventoryTurnoverAnalytic.findOne({
+        where: {
+          createdAt: {
+            [Op.between]: [firstDay.toDate(), lastDay.toDate()],
+          },
+        },
+      });
+
+      if (!currentInventoryTurnover) {
+        await InventoryTurnoverAnalytic.create();
+      } else {
+        const { count } = currentInventoryTurnover.toJSON();
+        await currentInventoryTurnover.update({
+          count: count + 1,
+          updatedAt: new Date(),
+        });
+      }
+    }
   }
 
   async create(data) {
@@ -77,6 +116,8 @@ class OrdersService {
         })
       )
     );
+
+    await this.checkInventoryTurnover();
 
     return this.findOne(newOrder.id);
   }
@@ -168,6 +209,8 @@ class OrdersService {
     }
 
     await order.update(restChanges);
+
+    await this.checkInventoryTurnover();
 
     return this.findOne(id);
   }

@@ -9,7 +9,8 @@ const total = Joi.number();
 const customerLocationId = Joi.number().integer();
 const orderStatusId = Joi.number().integer();
 const createdById = Joi.number().integer();
-const expectedDeliveryDate = Joi.date();
+const expectedDeliveryDate = Joi.date().allow(null).allow('');
+const deliveredAt = Joi.date().allow(null).allow('');
 
 const orderItem = Joi.object().keys({
   caseId: caseId.required(),
@@ -40,6 +41,7 @@ const createOrderSchema = Joi.object({
   createdById,
   items: items.required(),
   expectedDeliveryDate: expectedDeliveryDate.required(),
+  deliveredAt,
 });
 
 const updateOrderSchema = Joi.object({
@@ -50,6 +52,7 @@ const updateOrderSchema = Joi.object({
   orderStatusId,
   items: updateItems,
   expectedDeliveryDate,
+  deliveredAt,
 });
 
 const takeOrderSchema = Joi.object({
@@ -74,6 +77,7 @@ module.exports = {
   tax,
   total,
   expectedDeliveryDate,
+  deliveredAt,
   customerLocationId,
   orderStatusId,
   createdById,

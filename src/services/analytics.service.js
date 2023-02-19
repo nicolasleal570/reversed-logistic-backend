@@ -11,7 +11,7 @@ const {
   Customer,
   CustomerLocation,
   Shipment,
-  Truck,
+  InventoryTurnoverAnalytic,
 } = sequelize.models;
 
 class AnalyticsService {
@@ -198,80 +198,55 @@ class AnalyticsService {
     }));
   }
 
-  async getDeliveryAtTime({ driverId }) {
-    const trucks = await Truck.findAll({
-      where: { userId: driverId },
-      include: [
-        {
-          model: Shipment,
-          as: 'shipments',
-          include: ['orders'],
+  async getDeliveryAtTime() {
+    const orders = await Order.findAll({
+      where: {
+        expectedDeliveryDate: {
+          [Op.not]: null,
         },
-      ],
+        deliveredAt: {
+          [Op.not]: null,
+        },
+        shipmentId: {
+          [Op.not]: null,
+        },
+      },
+      order: [['expectedDeliveryDate', 'DESC']],
+      include: ['shipment', 'assignedTo'],
     });
 
-    if (!trucks.length) {
-      throw boom.notFound('No hay transportes asociados a este usuario');
-    }
+    const updatedOrders = orders.map((order) => {
+      const { expectedDeliveryDate, deliveredAt } = order.toJSON();
 
-    const ordersItems = [];
-    trucks.forEach((truck) => {
-      const { shipments } = truck.toJSON();
+      const firstDate = dayjs(expectedDeliveryDate);
+      const secondDate = dayjs(deliveredAt);
+      const diff = firstDate.diff(secondDate, 'minutes');
+      const units = diff < 0 ? 'minutos despues' : 'minutos antes';
 
-      shipments.forEach((shipment) => {
-        const { orders, ...restShipment } = shipment;
-
-        // Shipment is set delivered at date
-        if (restShipment.deliveredAt) {
-          orders.forEach((order) => {
-            if (order.expectedDeliveryDate) {
-              ordersItems.push({
-                order,
-                shipment: restShipment,
-              });
-            }
-          });
-        }
-      });
+      return {
+        ...order.toJSON(),
+        deliveryAtTime: `${diff} ${units}`,
+      };
     });
 
-    if (!ordersItems.length) {
-      throw boom.notFound('Este conductor no tiene envíos');
-    }
-
-    let format = 'minutos';
-    let avg =
-      ordersItems.reduce((acc, curr) => {
-        const { order, shipment } = curr;
-        const first = dayjs(order.expectedDeliveryDate);
-        const second = dayjs(shipment.deliveredAt);
-
-        return first.diff(second, 'minute');
-      }, 0) / ordersItems.length;
-
-    // Hours
-    if (avg > 60) {
-      avg = Math.round(avg / 60);
-      format = 'horas';
-    }
-
-    // Days
-    if (avg > 24) {
-      avg = Math.round(avg / 24);
-      format = 'días';
-    }
-
-    return { count: { avg, format }, trucks };
+    return updatedOrders;
   }
 
   async getShipmentsCount({ month: monthNumber }) {
     const baseDate = dayjs().month(monthNumber);
     const daysInMonth = baseDate.daysInMonth();
     const firstDay = baseDate.clone().date(1).hour(0);
-    const lastDay = baseDate.clone().date(daysInMonth).hour(23);
+    const lastDay = baseDate
+      .clone()
+      .date(daysInMonth)
+      .hour(23)
+      .subtract(1, 'day');
 
     const shipments = await Shipment.findAll({
       where: {
+        shipmentAt: {
+          [Op.not]: null,
+        },
         deliveredAt: {
           [Op.not]: null,
           [Op.between]: [firstDay.toDate(), lastDay.toDate()],
@@ -290,73 +265,75 @@ class AnalyticsService {
   }
 
   async getLateDeliveries() {
-    const shipments = await Shipment.findAll({
-      include: ['orders'],
-    });
+    const baseDate = dayjs();
+    const daysInMonth = baseDate.daysInMonth();
+    const firstDay = baseDate.clone().date(1).hour(0);
+    const lastDay = baseDate
+      .clone()
+      .date(daysInMonth)
+      .hour(23)
+      .subtract(1, 'day');
 
-    const ordersItems = [];
-    shipments
-      .map((item) => item.toJSON())
-      .forEach((shipment) => {
-        const { orders, ...restShipment } = shipment;
-
-        // Shipment is set delivered at date
-        if (restShipment.deliveredAt) {
-          orders.forEach((order) => {
-            if (order.expectedDeliveryDate) {
-              ordersItems.push({
-                order,
-                shipment: restShipment,
-              });
-            }
-          });
-        }
-      });
-
-    const count = ordersItems
-      .map(({ order, shipment }) => {
-        const expected = dayjs(order.expectedDeliveryDate);
-        const real = dayjs(shipment.deliveredAt);
-
-        return expected.diff(real, 'hour');
-      })
-      .filter((item) => item <= 0);
-
-    return { graph: { count: count.length }, ordersItems };
-  }
-
-  async getInventoryTurnover() {
-    const cases = await Case.findAll();
-    const logs = await CasesStatusLog.findAll({
+    const orders = await Order.findAll({
       where: {
-        status: 'SHIPMENT_DONE',
+        shipmentId: {
+          [Op.not]: null,
+        },
+        expectedDeliveryDate: {
+          [Op.not]: null,
+        },
+        deliveredAt: {
+          [Op.not]: null,
+          [Op.between]: [firstDay.toDate(), lastDay.toDate()],
+        },
       },
+      order: [['deliveredAt', 'DESC']],
     });
 
-    let count = 0;
-    let leftSlice = 0;
-    let rightSlice = cases.length;
-    const arr = [];
+    const items = [];
 
-    cases.forEach(() => {
-      arr.push(logs.slice(leftSlice, rightSlice));
-      leftSlice += cases.length;
-      rightSlice += cases.length;
-    });
+    orders.forEach((order) => {
+      const firstDate = dayjs(order.expectedDeliveryDate);
+      const secondDate = dayjs(order.deliveredAt);
+      const diff = firstDate.diff(secondDate, 'minutes');
 
-    arr.forEach((item) => {
-      let done = [];
-
-      item.forEach((obj) => {
-        done.push(obj.caseId);
-      });
-
-      if (done.length === cases.length) {
-        count += 1;
+      if (diff < 0) {
+        items.push(order.toJSON());
       }
     });
 
-    return { graph: { count } };
+    return { graph: { count: items.length }, orders: items };
+  }
+
+  async getInventoryTurnover() {
+    const monthNumber = dayjs().get('month');
+    const baseDate = dayjs().month(monthNumber);
+    const daysInMonth = baseDate.daysInMonth();
+    const firstDay = baseDate.clone().date(1).hour(0);
+    const lastDay = baseDate
+      .clone()
+      .date(daysInMonth)
+      .hour(23)
+      .subtract(1, 'day');
+
+    const rawCurrentInventoryTurnover = await InventoryTurnoverAnalytic.findOne(
+      {
+        where: {
+          createdAt: {
+            [Op.between]: [firstDay.toDate(), lastDay.toDate()],
+          },
+        },
+      }
+    );
+
+    const currentInventoryTurnover = rawCurrentInventoryTurnover.toJSON();
+
+    return {
+      ...currentInventoryTurnover,
+      frequency: `${Number.parseFloat(
+        currentInventoryTurnover.count / daysInMonth
+      ).toFixed(2)} roturas por día`,
+    };
   }
 
   async getStockRotation() {

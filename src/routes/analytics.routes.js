@@ -60,9 +60,8 @@ router.get(
 );
 
 router.get(
-  '/delivery-at-time/:driverId',
+  '/delivery-at-time',
   passport.authenticate('jwt', { session: false }),
-  validatorHandler(deliveryAtTimeSchema, 'params'),
   deliveryAtTimeController
 );
 

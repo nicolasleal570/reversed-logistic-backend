@@ -81,7 +81,7 @@ const CleanProcessOrderSchema = {
     type: DataTypes.DATE,
   },
   startedAt: {
-    field: 'startedAt',
+    field: 'started_at',
     allowNull: true,
     type: DataTypes.DATE,
   },

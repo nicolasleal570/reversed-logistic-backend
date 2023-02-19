@@ -58,6 +58,11 @@ const OrderSchema = {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  deliveredAt: {
+    field: 'delivered_at',
+    allowNull: true,
+    type: DataTypes.DATE,
+  },
   createdById: {
     field: 'created_by_id',
     allowNull: false,

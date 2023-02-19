@@ -56,9 +56,9 @@ async function bestTrucksController(_req, res, next) {
   }
 }
 
-async function deliveryAtTimeController(req, res, next) {
+async function deliveryAtTimeController(_req, res, next) {
   try {
-    const data = await service.getDeliveryAtTime(req.params);
+    const data = await service.getDeliveryAtTime();
     res.json(data);
   } catch (error) {
     next(error);

@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
-const { Shipment, Order, Truck } = sequelize.models;
+const { Shipment, Order, Truck, CustomerLocation } = sequelize.models;
 
 class ShipmentsService {
   constructor() {}
@@ -68,7 +68,11 @@ class ShipmentsService {
             'orderStatus',
             'createdBy',
             'assignedTo',
-            'customerLocation',
+            {
+              model: CustomerLocation,
+              as: 'customerLocation',
+              include: ['customer'],
+            },
           ],
         },
         {

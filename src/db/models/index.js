@@ -53,6 +53,10 @@ const {
   OutOfStockItemSchema,
 } = require('./out-of-stock-item.model');
 const { CasesStatusLog, CasesStatusLogsSchema } = require('./case-status-log');
+const {
+  InventoryTurnoverAnalytic,
+  InventoryTurnoverAnalyticSchema,
+} = require('./inventory-turnover-analytic.model');
 
 async function setupModels(sequelize) {
   // Handle models init
@@ -97,6 +101,10 @@ async function setupModels(sequelize) {
   );
   OutOfStockItem.init(OutOfStockItemSchema, OutOfStockItem.config(sequelize));
   CasesStatusLog.init(CasesStatusLogsSchema, CasesStatusLog.config(sequelize));
+  InventoryTurnoverAnalytic.init(
+    InventoryTurnoverAnalyticSchema,
+    InventoryTurnoverAnalytic.config(sequelize)
+  );
 
   // Handle models associations
   User.associate(sequelize.models);
@@ -122,6 +130,7 @@ async function setupModels(sequelize) {
   OutOfStockOrder.associate(sequelize.models);
   OutOfStockItem.associate(sequelize.models);
   CasesStatusLog.associate(sequelize.models);
+  InventoryTurnoverAnalytic.associate(sequelize.models);
 
   setupHooks(sequelize);
 
