@@ -25,7 +25,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          name: 'Entregado en destino',
+          name: 'Finalizado',
           description:
             'Este estado representa las órdenes que ya fueron entregadas al cliente.',
           value: 'SHIPMENT_DONE',

@@ -63,5 +63,6 @@ module.exports = {
   country,
   contact,
   email,
+  password,
   customerId,
 };

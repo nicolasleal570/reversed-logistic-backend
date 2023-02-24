@@ -1,7 +1,7 @@
 const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 
-const { CaseContent } = sequelize.models;
+const { CaseContent, Order, CustomerLocation } = sequelize.models;
 
 class CaseContentsService {
   constructor() {}
@@ -17,7 +17,24 @@ class CaseContentsService {
   }
 
   async findOne(id) {
-    const caseContent = await CaseContent.findByPk(id);
+    const caseContent = await CaseContent.findByPk(id, {
+      include: [
+        {
+          model: Order,
+          as: 'orders',
+          include: [
+            'createdBy',
+            'assignedTo',
+            'orderStatus',
+            {
+              model: CustomerLocation,
+              as: 'customerLocation',
+              include: ['customer'],
+            },
+          ],
+        },
+      ],
+    });
 
     if (!caseContent) {
       throw boom.notFound('CaseContent not found');

@@ -1,5 +1,4 @@
 const boom = require('@hapi/boom');
-const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 const OrderItemService = require('./order-items.service');
@@ -7,7 +6,7 @@ const CasesService = require('./cases.service');
 const CasesContentService = require('./case-content.service');
 const ShipmentService = require('./shipments.service');
 const { orderStateToCaseState } = require('../db/models/case.model');
-const dayjs = require('dayjs');
+const { queryCurrentMonth } = require('../utils/queryCurrentMonth');
 
 const { Order, OrderItem, CustomerLocation, Case, InventoryTurnoverAnalytic } =
   sequelize.models;
@@ -52,21 +51,9 @@ class OrdersService {
     });
 
     if (availableCasesCount === 0) {
-      const monthNumber = dayjs().get('month');
-      const baseDate = dayjs().month(monthNumber);
-      const daysInMonth = baseDate.daysInMonth();
-      const firstDay = baseDate.clone().date(1).hour(0);
-      const lastDay = baseDate
-        .clone()
-        .date(daysInMonth)
-        .hour(23)
-        .subtract(1, 'day');
-
       const currentInventoryTurnover = await InventoryTurnoverAnalytic.findOne({
         where: {
-          createdAt: {
-            [Op.between]: [firstDay.toDate(), lastDay.toDate()],
-          },
+          createdAt: queryCurrentMonth(),
         },
       });
 
@@ -99,7 +86,7 @@ class OrdersService {
       tax: orderInfo?.tax ?? 0,
       total: orderPrice,
       orderStatusId: orderInfo?.orderStatusId ?? 1,
-      createdById: orderInfo?.createdById ?? 1,
+      createdById: orderInfo?.createdById,
     });
     newOrder = newOrder.toJSON();
 

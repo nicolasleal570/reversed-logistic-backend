@@ -75,14 +75,21 @@ class CasesService {
     const paranoidValue =
       typeof paranoid === 'string' ? paranoid === 'true' : paranoid;
 
-    console.log({ paranoidValue });
-
     const caseItem = await Case.findByPk(id, {
       include: [
         {
           model: Order,
           as: 'orders',
-          include: ['createdBy', 'assignedTo', 'orderStatus'],
+          include: [
+            'createdBy',
+            'assignedTo',
+            'orderStatus',
+            {
+              model: CustomerLocation,
+              as: 'customerLocation',
+              include: ['customer'],
+            },
+          ],
         },
         {
           model: OutOfStockItem,

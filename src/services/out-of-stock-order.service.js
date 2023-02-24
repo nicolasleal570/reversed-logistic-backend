@@ -2,10 +2,7 @@ const boom = require('@hapi/boom');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 const OutOfStockItemService = require('./out-of-stock-items.service');
-const {
-  outOfStockOrderStateToCaseState,
-  availablesStates,
-} = require('../db/models/case.model');
+const { outOfStockOrderStateToCaseState } = require('../db/models/case.model');
 
 const {
   OutOfStockOrder,
@@ -101,7 +98,11 @@ class OutOfStockOrderService {
               paranoid: false,
             },
             'caseContent',
-            'order',
+            {
+              model: Order,
+              as: 'order',
+              include: ['items'],
+            },
           ],
         },
         'status',

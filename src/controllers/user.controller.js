@@ -30,7 +30,9 @@ async function createUserController(req, res, next) {
 
     const user = await service.create(data);
 
-    await roleService.appendRoleToUser(user.id, roleId);
+    if (roleId) {
+      await roleService.appendRoleToUser(user.id, roleId);
+    }
 
     res.status(201).json(user);
   } catch (error) {

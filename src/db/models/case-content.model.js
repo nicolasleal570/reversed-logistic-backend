@@ -45,7 +45,14 @@ const CaseContentSchema = {
 };
 
 class CaseContent extends Model {
-  static associate(_models) {}
+  static associate(models) {
+    this.belongsToMany(models.Order, {
+      as: 'orders',
+      through: models.OrderItem,
+      foreignKey: 'caseContentId',
+      otherKey: 'orderId',
+    });
+  }
 
   static config(sequelize) {
     return {

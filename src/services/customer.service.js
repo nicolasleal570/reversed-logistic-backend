@@ -22,6 +22,7 @@ class CustomersService {
       locations.map((location) =>
         this.customerLocationService.create({
           ...location,
+          password: location?.password || 'password',
           customerId: newCustomer.id,
         })
       )
@@ -31,7 +32,9 @@ class CustomersService {
   }
 
   async findAll() {
-    const customers = await Customer.findAll();
+    const customers = await Customer.findAll({
+      order: [['id', 'ASC']],
+    });
     return customers;
   }
 

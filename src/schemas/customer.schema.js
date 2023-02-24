@@ -8,6 +8,7 @@ const {
   state,
   contact,
   email,
+  password,
   country,
 } = require('./customer-location.schema');
 
@@ -27,6 +28,7 @@ const locationItem = Joi.object().keys({
   state: state.required(),
   contact: contact.required(),
   email: email.required(),
+  password,
   country,
 });
 

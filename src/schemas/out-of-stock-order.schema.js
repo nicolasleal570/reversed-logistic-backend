@@ -3,7 +3,7 @@ const { id: customerLocationId } = require('./customer-location.schema');
 const { id: statusId } = require('./out-of-stock-status.schema');
 const { id: caseId } = require('./cases.schema');
 const { id: caseContentId } = require('./case-content.schema');
-const { id: orderId } = require('./orders.schema');
+const { id: orderId, expectedDeliveryDate } = require('./orders.schema');
 
 const id = Joi.number().integer();
 const assignedToId = Joi.number().integer();
@@ -33,6 +33,7 @@ const getOutOfStockOrderSchema = Joi.object({
 const createOutOfStockOrderSchema = Joi.object({
   customerLocationId: customerLocationId.required(),
   items: items.required(),
+  expectedDeliveryDate,
 });
 
 const updateOutOfStockOrderSchema = Joi.object({

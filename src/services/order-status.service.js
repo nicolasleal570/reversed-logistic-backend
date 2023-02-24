@@ -15,7 +15,9 @@ class OrderStatusService {
   }
 
   async findAll() {
-    const orderStatus = await OrderStatus.findAll({ include: ['createdBy'] });
+    const orderStatus = await OrderStatus.findAll({
+      include: ['createdBy'],
+    });
     return orderStatus;
   }
 

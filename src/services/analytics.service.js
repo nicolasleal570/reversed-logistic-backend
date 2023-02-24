@@ -2,6 +2,7 @@ const boom = require('@hapi/boom');
 const dayjs = require('dayjs');
 const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
+const { queryCurrentMonth } = require('../utils/queryCurrentMonth');
 const {
   Case,
   CaseContent,
@@ -210,6 +211,7 @@ class AnalyticsService {
         shipmentId: {
           [Op.not]: null,
         },
+        purchaseDate: queryCurrentMonth(),
       },
       order: [['expectedDeliveryDate', 'DESC']],
       include: ['shipment', 'assignedTo'],
@@ -233,24 +235,12 @@ class AnalyticsService {
   }
 
   async getShipmentsCount({ month: monthNumber }) {
-    const baseDate = dayjs().month(monthNumber);
-    const daysInMonth = baseDate.daysInMonth();
-    const firstDay = baseDate.clone().date(1).hour(0);
-    const lastDay = baseDate
-      .clone()
-      .date(daysInMonth)
-      .hour(23)
-      .subtract(1, 'day');
-
     const shipments = await Shipment.findAll({
       where: {
         shipmentAt: {
           [Op.not]: null,
         },
-        deliveredAt: {
-          [Op.not]: null,
-          [Op.between]: [firstDay.toDate(), lastDay.toDate()],
-        },
+        deliveredAt: queryCurrentMonth(monthNumber),
       },
     });
 
@@ -265,15 +255,6 @@ class AnalyticsService {
   }
 
   async getLateDeliveries() {
-    const baseDate = dayjs();
-    const daysInMonth = baseDate.daysInMonth();
-    const firstDay = baseDate.clone().date(1).hour(0);
-    const lastDay = baseDate
-      .clone()
-      .date(daysInMonth)
-      .hour(23)
-      .subtract(1, 'day');
-
     const orders = await Order.findAll({
       where: {
         shipmentId: {
@@ -282,10 +263,7 @@ class AnalyticsService {
         expectedDeliveryDate: {
           [Op.not]: null,
         },
-        deliveredAt: {
-          [Op.not]: null,
-          [Op.between]: [firstDay.toDate(), lastDay.toDate()],
-        },
+        deliveredAt: queryCurrentMonth(),
       },
       order: [['deliveredAt', 'DESC']],
     });
@@ -306,22 +284,13 @@ class AnalyticsService {
   }
 
   async getInventoryTurnover() {
-    const monthNumber = dayjs().get('month');
-    const baseDate = dayjs().month(monthNumber);
+    const baseDate = dayjs();
     const daysInMonth = baseDate.daysInMonth();
-    const firstDay = baseDate.clone().date(1).hour(0);
-    const lastDay = baseDate
-      .clone()
-      .date(daysInMonth)
-      .hour(23)
-      .subtract(1, 'day');
 
     const rawCurrentInventoryTurnover = await InventoryTurnoverAnalytic.findOne(
       {
         where: {
-          createdAt: {
-            [Op.between]: [firstDay.toDate(), lastDay.toDate()],
-          },
+          createdAt: queryCurrentMonth(),
         },
       }
     );
@@ -332,7 +301,7 @@ class AnalyticsService {
       ...currentInventoryTurnover,
       frequency: `${Number.parseFloat(
         currentInventoryTurnover.count / daysInMonth
-      ).toFixed(2)} roturas por día`,
+      ).toFixed(2)} rotaciones por día`,
     };
   }
 
