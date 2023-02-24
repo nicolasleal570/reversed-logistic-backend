@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
 const UserService = require('./users.service');
 const OrderItemService = require('./order-items.service');
@@ -6,7 +7,9 @@ const CasesService = require('./cases.service');
 const CasesContentService = require('./case-content.service');
 const ShipmentService = require('./shipments.service');
 const { orderStateToCaseState } = require('../db/models/case.model');
-const { queryCurrentMonth } = require('../utils/queryCurrentMonth');
+const {
+  queryBetweenDatesOfMonth,
+} = require('../utils/queryBetweenDatesOfMonth');
 
 const { Order, OrderItem, CustomerLocation, Case, InventoryTurnoverAnalytic } =
   sequelize.models;
@@ -53,7 +56,10 @@ class OrdersService {
     if (availableCasesCount === 0) {
       const currentInventoryTurnover = await InventoryTurnoverAnalytic.findOne({
         where: {
-          createdAt: queryCurrentMonth(),
+          createdAt: {
+            ...queryBetweenDatesOfMonth(),
+            [Op.not]: null,
+          },
         },
       });
 

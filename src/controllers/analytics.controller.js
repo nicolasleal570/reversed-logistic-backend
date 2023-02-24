@@ -4,43 +4,46 @@ const service = new AnalyticsService();
 
 async function ordersByCustomerLocationsController(req, res, next) {
   try {
-    const data = await service.getOrdersByCustomerLocations(req.body);
+    const data = await service.getOrdersByCustomerLocations({
+      ...req.body,
+      ...req.query,
+    });
     res.json(data);
   } catch (error) {
     next(error);
   }
 }
 
-async function bestCustomersController(_req, res, next) {
+async function bestCustomersController(req, res, next) {
   try {
-    const data = await service.getBestCustomers();
+    const data = await service.getBestCustomers(req.query);
     res.json(data);
   } catch (error) {
     next(error);
   }
 }
 
-async function bestCustomersLocationController(_req, res, next) {
+async function bestCustomersLocationController(req, res, next) {
   try {
-    const data = await service.getBestCustomersLocation();
+    const data = await service.getBestCustomersLocation(req.query);
     res.json(data);
   } catch (error) {
     next(error);
   }
 }
 
-async function bestCaseContetsController(_req, res, next) {
+async function bestCaseContetsController(req, res, next) {
   try {
-    const data = await service.getBestCaseContents();
+    const data = await service.getBestCaseContents(req.query);
     res.json(data);
   } catch (error) {
     next(error);
   }
 }
 
-async function bestCasesController(_req, res, next) {
+async function bestCasesController(req, res, next) {
   try {
-    const data = await service.getBestCases();
+    const data = await service.getBestCases(req.query);
     res.json(data);
   } catch (error) {
     next(error);
@@ -56,9 +59,9 @@ async function bestTrucksController(_req, res, next) {
   }
 }
 
-async function deliveryAtTimeController(_req, res, next) {
+async function deliveryAtTimeController(req, res, next) {
   try {
-    const data = await service.getDeliveryAtTime();
+    const data = await service.getDeliveryAtTime(req.query);
     res.json(data);
   } catch (error) {
     next(error);
@@ -83,18 +86,18 @@ async function lateDeliveriesController(req, res, next) {
   }
 }
 
-async function inventoryTurnoverController(_req, res, next) {
+async function inventoryTurnoverController(req, res, next) {
   try {
-    const data = await service.getInventoryTurnover();
+    const data = await service.getInventoryTurnover(req.query);
     res.json(data);
   } catch (error) {
     next(error);
   }
 }
 
-async function stockRotationController(_req, res, next) {
+async function stockRotationController(req, res, next) {
   try {
-    const data = await service.getStockRotation();
+    const data = await service.getStockRotation(req.query);
     res.json(data);
   } catch (error) {
     next(error);

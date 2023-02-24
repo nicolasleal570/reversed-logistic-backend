@@ -2,7 +2,9 @@ const boom = require('@hapi/boom');
 const dayjs = require('dayjs');
 const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
-const { queryCurrentMonth } = require('../utils/queryCurrentMonth');
+const {
+  queryBetweenDatesOfMonth,
+} = require('../utils/queryBetweenDatesOfMonth');
 const {
   Case,
   CaseContent,
@@ -199,7 +201,7 @@ class AnalyticsService {
     }));
   }
 
-  async getDeliveryAtTime() {
+  async getDeliveryAtTime({ month, year }) {
     const orders = await Order.findAll({
       where: {
         expectedDeliveryDate: {
@@ -211,7 +213,10 @@ class AnalyticsService {
         shipmentId: {
           [Op.not]: null,
         },
-        purchaseDate: queryCurrentMonth(),
+        purchaseDate: {
+          ...queryBetweenDatesOfMonth(month, year),
+          [Op.not]: null,
+        },
       },
       order: [['expectedDeliveryDate', 'DESC']],
       include: ['shipment', 'assignedTo'],
@@ -234,13 +239,16 @@ class AnalyticsService {
     return updatedOrders;
   }
 
-  async getShipmentsCount({ month: monthNumber }) {
+  async getShipmentsCount({ month, year }) {
     const shipments = await Shipment.findAll({
       where: {
         shipmentAt: {
           [Op.not]: null,
         },
-        deliveredAt: queryCurrentMonth(monthNumber),
+        deliveredAt: {
+          ...queryBetweenDatesOfMonth(month, year),
+          [Op.not]: null,
+        },
       },
     });
 
@@ -254,18 +262,16 @@ class AnalyticsService {
     };
   }
 
-  async getLateDeliveries() {
+  async getLateDeliveries({ month, year }) {
     const orders = await Order.findAll({
       where: {
         shipmentId: {
           [Op.not]: null,
         },
-        expectedDeliveryDate: {
-          [Op.not]: null,
+        purchaseDate: {
+          ...queryBetweenDatesOfMonth(month, year),
         },
-        deliveredAt: queryCurrentMonth(),
       },
-      order: [['deliveredAt', 'DESC']],
     });
 
     const items = [];
@@ -280,20 +286,31 @@ class AnalyticsService {
       }
     });
 
-    return { graph: { count: items.length }, orders: items };
+    const count = Math.round((items.length / orders.length) * 100);
+
+    return { graph: { count: `${count}%` }, orders, lateDeliveries: items };
   }
 
-  async getInventoryTurnover() {
+  async getInventoryTurnover({ month, year }) {
     const baseDate = dayjs();
     const daysInMonth = baseDate.daysInMonth();
 
     const rawCurrentInventoryTurnover = await InventoryTurnoverAnalytic.findOne(
       {
         where: {
-          createdAt: queryCurrentMonth(),
+          createdAt: {
+            ...queryBetweenDatesOfMonth(month, year),
+            [Op.not]: null,
+          },
         },
       }
     );
+
+    if (!rawCurrentInventoryTurnover) {
+      return {
+        frequency: '0',
+      };
+    }
 
     const currentInventoryTurnover = rawCurrentInventoryTurnover.toJSON();
 
