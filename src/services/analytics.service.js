@@ -154,7 +154,9 @@ class AnalyticsService {
     }));
   }
 
-  async getBestCaseContents() {
+  async getBestCaseContents({ month, year }) {
+    const { firstDay, lastDay } = getStartAndFinishOfMonth(month, year);
+
     const [results] = await sequelize.query(`
       SELECT COUNT("foo"."caseContentId") AS "count", "foo"."caseContentId" AS "caseContentId" FROM (
         SELECT "Order"."id", 
@@ -163,6 +165,7 @@ class AnalyticsService {
         FROM "orders" AS "Order" 
         LEFT OUTER JOIN "order_items" AS "items" ON "Order"."id" = "items"."order_id" 
         LEFT OUTER JOIN "cases_content" AS "items->caseContent" ON "items"."case_content_id" = "items->caseContent"."id"
+        WHERE "Order"."purchase_date" BETWEEN '${firstDay.toISOString()}' AND '${lastDay.toISOString()}'
       ) foo
       GROUP BY "caseContentId"
       ORDER BY "count" DESC
@@ -181,6 +184,7 @@ class AnalyticsService {
 
   async getBestCases({ month, year }) {
     const { firstDay, lastDay } = getStartAndFinishOfMonth(month, year);
+
     const [results] = await sequelize.query(`
       SELECT COUNT("foo"."caseId") AS "count", "foo"."caseId" AS "caseId" FROM (
         SELECT "Order"."id", 
