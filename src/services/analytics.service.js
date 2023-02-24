@@ -217,12 +217,6 @@ class AnalyticsService {
   async getDeliveryAtTime({ month, year }) {
     const orders = await Order.findAll({
       where: {
-        expectedDeliveryDate: {
-          [Op.not]: null,
-        },
-        deliveredAt: {
-          [Op.not]: null,
-        },
         shipmentId: {
           [Op.not]: null,
         },
@@ -235,19 +229,21 @@ class AnalyticsService {
       include: ['shipment', 'assignedTo'],
     });
 
-    const updatedOrders = orders.map((order) => {
-      const { expectedDeliveryDate, deliveredAt } = order.toJSON();
+    const updatedOrders = orders
+      .filter((item) => item.expectedDeliveryDate && item.deliveredAt)
+      .map((order) => {
+        const { expectedDeliveryDate, deliveredAt } = order.toJSON();
 
-      const firstDate = dayjs(expectedDeliveryDate);
-      const secondDate = dayjs(deliveredAt);
-      const diff = firstDate.diff(secondDate, 'minutes');
-      const units = diff < 0 ? 'minutos despues' : 'minutos antes';
+        const firstDate = dayjs(expectedDeliveryDate);
+        const secondDate = dayjs(deliveredAt);
+        const diff = firstDate.diff(secondDate, 'minutes');
+        const units = diff < 0 ? 'minutos despues' : 'minutos antes';
 
-      return {
-        ...order.toJSON(),
-        deliveryAtTime: `${diff} ${units}`,
-      };
-    });
+        return {
+          ...order.toJSON(),
+          deliveryAtTime: `${diff} ${units}`,
+        };
+      });
 
     return updatedOrders;
   }
@@ -256,6 +252,7 @@ class AnalyticsService {
     const shipments = await Shipment.findAll({
       where: {
         shipmentAt: {
+          ...queryBetweenDatesOfMonth(month, year),
           [Op.not]: null,
         },
         deliveredAt: {
@@ -289,15 +286,17 @@ class AnalyticsService {
 
     const items = [];
 
-    orders.forEach((order) => {
-      const firstDate = dayjs(order.expectedDeliveryDate);
-      const secondDate = dayjs(order.deliveredAt);
-      const diff = firstDate.diff(secondDate, 'minutes');
+    orders
+      .filter((item) => item.expectedDeliveryDate && item.deliveredAt)
+      .forEach((order) => {
+        const firstDate = dayjs(order.expectedDeliveryDate);
+        const secondDate = dayjs(order.deliveredAt);
+        const diff = firstDate.diff(secondDate, 'minutes');
 
-      if (diff < 0) {
-        items.push(order.toJSON());
-      }
-    });
+        if (diff < 0) {
+          items.push(order.toJSON());
+        }
+      });
 
     const count = Math.round((items.length / orders.length) * 100);
 

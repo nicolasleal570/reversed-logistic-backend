@@ -68,7 +68,6 @@ router.get(
 router.get(
   '/shipments-count',
   passport.authenticate('jwt', { session: false }),
-  validatorHandler(shipmentsCountSchema, 'query'),
   shipmentsCountController
 );
 
