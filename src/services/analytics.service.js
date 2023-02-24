@@ -100,7 +100,9 @@ class AnalyticsService {
     };
   }
 
-  async getBestCustomers() {
+  async getBestCustomers({ month, year }) {
+    const { firstDay, lastDay } = getStartAndFinishOfMonth(month, year);
+
     const [results] = await sequelize.query(`
         SELECT COUNT("foo"."customerId") AS "count", "foo"."customerId" as "customerId" FROM (
           SELECT "Order"."id", 
@@ -109,6 +111,7 @@ class AnalyticsService {
           FROM "orders" AS "Order" 
           LEFT OUTER JOIN "customers_locations" AS "customerLocation" 
           ON "Order"."customer_location_id" = "customerLocation"."id"
+          WHERE "Order"."purchase_date" BETWEEN '${firstDay.toISOString()}' AND '${lastDay.toISOString()}'
         ) foo
         GROUP BY "foo"."customerId"
         ORDER BY "count" DESC
@@ -125,7 +128,9 @@ class AnalyticsService {
     }));
   }
 
-  async getBestCustomersLocation() {
+  async getBestCustomersLocation({ month, year }) {
+    const { firstDay, lastDay } = getStartAndFinishOfMonth(month, year);
+
     const [results] = await sequelize.query(`
         SELECT COUNT("foo"."customerLocationId") AS "count", "foo"."customerLocationId" FROM (
           SELECT "Order"."id", 
@@ -134,6 +139,7 @@ class AnalyticsService {
           FROM "orders" AS "Order" 
           LEFT OUTER JOIN "customers_locations" AS "customerLocation" 
           ON "Order"."customer_location_id" = "customerLocation"."id"
+          WHERE "Order"."purchase_date" BETWEEN '${firstDay.toISOString()}' AND '${lastDay.toISOString()}'
         ) foo
         GROUP BY "foo"."customerLocationId"
         ORDER BY "foo"."count" DESC
