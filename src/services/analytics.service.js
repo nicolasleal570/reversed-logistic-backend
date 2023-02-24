@@ -4,6 +4,7 @@ const { Op } = require('sequelize');
 const { sequelize } = require('../db/sequelize');
 const {
   queryBetweenDatesOfMonth,
+  getStartAndFinishOfMonth,
 } = require('../utils/queryBetweenDatesOfMonth');
 const {
   Case,
@@ -178,13 +179,15 @@ class AnalyticsService {
     }));
   }
 
-  async getBestCases() {
+  async getBestCases({ month, year }) {
+    const { firstDay, lastDay } = getStartAndFinishOfMonth(month, year);
     const [results] = await sequelize.query(`
       SELECT COUNT("foo"."caseId") AS "count", "foo"."caseId" AS "caseId" FROM (
         SELECT "Order"."id", 
         "items"."case_id" AS "caseId" 
         FROM "orders" AS "Order" 
         LEFT OUTER JOIN "order_items" AS "items" ON "Order"."id" = "items"."order_id"
+        WHERE "Order"."purchase_date" BETWEEN '${firstDay.toISOString()}' AND '${lastDay.toISOString()}'
       ) foo
       GROUP BY "caseId"
       ORDER BY "count" DESC

@@ -44,4 +44,5 @@ const queryBetweenDatesOfMonth = (monthNumber = null, yearNumber = null) => {
 
 module.exports = {
   queryBetweenDatesOfMonth,
+  getStartAndFinishOfMonth,
 };
