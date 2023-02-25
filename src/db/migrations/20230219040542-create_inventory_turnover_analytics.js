@@ -2,7 +2,7 @@
 const {
   InventoryTurnoverAnalyticSchema,
   INVENTORY_TURNOVER_ANALYTICS_TABLE,
-} = require('../models/inventory-turnover-analytic');
+} = require('../models/inventory-turnover-analytic.model');
 
 module.exports = {
   async up(queryInterface) {
