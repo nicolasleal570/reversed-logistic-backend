@@ -304,7 +304,16 @@ class AnalyticsService {
   }
 
   async getInventoryTurnover({ month, year }) {
-    const baseDate = dayjs();
+    let baseDate = dayjs();
+
+    if (!Number.isNaN(Number.parseInt(month, 10))) {
+      baseDate = baseDate.month(Number.parseInt(month, 10));
+    }
+
+    if (!Number.isNaN(Number.parseInt(year, 10))) {
+      baseDate = baseDate.year(Number.parseInt(year, 10));
+    }
+
     const daysInMonth = baseDate.daysInMonth();
 
     const rawCurrentInventoryTurnover = await InventoryTurnoverAnalytic.findOne(
