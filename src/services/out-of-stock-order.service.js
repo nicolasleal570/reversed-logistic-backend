@@ -10,6 +10,7 @@ const {
   Case,
   CustomerLocation,
   CasesStatusLog,
+    Order
 } = sequelize.models;
 
 const outOfStockItemService = new OutOfStockItemService();
