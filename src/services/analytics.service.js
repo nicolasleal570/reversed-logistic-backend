@@ -298,7 +298,7 @@ class AnalyticsService {
         }
       });
 
-    const count = Math.round((items.length / orders.length) * 100);
+    const count = Math.round((items.length / orders.length) * 100) || 0;
 
     return { graph: { count: `${count}%` }, orders, lateDeliveries: items };
   }
